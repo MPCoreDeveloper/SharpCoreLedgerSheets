@@ -33,7 +33,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- SonarSource static analysis (C#) - latest stable. -->
+    <!-- SonarSource static analysis (C#) - latest stable.
+         Note: SonarAnalyzer.CSharp is licensed under the "SONAR Source-Available License v1.0"
+         (source-available, not OSI-approved OSS - see licenses/LICENSE.txt in the NuGet package).
+         Deliberately accepted: that license only forbids building a product that competes with
+         SonarQube, which does not apply here. The package uses PrivateAssets=all, so it is
+         build-time only and is never shipped to customers. -->
     <PackageReference Include="SonarAnalyzer.CSharp" Version="10.34.0.3385">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
