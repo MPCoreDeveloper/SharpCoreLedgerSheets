@@ -1,5 +1,4 @@
 using FinOverzicht.Reports.Abstractions;
-using FluentAssertions;
 
 namespace FinOverzicht.Reports.Tests;
 
@@ -18,14 +17,14 @@ public sealed class HtmlReportRendererTests
 
         var html = await context.Renderer.RenderHtmlAsync(template, TestOverzicht.MaakModel("Testrapport"), Ct);
 
-        html.Should().StartWith("<!DOCTYPE html>");
-        html.Should().Contain("<title>Testrapport — FinOverzicht</title>");
-        html.Should().Contain("<style>");
-        html.Should().Contain("Testonderneming BV");
-        html.Should().Contain($"© {DateTime.Now.Year} FinOverzicht");
+        Assert.StartsWith("<!DOCTYPE html>", html);
+        Assert.Contains("<title>Testrapport — FinOverzicht</title>", html);
+        Assert.Contains("<style>", html);
+        Assert.Contains("Testonderneming BV", html);
+        Assert.Contains($"© {DateTime.Now.Year} FinOverzicht", html);
         // Self-contained: no external stylesheet or script references (works offline / when printed).
-        html.Should().NotContain("rel=\"stylesheet\"");
-        html.Should().NotContain("<script");
+        Assert.DoesNotContain("rel=\"stylesheet\"", html);
+        Assert.DoesNotContain("<script", html);
     }
 
     [Fact]
@@ -35,14 +34,14 @@ public sealed class HtmlReportRendererTests
 
         var html = await context.Renderer.RenderHtmlAsync("BalansReport", TestOverzicht.MaakModel(), Ct);
 
-        html.Should().Contain("Balans");
-        html.Should().Contain("Activa");
-        html.Should().Contain("Passiva");
-        html.Should().Contain("Eigen vermogen");
-        html.Should().Contain("Kas");
-        html.Should().Contain("Crediteuren");
-        html.Should().Contain("Resultaat");
-        html.Should().Contain("In balans");
+        Assert.Contains("Balans", html);
+        Assert.Contains("Activa", html);
+        Assert.Contains("Passiva", html);
+        Assert.Contains("Eigen vermogen", html);
+        Assert.Contains("Kas", html);
+        Assert.Contains("Crediteuren", html);
+        Assert.Contains("Resultaat", html);
+        Assert.Contains("In balans", html);
     }
 
     [Fact]
@@ -52,11 +51,11 @@ public sealed class HtmlReportRendererTests
 
         var html = await context.Renderer.RenderHtmlAsync("WinstVerliesReport", TestOverzicht.MaakModel(), Ct);
 
-        html.Should().Contain("Winst- en verliesrekening");
-        html.Should().Contain("Opbrengsten");
-        html.Should().Contain("Kosten");
-        html.Should().Contain("Omzet");
-        html.Should().Contain("Bedrijfskosten");
+        Assert.Contains("Winst- en verliesrekening", html);
+        Assert.Contains("Opbrengsten", html);
+        Assert.Contains("Kosten", html);
+        Assert.Contains("Omzet", html);
+        Assert.Contains("Bedrijfskosten", html);
     }
 
     [Fact]
@@ -66,12 +65,12 @@ public sealed class HtmlReportRendererTests
 
         var html = await context.Renderer.RenderHtmlAsync("KasstroomReport", TestOverzicht.MaakModel(), Ct);
 
-        html.Should().Contain("Kasstroomoverzicht");
-        html.Should().Contain("Operationele activiteiten");
-        html.Should().Contain("Investeringsactiviteiten");
-        html.Should().Contain("Financieringsactiviteiten");
-        html.Should().Contain("Beginsaldo");
-        html.Should().Contain("Eindsaldo");
+        Assert.Contains("Kasstroomoverzicht", html);
+        Assert.Contains("Operationele activiteiten", html);
+        Assert.Contains("Investeringsactiviteiten", html);
+        Assert.Contains("Financieringsactiviteiten", html);
+        Assert.Contains("Beginsaldo", html);
+        Assert.Contains("Eindsaldo", html);
     }
 
     [Fact]
@@ -81,11 +80,11 @@ public sealed class HtmlReportRendererTests
 
         var html = await context.Renderer.RenderHtmlAsync("FinancieelOverzichtReport", TestOverzicht.MaakModel(), Ct);
 
-        html.Should().Contain("Kengetallen");
-        html.Should().Contain("Current ratio");
-        html.Should().Contain("Quick ratio");
-        html.Should().Contain("Solvabiliteit");
-        html.Should().Contain("Rentabiliteit eigen vermogen");
+        Assert.Contains("Kengetallen", html);
+        Assert.Contains("Current ratio", html);
+        Assert.Contains("Quick ratio", html);
+        Assert.Contains("Solvabiliteit", html);
+        Assert.Contains("Rentabiliteit eigen vermogen", html);
     }
 
     [Fact]
@@ -93,10 +92,10 @@ public sealed class HtmlReportRendererTests
     {
         await using var context = new ReportTestContext();
 
-        var act = () => context.Renderer.RenderHtmlAsync("BestaatNietReport", TestOverzicht.MaakModel(), Ct);
+        var exception = await Assert.ThrowsAsync<ReportRenderingException>(
+            () => context.Renderer.RenderHtmlAsync("BestaatNietReport", TestOverzicht.MaakModel(), Ct));
 
-        var exception = await act.Should().ThrowAsync<ReportRenderingException>();
-        exception.Which.RapportNaam.Should().Be("/Templates/BestaatNietReport");
+        Assert.Equal("/Templates/BestaatNietReport", exception.RapportNaam);
     }
 
     [Theory]
@@ -106,9 +105,8 @@ public sealed class HtmlReportRendererTests
     {
         await using var context = new ReportTestContext();
 
-        var act = () => context.Renderer.RenderHtmlAsync(template, TestOverzicht.MaakModel(), Ct);
-
-        await act.Should().ThrowAsync<ArgumentException>();
+        await Assert.ThrowsAsync<ArgumentException>(
+            () => context.Renderer.RenderHtmlAsync(template, TestOverzicht.MaakModel(), Ct));
     }
 
     [Fact]
@@ -116,9 +114,8 @@ public sealed class HtmlReportRendererTests
     {
         await using var context = new ReportTestContext();
 
-        var act = () => context.Renderer.RenderHtmlAsync<Reports.Models.FinancieelOverzichtModel>("BalansReport", null!, Ct);
-
-        await act.Should().ThrowAsync<ArgumentNullException>();
+        await Assert.ThrowsAsync<ArgumentNullException>(
+            () => context.Renderer.RenderHtmlAsync<Reports.Models.FinancieelOverzichtModel>("BalansReport", null!, Ct));
     }
 
     [Fact]
@@ -128,7 +125,7 @@ public sealed class HtmlReportRendererTests
 
         var html = await context.Renderer.RenderHtmlAsync("BalansReport", TestOverzicht.MaakModel(), Ct);
 
-        html.Should().Contain(context.Labels.Balans);
-        html.Should().Contain(context.Labels.Activa);
+        Assert.Contains(context.Labels.Balans, html);
+        Assert.Contains(context.Labels.Activa, html);
     }
 }

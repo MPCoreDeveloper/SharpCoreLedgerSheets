@@ -1,5 +1,4 @@
 using FinOverzicht.Domain.Boekhouden;
-using FluentAssertions;
 
 namespace FinOverzicht.Infrastructure.Tests;
 
@@ -18,14 +17,14 @@ public sealed class SharpCoreDbRekeningRepositoryTests
 
         var rekeningen = await context.Rekeningen.AlleAsync(Ct);
 
-        var rekening = rekeningen.Should().ContainSingle().Subject;
-        rekening.Nummer.Should().Be("1300");
-        rekening.Naam.Should().Be("Voorraad");
-        rekening.Soort.Should().Be(RekeningSoort.Activa);
-        rekening.IsActief.Should().BeTrue();
-        rekening.IsVlottend.Should().BeTrue();
-        rekening.IsLiquideMiddel.Should().BeFalse();
-        rekening.IsVoorraad.Should().BeTrue();
+        var rekening = Assert.Single(rekeningen);
+        Assert.Equal("1300", rekening.Nummer);
+        Assert.Equal("Voorraad", rekening.Naam);
+        Assert.Equal(RekeningSoort.Activa, rekening.Soort);
+        Assert.True(rekening.IsActief);
+        Assert.True(rekening.IsVlottend);
+        Assert.False(rekening.IsLiquideMiddel);
+        Assert.True(rekening.IsVoorraad);
     }
 
     [Fact]
@@ -37,7 +36,10 @@ public sealed class SharpCoreDbRekeningRepositoryTests
 
         var rekeningen = await context.Rekeningen.AlleAsync(Ct);
 
-        rekeningen.Select(r => r.Nummer).Should().ContainInOrder("1000", "8000");
+        Assert.Collection(
+            rekeningen,
+            r => Assert.Equal("1000", r.Nummer),
+            r => Assert.Equal("8000", r.Nummer));
     }
 
     [Fact]
@@ -49,9 +51,9 @@ public sealed class SharpCoreDbRekeningRepositoryTests
 
         var gevonden = await context.Rekeningen.ZoekOpNummerAsync("1000", Ct);
 
-        gevonden.Should().NotBeNull();
-        gevonden!.Id.Should().Be(kas.Id);
-        gevonden.IsLiquideMiddel.Should().BeTrue();
+        Assert.NotNull(gevonden);
+        Assert.Equal(kas.Id, gevonden.Id);
+        Assert.True(gevonden.IsLiquideMiddel);
     }
 
     [Fact]
@@ -61,7 +63,7 @@ public sealed class SharpCoreDbRekeningRepositoryTests
 
         var gevonden = await context.Rekeningen.ZoekOpNummerAsync("9999", Ct);
 
-        gevonden.Should().BeNull();
+        Assert.Null(gevonden);
     }
 
     [Fact]
@@ -77,8 +79,9 @@ public sealed class SharpCoreDbRekeningRepositoryTests
 
         var gevonden = await context.Rekeningen.ZoekOpNummerAsync("1000", Ct);
 
-        gevonden!.Naam.Should().Be("Kas en bank");
-        gevonden.IsActief.Should().BeFalse();
+        Assert.NotNull(gevonden);
+        Assert.Equal("Kas en bank", gevonden.Naam);
+        Assert.False(gevonden.IsActief);
     }
 
     [Fact]
@@ -91,7 +94,7 @@ public sealed class SharpCoreDbRekeningRepositoryTests
         await context.HeropenAsync();
 
         var rekeningen = await context.Rekeningen.AlleAsync(Ct);
-        rekeningen.Should().ContainSingle(r => r.Nummer == "1000" && r.IsLiquideMiddel);
+        Assert.Single(rekeningen, r => r.Nummer == "1000" && r.IsLiquideMiddel);
     }
 
     [Fact]
@@ -99,8 +102,6 @@ public sealed class SharpCoreDbRekeningRepositoryTests
     {
         await using var context = new SharpCoreDbTestContext();
 
-        var act = () => context.Rekeningen.ZoekOpNummerAsync("  ", Ct);
-
-        await act.Should().ThrowAsync<ArgumentException>();
+        await Assert.ThrowsAsync<ArgumentException>(() => context.Rekeningen.ZoekOpNummerAsync("  ", Ct));
     }
 }

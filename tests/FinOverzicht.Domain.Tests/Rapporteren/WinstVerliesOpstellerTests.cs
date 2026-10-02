@@ -1,6 +1,5 @@
 using FinOverzicht.Domain.Boekhouden;
 using FinOverzicht.Domain.Services;
-using FluentAssertions;
 
 namespace FinOverzicht.Domain.Tests.Rapporteren;
 
@@ -14,11 +13,11 @@ public sealed class WinstVerliesOpstellerTests
     {
         var rapport = _opsteller.StelOp(_grootboek, TestGrootboek.Jaar2026);
 
-        rapport.TotaalOpbrengsten.Should().Be(4_000m);
-        rapport.TotaalKosten.Should().Be(1_700m);
-        rapport.Resultaat.Should().Be(2_300m);
-        rapport.IsWinst.Should().BeTrue();
-        rapport.IsVerlies.Should().BeFalse();
+        Assert.Equal(4_000m, rapport.TotaalOpbrengsten);
+        Assert.Equal(1_700m, rapport.TotaalKosten);
+        Assert.Equal(2_300m, rapport.Resultaat);
+        Assert.True(rapport.IsWinst);
+        Assert.False(rapport.IsVerlies);
     }
 
     [Fact]
@@ -26,8 +25,8 @@ public sealed class WinstVerliesOpstellerTests
     {
         var rapport = _opsteller.StelOp(_grootboek, TestGrootboek.Jaar2026);
 
-        rapport.Opbrengsten.Should().ContainSingle(r => r.Nummer == TestGrootboek.Omzet && r.Bedrag == 4_000m);
-        rapport.Kosten.Should().ContainSingle(r => r.Nummer == TestGrootboek.Kosten && r.Bedrag == 1_700m);
+        Assert.Single(rapport.Opbrengsten, r => r.Nummer == TestGrootboek.Omzet && r.Bedrag == 4_000m);
+        Assert.Single(rapport.Kosten, r => r.Nummer == TestGrootboek.Kosten && r.Bedrag == 1_700m);
     }
 
     [Fact]
@@ -35,8 +34,8 @@ public sealed class WinstVerliesOpstellerTests
     {
         var rapport = _opsteller.StelOp(_grootboek, TestGrootboek.Jaar2026);
 
-        rapport.Opbrengsten.Should().OnlyContain(r => r.Nummer == TestGrootboek.Omzet);
-        rapport.Kosten.Should().OnlyContain(r => r.Nummer == TestGrootboek.Kosten);
+        Assert.All(rapport.Opbrengsten, r => Assert.Equal(TestGrootboek.Omzet, r.Nummer));
+        Assert.All(rapport.Kosten, r => Assert.Equal(TestGrootboek.Kosten, r.Nummer));
     }
 
     [Fact]
@@ -50,7 +49,7 @@ public sealed class WinstVerliesOpstellerTests
 
         var rapport = _opsteller.StelOp(grootboek, Periode.VoorJaar(2026));
 
-        rapport.TotaalOpbrengsten.Should().Be(100m);
+        Assert.Equal(100m, rapport.TotaalOpbrengsten);
     }
 
     [Fact]
@@ -63,16 +62,14 @@ public sealed class WinstVerliesOpstellerTests
 
         var rapport = _opsteller.StelOp(grootboek, Periode.VoorJaar(2026));
 
-        rapport.Resultaat.Should().Be(-500m);
-        rapport.IsVerlies.Should().BeTrue();
-        rapport.NettoMarge.Should().BeNull();
+        Assert.Equal(-500m, rapport.Resultaat);
+        Assert.True(rapport.IsVerlies);
+        Assert.Null(rapport.NettoMarge);
     }
 
     [Fact]
     public void StelOp_ThrowsForNullLedger()
     {
-        var act = () => _opsteller.StelOp(null!, TestGrootboek.Jaar2026);
-
-        act.Should().Throw<ArgumentNullException>();
+        Assert.Throws<ArgumentNullException>(() => _opsteller.StelOp(null!, TestGrootboek.Jaar2026));
     }
 }

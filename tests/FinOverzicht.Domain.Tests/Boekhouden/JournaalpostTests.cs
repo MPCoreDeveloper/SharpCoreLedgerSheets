@@ -1,6 +1,5 @@
 using FinOverzicht.Domain.Boekhouden;
 using FinOverzicht.Domain.Common;
-using FluentAssertions;
 
 namespace FinOverzicht.Domain.Tests.Boekhouden;
 
@@ -15,18 +14,16 @@ public sealed class JournaalpostTests
     {
         var post = Journaalpost.Nieuw(Datum, "Testboeking", "REF-1");
 
-        post.Id.Should().NotBe(Guid.Empty);
-        post.Datum.Should().Be(Datum);
-        post.Omschrijving.Should().Be("Testboeking");
-        post.Referentie.Should().Be("REF-1");
+        Assert.NotEqual(Guid.Empty, post.Id);
+        Assert.Equal(Datum, post.Datum);
+        Assert.Equal("Testboeking", post.Omschrijving);
+        Assert.Equal("REF-1", post.Referentie);
     }
 
     [Fact]
     public void Constructor_ThrowsForEmptyId()
     {
-        var act = () => new Journaalpost(Guid.Empty, Datum, "Test");
-
-        act.Should().Throw<DomeinException>();
+        Assert.Throws<DomeinException>(() => new Journaalpost(Guid.Empty, Datum, "Test"));
     }
 
     [Theory]
@@ -34,9 +31,7 @@ public sealed class JournaalpostTests
     [InlineData("   ")]
     public void Constructor_ThrowsForBlankDescription(string omschrijving)
     {
-        var act = () => new Journaalpost(Guid.NewGuid(), Datum, omschrijving);
-
-        act.Should().Throw<DomeinException>();
+        Assert.Throws<DomeinException>(() => new Journaalpost(Guid.NewGuid(), Datum, omschrijving));
     }
 
     [Fact]
@@ -44,7 +39,7 @@ public sealed class JournaalpostTests
     {
         var post = new Journaalpost(Guid.NewGuid(), Datum, "Test", "   ");
 
-        post.Referentie.Should().BeNull();
+        Assert.Null(post.Referentie);
     }
 
     [Fact]
@@ -52,9 +47,7 @@ public sealed class JournaalpostTests
     {
         var post = Journaalpost.Nieuw(Datum, "Test");
 
-        var act = () => post.VoegRegelToe(RekeningA, -1m, 0m);
-
-        act.Should().Throw<DomeinException>();
+        Assert.Throws<DomeinException>(() => post.VoegRegelToe(RekeningA, -1m, 0m));
     }
 
     [Fact]
@@ -62,9 +55,7 @@ public sealed class JournaalpostTests
     {
         var post = Journaalpost.Nieuw(Datum, "Test");
 
-        var act = () => post.VoegRegelToe(RekeningA, 10m, 10m);
-
-        act.Should().Throw<DomeinException>();
+        Assert.Throws<DomeinException>(() => post.VoegRegelToe(RekeningA, 10m, 10m));
     }
 
     [Fact]
@@ -72,9 +63,7 @@ public sealed class JournaalpostTests
     {
         var post = Journaalpost.Nieuw(Datum, "Test");
 
-        var act = () => post.VoegRegelToe(RekeningA, 0m, 0m);
-
-        act.Should().Throw<DomeinException>();
+        Assert.Throws<DomeinException>(() => post.VoegRegelToe(RekeningA, 0m, 0m));
     }
 
     [Fact]
@@ -82,9 +71,7 @@ public sealed class JournaalpostTests
     {
         var post = Journaalpost.Nieuw(Datum, "Test");
 
-        var act = () => post.VoegRegelToe(Guid.Empty, 10m, 0m);
-
-        act.Should().Throw<DomeinException>();
+        Assert.Throws<DomeinException>(() => post.VoegRegelToe(Guid.Empty, 10m, 0m));
     }
 
     [Fact]
@@ -94,10 +81,10 @@ public sealed class JournaalpostTests
             .Debet(RekeningA, 100m)
             .Credit(RekeningB, 100m);
 
-        post.TotaalDebet.Should().Be(100m);
-        post.TotaalCredit.Should().Be(100m);
-        post.Regels.Should().HaveCount(2);
-        post.IsInBalans.Should().BeTrue();
+        Assert.Equal(100m, post.TotaalDebet);
+        Assert.Equal(100m, post.TotaalCredit);
+        Assert.Equal(2, post.Regels.Count);
+        Assert.True(post.IsInBalans);
     }
 
     [Fact]
@@ -105,7 +92,7 @@ public sealed class JournaalpostTests
     {
         var post = Journaalpost.Nieuw(Datum, "Test").Debet(RekeningA, 1m).Credit(RekeningB, 1m);
 
-        post.Regels.Should().BeAssignableTo<IReadOnlyList<JournaalpostRegel>>();
+        Assert.IsAssignableFrom<IReadOnlyList<JournaalpostRegel>>(post.Regels);
     }
 
     [Fact]
@@ -113,7 +100,7 @@ public sealed class JournaalpostTests
     {
         var post = Journaalpost.Nieuw(Datum, "Test").Debet(RekeningA, 100m).Credit(RekeningB, 90m);
 
-        post.IsInBalans.Should().BeFalse();
+        Assert.False(post.IsInBalans);
     }
 
     [Fact]
@@ -121,9 +108,9 @@ public sealed class JournaalpostTests
     {
         var post = Journaalpost.Nieuw(Datum, "Test").Debet(RekeningA, 100m);
 
-        var act = () => post.Valideer();
+        var exceptie = Assert.Throws<DomeinException>(() => post.Valideer());
 
-        act.Should().Throw<DomeinException>().WithMessage("*twee regels*");
+        Assert.Contains("twee regels", exceptie.Message);
     }
 
     [Fact]
@@ -131,9 +118,9 @@ public sealed class JournaalpostTests
     {
         var post = Journaalpost.Nieuw(Datum, "Test").Debet(RekeningA, 100m).Credit(RekeningB, 90m);
 
-        var act = () => post.Valideer();
+        var exceptie = Assert.Throws<DomeinException>(() => post.Valideer());
 
-        act.Should().Throw<DomeinException>().WithMessage("*niet in balans*");
+        Assert.Contains("niet in balans", exceptie.Message);
     }
 
     [Fact]
@@ -141,8 +128,8 @@ public sealed class JournaalpostTests
     {
         var post = Journaalpost.Nieuw(Datum, "Test").Debet(RekeningA, 100m).Credit(RekeningB, 100m);
 
-        var act = () => post.Valideer();
+        var exceptie = Record.Exception(() => post.Valideer());
 
-        act.Should().NotThrow();
+        Assert.Null(exceptie);
     }
 }

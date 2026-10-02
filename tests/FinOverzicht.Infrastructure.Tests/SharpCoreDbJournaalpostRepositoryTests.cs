@@ -1,5 +1,4 @@
 using FinOverzicht.Domain.Boekhouden;
-using FluentAssertions;
 
 namespace FinOverzicht.Infrastructure.Tests;
 
@@ -23,18 +22,18 @@ public sealed class SharpCoreDbJournaalpostRepositoryTests
         await context.Posten.ToevoegenAsync(post, Ct);
         var posten = await context.Posten.AlleAsync(null, Ct);
 
-        var gelezen = posten.Should().ContainSingle().Subject;
-        gelezen.Id.Should().Be(post.Id);
-        gelezen.Datum.Should().Be(new DateOnly(2026, 3, 1));
-        gelezen.Omschrijving.Should().Be("Contante verkoop");
-        gelezen.Referentie.Should().Be("F-2026-0001");
-        gelezen.Regels.Should().HaveCount(2);
-        gelezen.TotaalDebet.Should().Be(1234.56m);
-        gelezen.TotaalCredit.Should().Be(1234.56m);
-        gelezen.Regels[0].RekeningId.Should().Be(kas);
-        gelezen.Regels[0].Debet.Should().Be(1234.56m);
-        gelezen.Regels[1].RekeningId.Should().Be(omzet);
-        gelezen.Regels[1].Credit.Should().Be(1234.56m);
+        var gelezen = Assert.Single(posten);
+        Assert.Equal(post.Id, gelezen.Id);
+        Assert.Equal(new DateOnly(2026, 3, 1), gelezen.Datum);
+        Assert.Equal("Contante verkoop", gelezen.Omschrijving);
+        Assert.Equal("F-2026-0001", gelezen.Referentie);
+        Assert.Equal(2, gelezen.Regels.Count);
+        Assert.Equal(1234.56m, gelezen.TotaalDebet);
+        Assert.Equal(1234.56m, gelezen.TotaalCredit);
+        Assert.Equal(kas, gelezen.Regels[0].RekeningId);
+        Assert.Equal(1234.56m, gelezen.Regels[0].Debet);
+        Assert.Equal(omzet, gelezen.Regels[1].RekeningId);
+        Assert.Equal(1234.56m, gelezen.Regels[1].Credit);
     }
 
     [Fact]
@@ -46,7 +45,7 @@ public sealed class SharpCoreDbJournaalpostRepositoryTests
         await context.Posten.ToevoegenAsync(post, Ct);
         var posten = await context.Posten.AlleAsync(null, Ct);
 
-        posten[0].Referentie.Should().BeNull();
+        Assert.Null(posten[0].Referentie);
     }
 
     [Fact]
@@ -60,7 +59,7 @@ public sealed class SharpCoreDbJournaalpostRepositoryTests
 
         var posten = await context.Posten.AlleAsync(Periode.VoorJaar(2026), Ct);
 
-        posten.Should().ContainSingle(p => p.Omschrijving == "Dit jaar");
+        Assert.Single(posten, p => p.Omschrijving == "Dit jaar");
     }
 
     [Fact]
@@ -74,7 +73,10 @@ public sealed class SharpCoreDbJournaalpostRepositoryTests
 
         var posten = await context.Posten.AlleAsync(null, Ct);
 
-        posten.Select(p => p.Omschrijving).Should().ContainInOrder("Februari", "Augustus");
+        Assert.Collection(
+            posten,
+            p => Assert.Equal("Februari", p.Omschrijving),
+            p => Assert.Equal("Augustus", p.Omschrijving));
     }
 
     [Fact]
@@ -86,7 +88,7 @@ public sealed class SharpCoreDbJournaalpostRepositoryTests
 
         await context.Posten.VerwijderenAsync(post.Id, Ct);
 
-        (await context.Posten.AlleAsync(null, Ct)).Should().BeEmpty();
+        Assert.Empty(await context.Posten.AlleAsync(null, Ct));
     }
 
     [Fact]
@@ -100,8 +102,8 @@ public sealed class SharpCoreDbJournaalpostRepositoryTests
         await context.HeropenAsync();
 
         var posten = await context.Posten.AlleAsync(null, Ct);
-        posten.Should().ContainSingle();
-        posten[0].TotaalDebet.Should().Be(250m);
+        Assert.Single(posten);
+        Assert.Equal(250m, posten[0].TotaalDebet);
     }
 
     [Fact]
@@ -111,6 +113,6 @@ public sealed class SharpCoreDbJournaalpostRepositoryTests
 
         var posten = await context.Posten.AlleAsync(null, Ct);
 
-        posten.Should().BeEmpty();
+        Assert.Empty(posten);
     }
 }

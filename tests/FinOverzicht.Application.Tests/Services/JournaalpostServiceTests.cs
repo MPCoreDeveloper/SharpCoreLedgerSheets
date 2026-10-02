@@ -2,7 +2,6 @@ using FinOverzicht.Application.Exceptions;
 using FinOverzicht.Application.Models;
 using FinOverzicht.Domain.Boekhouden;
 using FinOverzicht.Domain.Common;
-using FluentAssertions;
 
 namespace FinOverzicht.Application.Tests.Services;
 
@@ -31,9 +30,9 @@ public sealed class JournaalpostServiceTests
 
         var post = await administratie.JournaalpostService.BoekAsync(command, Ct);
 
-        post.Regels.Should().HaveCount(2);
-        post.IsInBalans.Should().BeTrue();
-        (await administratie.JournaalpostService.AlleAsync(null, Ct)).Should().ContainSingle();
+        Assert.Equal(2, post.Regels.Count);
+        Assert.True(post.IsInBalans);
+        Assert.Single(await administratie.JournaalpostService.AlleAsync(null, Ct));
     }
 
     [Fact]
@@ -45,9 +44,8 @@ public sealed class JournaalpostServiceTests
             "Verkoop",
             [new("1000", 250m, 0m), new("9999", 0m, 250m)]);
 
-        var act = () => administratie.JournaalpostService.BoekAsync(command, Ct);
-
-        await act.Should().ThrowAsync<NietGevondenException>();
+        await Assert.ThrowsAsync<NietGevondenException>(
+            () => administratie.JournaalpostService.BoekAsync(command, Ct));
     }
 
     [Fact]
@@ -60,9 +58,10 @@ public sealed class JournaalpostServiceTests
             "Verkoop",
             [new("1000", 250m, 0m), new("8000", 0m, 250m)]);
 
-        var act = () => administratie.JournaalpostService.BoekAsync(command, Ct);
+        var exceptie = await Assert.ThrowsAsync<DomeinException>(
+            () => administratie.JournaalpostService.BoekAsync(command, Ct));
 
-        await act.Should().ThrowAsync<DomeinException>().WithMessage("*niet actief*");
+        Assert.Contains("niet actief", exceptie.Message);
     }
 
     [Fact]
@@ -74,9 +73,10 @@ public sealed class JournaalpostServiceTests
             "Verkoop",
             [new("1000", 250m, 0m), new("8000", 0m, 100m)]);
 
-        var act = () => administratie.JournaalpostService.BoekAsync(command, Ct);
+        var exceptie = await Assert.ThrowsAsync<DomeinException>(
+            () => administratie.JournaalpostService.BoekAsync(command, Ct));
 
-        await act.Should().ThrowAsync<DomeinException>().WithMessage("*niet in balans*");
+        Assert.Contains("niet in balans", exceptie.Message);
     }
 
     [Fact]
@@ -84,9 +84,7 @@ public sealed class JournaalpostServiceTests
     {
         var administratie = await MetRekeningenAsync();
 
-        var act = () => administratie.JournaalpostService.BoekAsync(null!, Ct);
-
-        await act.Should().ThrowAsync<ArgumentNullException>();
+        await Assert.ThrowsAsync<ArgumentNullException>(() => administratie.JournaalpostService.BoekAsync(null!, Ct));
     }
 
     [Fact]
@@ -102,7 +100,7 @@ public sealed class JournaalpostServiceTests
 
         var resultaat = await administratie.JournaalpostService.AlleAsync(Periode.VoorJaar(2026), Ct);
 
-        resultaat.Should().ContainSingle(p => p.Omschrijving == "Dit jaar");
+        Assert.Single(resultaat, p => p.Omschrijving == "Dit jaar");
     }
 
     [Fact]
@@ -115,7 +113,7 @@ public sealed class JournaalpostServiceTests
 
         await administratie.JournaalpostService.VerwijderAsync(post.Id, Ct);
 
-        (await administratie.JournaalpostService.AlleAsync(null, Ct)).Should().BeEmpty();
+        Assert.Empty(await administratie.JournaalpostService.AlleAsync(null, Ct));
     }
 
     [Fact]
@@ -123,8 +121,7 @@ public sealed class JournaalpostServiceTests
     {
         var administratie = await MetRekeningenAsync();
 
-        var act = () => administratie.JournaalpostService.VerwijderAsync(Guid.Empty, Ct);
-
-        await act.Should().ThrowAsync<ArgumentException>();
+        await Assert.ThrowsAsync<ArgumentException>(
+            () => administratie.JournaalpostService.VerwijderAsync(Guid.Empty, Ct));
     }
 }

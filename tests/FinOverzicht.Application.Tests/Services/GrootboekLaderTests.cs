@@ -1,6 +1,5 @@
 using FinOverzicht.Application.Tests.Fakes;
 using FinOverzicht.Domain.Boekhouden;
-using FluentAssertions;
 
 namespace FinOverzicht.Application.Tests.Services;
 
@@ -16,10 +15,10 @@ public sealed class GrootboekLaderTests
 
         var grootboek = await administratie.Lader.LaadAsync(Ct);
 
-        grootboek.Rekeningen.Should().HaveCount(9);
-        grootboek.Posten.Should().HaveCount(8);
-        grootboek.ControleTotaal().Should().Be(0m);
-        grootboek.Rekeningen.Should().OnlyContain(r => r.Id != Guid.Empty);
+        Assert.Equal(9, grootboek.Rekeningen.Count);
+        Assert.Equal(8, grootboek.Posten.Count);
+        Assert.Equal(0m, grootboek.ControleTotaal());
+        Assert.All(grootboek.Rekeningen, r => Assert.NotEqual(Guid.Empty, r.Id));
     }
 
     [Fact]
@@ -31,8 +30,8 @@ public sealed class GrootboekLaderTests
         var grootboek = await administratie.Lader.LaadAsync(Ct);
 
         var kas = grootboek.ZoekRekening("1000");
-        kas.Should().NotBeNull();
-        grootboek.Saldo(kas!.Id).Should().Be(14_000m);
+        Assert.NotNull(kas);
+        Assert.Equal(14_000m, grootboek.Saldo(kas!.Id));
     }
 
     [Fact]
@@ -54,6 +53,6 @@ public sealed class GrootboekLaderTests
 
         var grootboek = await lader.LaadAsync(Ct);
 
-        grootboek.Posten.Should().ContainSingle();
+        Assert.Single(grootboek.Posten);
     }
 }

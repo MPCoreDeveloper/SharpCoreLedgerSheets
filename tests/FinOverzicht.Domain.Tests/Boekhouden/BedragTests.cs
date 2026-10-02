@@ -1,6 +1,5 @@
 using FinOverzicht.Domain.Boekhouden;
 using FinOverzicht.Domain.Common;
-using FluentAssertions;
 
 namespace FinOverzicht.Domain.Tests.Boekhouden;
 
@@ -11,15 +10,13 @@ public sealed class BedragTests
     {
         var bedrag = new Bedrag(10.005m, Valuta.Eur);
 
-        bedrag.Waarde.Should().Be(10.01m);
+        Assert.Equal(10.01m, bedrag.Waarde);
     }
 
     [Fact]
     public void Constructor_ThrowsWhenCurrencyIsNull()
     {
-        var act = () => new Bedrag(1m, null!);
-
-        act.Should().Throw<ArgumentNullException>();
+        Assert.Throws<ArgumentNullException>(() => new Bedrag(1m, null!));
     }
 
     [Fact]
@@ -27,8 +24,8 @@ public sealed class BedragTests
     {
         var resultaat = new Bedrag(10.25m, Valuta.Eur) + new Bedrag(2.75m, Valuta.Eur);
 
-        resultaat.Waarde.Should().Be(13.00m);
-        resultaat.Valuta.Should().Be(Valuta.Eur);
+        Assert.Equal(13.00m, resultaat.Waarde);
+        Assert.Equal(Valuta.Eur, resultaat.Valuta);
     }
 
     [Fact]
@@ -36,7 +33,7 @@ public sealed class BedragTests
     {
         var resultaat = new Bedrag(10m, Valuta.Eur) - new Bedrag(4.50m, Valuta.Eur);
 
-        resultaat.Waarde.Should().Be(5.50m);
+        Assert.Equal(5.50m, resultaat.Waarde);
     }
 
     [Fact]
@@ -44,7 +41,7 @@ public sealed class BedragTests
     {
         var resultaat = new Bedrag(10m, Valuta.Eur) * 2.5m;
 
-        resultaat.Waarde.Should().Be(25.00m);
+        Assert.Equal(25.00m, resultaat.Waarde);
     }
 
     [Fact]
@@ -52,15 +49,16 @@ public sealed class BedragTests
     {
         var resultaat = -new Bedrag(10m, Valuta.Eur);
 
-        resultaat.Waarde.Should().Be(-10m);
+        Assert.Equal(-10m, resultaat.Waarde);
     }
 
     [Fact]
     public void Operators_ThrowWhenCurrenciesDiffer()
     {
-        var act = () => new Bedrag(1m, Valuta.Eur) + new Bedrag(1m, Valuta.Usd);
+        var exceptie = Assert.Throws<DomeinException>(
+            () => new Bedrag(1m, Valuta.Eur) + new Bedrag(1m, Valuta.Usd));
 
-        act.Should().Throw<DomeinException>().WithMessage("*Valuta's komen niet overeen*");
+        Assert.Contains("Valuta's komen niet overeen", exceptie.Message);
     }
 
     [Fact]
@@ -69,10 +67,10 @@ public sealed class BedragTests
         var groot = new Bedrag(10m, Valuta.Eur);
         var klein = new Bedrag(5m, Valuta.Eur);
 
-        (groot > klein).Should().BeTrue();
-        (klein < groot).Should().BeTrue();
-        (groot >= klein).Should().BeTrue();
-        (klein <= groot).Should().BeTrue();
+        Assert.True(groot > klein);
+        Assert.True(klein < groot);
+        Assert.True(groot >= klein);
+        Assert.True(klein <= groot);
     }
 
     [Fact]
@@ -80,9 +78,9 @@ public sealed class BedragTests
     {
         var nul = Bedrag.Nul(Valuta.Eur);
 
-        nul.IsNul.Should().BeTrue();
-        nul.IsPositief.Should().BeFalse();
-        nul.IsNegatief.Should().BeFalse();
+        Assert.True(nul.IsNul);
+        Assert.False(nul.IsPositief);
+        Assert.False(nul.IsNegatief);
     }
 
     [Fact]
@@ -90,6 +88,6 @@ public sealed class BedragTests
     {
         var bedrag = new Bedrag(12.5m, Valuta.Eur);
 
-        bedrag.ToString().Should().Contain("EUR");
+        Assert.Contains("EUR", bedrag.ToString());
     }
 }

@@ -1,5 +1,4 @@
 using FinOverzicht.Domain.Boekhouden;
-using FluentAssertions;
 
 namespace FinOverzicht.Domain.Tests.Boekhouden;
 
@@ -13,28 +12,24 @@ public sealed class ValutaTests
     [InlineData("chf", "CHF")]
     public void VanCode_ResolvesKnownCurrenciesCaseInsensitive(string code, string verwacht)
     {
-        Valuta.VanCode(code).Code.Should().Be(verwacht);
+        Assert.Equal(verwacht, Valuta.VanCode(code).Code);
     }
 
     [Fact]
     public void VanCode_ThrowsForUnknownCurrency()
     {
-        var act = () => Valuta.VanCode("XYZ");
-
-        act.Should().Throw<ArgumentException>();
+        Assert.Throws<ArgumentException>(() => Valuta.VanCode("XYZ"));
     }
 
     [Fact]
     public void VanCode_ThrowsForBlankCode()
     {
-        var act = () => Valuta.VanCode("  ");
-
-        act.Should().Throw<ArgumentException>();
+        Assert.Throws<ArgumentException>(() => Valuta.VanCode("  "));
     }
 
     [Fact]
     public void Alle_ContainsAtLeastTheDefaultCurrency()
     {
-        Valuta.Alle.Should().Contain(Valuta.Eur);
+        Assert.Contains(Valuta.Eur, Valuta.Alle);
     }
 }

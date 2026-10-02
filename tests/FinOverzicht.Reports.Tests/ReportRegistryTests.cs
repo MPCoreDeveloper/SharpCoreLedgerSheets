@@ -1,12 +1,19 @@
 using FinOverzicht.Reports.Abstractions;
 using FinOverzicht.Reports.Models;
 using FinOverzicht.Reports.Services;
-using FluentAssertions;
 
 namespace FinOverzicht.Reports.Tests;
 
 public sealed class ReportRegistryTests
 {
+    private static readonly string[] StandaardRapportSleutels =
+    [
+        ReportSleutels.Overzicht,
+        ReportSleutels.Balans,
+        ReportSleutels.WinstVerlies,
+        ReportSleutels.Kasstroom,
+    ];
+
     private readonly ReportRegistry _registry = new();
 
     [Fact]
@@ -16,9 +23,9 @@ public sealed class ReportRegistryTests
 
         var rapport = _registry.Zoek("Test");
 
-        rapport.Should().NotBeNull();
-        rapport!.TemplateNaam.Should().Be("BalansReport");
-        rapport.Formaten.Should().Contain(ReportFormat.Html);
+        Assert.NotNull(rapport);
+        Assert.Equal("BalansReport", rapport.TemplateNaam);
+        Assert.Contains(ReportFormat.Html, rapport.Formaten);
     }
 
     [Fact]
@@ -26,9 +33,8 @@ public sealed class ReportRegistryTests
     {
         _registry.Registreer("Test", "Balans", "Activa", "BalansReport");
 
-        var act = () => _registry.Registreer("test", "Balans", "Activa", "BalansReport");
-
-        act.Should().Throw<InvalidOperationException>();
+        Assert.Throws<InvalidOperationException>(
+            () => _registry.Registreer("test", "Balans", "Activa", "BalansReport"));
     }
 
     [Theory]
@@ -36,15 +42,14 @@ public sealed class ReportRegistryTests
     [InlineData("   ")]
     public void Registreer_ThrowsForBlankKey(string sleutel)
     {
-        var act = () => _registry.Registreer(sleutel, "Balans", "Activa", "BalansReport");
-
-        act.Should().Throw<ArgumentException>();
+        Assert.Throws<ArgumentException>(
+            () => _registry.Registreer(sleutel, "Balans", "Activa", "BalansReport"));
     }
 
     [Fact]
     public void Zoek_ReturnsNullForUnknownKey()
     {
-        _registry.Zoek("Onbekend").Should().BeNull();
+        Assert.Null(_registry.Zoek("Onbekend"));
     }
 
     [Fact]
@@ -52,12 +57,8 @@ public sealed class ReportRegistryTests
     {
         var registry = ReportRegistry.MetStandaardRapporten();
 
-        registry.Alle().Should().HaveCount(4);
-        registry.Alle().Select(r => r.Sleutel).Should().BeEquivalentTo(
-            ReportSleutels.Overzicht,
-            ReportSleutels.Balans,
-            ReportSleutels.WinstVerlies,
-            ReportSleutels.Kasstroom);
+        Assert.Equal(4, registry.Alle().Count);
+        Assert.Equal(StandaardRapportSleutels, registry.Alle().Select(r => r.Sleutel));
     }
 
     [Fact]
@@ -65,6 +66,6 @@ public sealed class ReportRegistryTests
     {
         var registry = ReportRegistry.MetStandaardRapporten();
 
-        registry.Alle().Should().OnlyContain(r => !string.IsNullOrWhiteSpace(r.TemplateNaam));
+        Assert.All(registry.Alle(), r => Assert.False(string.IsNullOrWhiteSpace(r.TemplateNaam)));
     }
 }

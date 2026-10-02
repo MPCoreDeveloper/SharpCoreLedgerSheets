@@ -28,6 +28,12 @@ database server, no Node.js.
    `FinOverzicht.Domain.Tests`, storage behaviour in `FinOverzicht.Infrastructure.Tests`, rendering
    in `FinOverzicht.Reports.Tests`.
 4. **Small, focused commits.** One idea per commit, with a message that explains *why*.
+5. **Test dependencies stay free.** The test projects use the assertions built into `xunit.v3` —
+   no FluentAssertions, Shouldly or similar package. Everything the repository references must be
+   free and permissively licensed (MIT / Apache-2.0) so the suite is usable in any context.
+   Two conventions that follow from that:
+   - The expected value comes first: `Assert.Equal(expected, actual)`, `Assert.Contains(needle, haystack)`.
+   - Message checks read `Assert.Contains("...", Assert.Throws<DomeinException>(() => ...).Message`.
 
 ## Code style
 

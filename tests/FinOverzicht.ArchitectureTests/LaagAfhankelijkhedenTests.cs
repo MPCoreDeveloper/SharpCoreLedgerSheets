@@ -1,6 +1,5 @@
 using System.Reflection;
 using FinOverzicht.Domain.Boekhouden;
-using FluentAssertions;
 using NetArchTest.Rules;
 
 namespace FinOverzicht.ArchitectureTests;
@@ -127,15 +126,19 @@ public sealed class LaagAfhankelijkhedenTests
     public void AllLayers_Load()
     {
         // Sanity check: the assemblies under test are the ones we expect.
-        DomainAssembly.Should().NotBeNull();
-        ApplicationAssembly.GetName().Name.Should().Be("FinOverzicht.Application");
-        InfrastructureAssembly.GetName().Name.Should().Be("FinOverzicht.Infrastructure");
-        ReportsAssembly.GetName().Name.Should().Be("FinOverzicht.Reports");
-        WebAssembly.GetName().Name.Should().Be("FinOverzicht.Web");
+        Assert.NotNull(DomainAssembly);
+        Assert.Equal("FinOverzicht.Application", ApplicationAssembly.GetName().Name);
+        Assert.Equal("FinOverzicht.Infrastructure", InfrastructureAssembly.GetName().Name);
+        Assert.Equal("FinOverzicht.Reports", ReportsAssembly.GetName().Name);
+        Assert.Equal("FinOverzicht.Web", WebAssembly.GetName().Name);
     }
 
-    private static void Meld(NetArchTest.Rules.TestResult resultaat) =>
-        resultaat.IsSuccessful.Should().BeTrue(
-            "overtredingen: {0}",
-            resultaat.FailingTypeNames is null ? "(geen)" : string.Join(", ", resultaat.FailingTypeNames));
+    private static void Meld(NetArchTest.Rules.TestResult resultaat)
+    {
+        var overtredingen = resultaat.FailingTypeNames is null
+            ? "(geen)"
+            : string.Join(", ", resultaat.FailingTypeNames);
+
+        Assert.True(resultaat.IsSuccessful, $"overtredingen: {overtredingen}");
+    }
 }

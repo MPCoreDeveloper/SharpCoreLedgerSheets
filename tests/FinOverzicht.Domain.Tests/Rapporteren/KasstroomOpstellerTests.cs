@@ -1,6 +1,5 @@
 using FinOverzicht.Domain.Boekhouden;
 using FinOverzicht.Domain.Services;
-using FluentAssertions;
 
 namespace FinOverzicht.Domain.Tests.Rapporteren;
 
@@ -14,9 +13,9 @@ public sealed class KasstroomOpstellerTests
     {
         var overzicht = _opsteller.StelOp(_grootboek, TestGrootboek.Jaar2026);
 
-        overzicht.NettoOperationeel.Should().Be(3_500m);
-        overzicht.NettoInvestering.Should().Be(-3_000m);
-        overzicht.NettoFinanciering.Should().Be(14_000m);
+        Assert.Equal(3_500m, overzicht.NettoOperationeel);
+        Assert.Equal(-3_000m, overzicht.NettoInvestering);
+        Assert.Equal(14_000m, overzicht.NettoFinanciering);
     }
 
     [Fact]
@@ -24,10 +23,10 @@ public sealed class KasstroomOpstellerTests
     {
         var overzicht = _opsteller.StelOp(_grootboek, TestGrootboek.Jaar2026);
 
-        overzicht.BeginSaldo.Should().Be(0m);
-        overzicht.EindSaldo.Should().Be(14_500m);
-        overzicht.NettoMutatie.Should().Be(14_500m);
-        overzicht.IsInBalans.Should().BeTrue();
+        Assert.Equal(0m, overzicht.BeginSaldo);
+        Assert.Equal(14_500m, overzicht.EindSaldo);
+        Assert.Equal(14_500m, overzicht.NettoMutatie);
+        Assert.True(overzicht.IsInBalans);
     }
 
     [Fact]
@@ -35,8 +34,8 @@ public sealed class KasstroomOpstellerTests
     {
         var overzicht = _opsteller.StelOp(_grootboek, TestGrootboek.Jaar2026);
 
-        overzicht.Operationeel.Should().Contain(r => r.Omschrijving == "Bedrijfskosten betaald" && r.Bedrag == -500m);
-        overzicht.Operationeel.Should().Contain(r => r.Omschrijving == "Contante verkoop" && r.Bedrag == 4_000m);
+        Assert.Contains(overzicht.Operationeel, r => r.Omschrijving == "Bedrijfskosten betaald" && r.Bedrag == -500m);
+        Assert.Contains(overzicht.Operationeel, r => r.Omschrijving == "Contante verkoop" && r.Bedrag == 4_000m);
     }
 
     [Fact]
@@ -44,7 +43,7 @@ public sealed class KasstroomOpstellerTests
     {
         var overzicht = _opsteller.StelOp(_grootboek, TestGrootboek.Jaar2026);
 
-        overzicht.Investering.Should().ContainSingle(r => r.Bedrag == -3_000m);
+        Assert.Single(overzicht.Investering, r => r.Bedrag == -3_000m);
     }
 
     [Fact]
@@ -52,9 +51,9 @@ public sealed class KasstroomOpstellerTests
     {
         var overzicht = _opsteller.StelOp(_grootboek, TestGrootboek.Jaar2026);
 
-        overzicht.Financiering.Should().Contain(r => r.Bedrag == 10_000m);
-        overzicht.Financiering.Should().Contain(r => r.Bedrag == 5_000m);
-        overzicht.Financiering.Should().Contain(r => r.Bedrag == -1_000m);
+        Assert.Contains(overzicht.Financiering, r => r.Bedrag == 10_000m);
+        Assert.Contains(overzicht.Financiering, r => r.Bedrag == 5_000m);
+        Assert.Contains(overzicht.Financiering, r => r.Bedrag == -1_000m);
     }
 
     [Fact]
@@ -68,10 +67,10 @@ public sealed class KasstroomOpstellerTests
 
         var overzicht = _opsteller.StelOp(grootboek, Periode.VoorJaar(2026));
 
-        overzicht.Operationeel.Should().BeEmpty();
-        overzicht.Investering.Should().BeEmpty();
-        overzicht.Financiering.Should().BeEmpty();
-        overzicht.IsInBalans.Should().BeTrue();
+        Assert.Empty(overzicht.Operationeel);
+        Assert.Empty(overzicht.Investering);
+        Assert.Empty(overzicht.Financiering);
+        Assert.True(overzicht.IsInBalans);
     }
 
     [Fact]
@@ -85,16 +84,14 @@ public sealed class KasstroomOpstellerTests
 
         var overzicht = _opsteller.StelOp(grootboek, Periode.VoorJaar(2026));
 
-        overzicht.BeginSaldo.Should().Be(800m);
-        overzicht.EindSaldo.Should().Be(1_000m);
-        overzicht.NettoMutatie.Should().Be(200m);
+        Assert.Equal(800m, overzicht.BeginSaldo);
+        Assert.Equal(1_000m, overzicht.EindSaldo);
+        Assert.Equal(200m, overzicht.NettoMutatie);
     }
 
     [Fact]
     public void StelOp_ThrowsForNullLedger()
     {
-        var act = () => _opsteller.StelOp(null!, TestGrootboek.Jaar2026);
-
-        act.Should().Throw<ArgumentNullException>();
+        Assert.Throws<ArgumentNullException>(() => _opsteller.StelOp(null!, TestGrootboek.Jaar2026));
     }
 }

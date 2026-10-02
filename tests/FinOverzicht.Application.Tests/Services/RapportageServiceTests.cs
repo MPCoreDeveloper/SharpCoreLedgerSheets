@@ -1,5 +1,4 @@
 using FinOverzicht.Domain.Boekhouden;
-using FluentAssertions;
 
 namespace FinOverzicht.Application.Tests.Services;
 
@@ -15,9 +14,9 @@ public sealed class RapportageServiceTests
 
         var overzicht = await administratie.Rapportage.StelOverzichtOpAsync(TestAdministratie.Jaar2026, Ct);
 
-        overzicht.IsConsistent.Should().BeTrue();
-        overzicht.Balans.IsInBalans.Should().BeTrue();
-        overzicht.Kasstroom.IsInBalans.Should().BeTrue();
+        Assert.True(overzicht.IsConsistent);
+        Assert.True(overzicht.Balans.IsInBalans);
+        Assert.True(overzicht.Kasstroom.IsInBalans);
     }
 
     [Fact]
@@ -28,11 +27,11 @@ public sealed class RapportageServiceTests
 
         var overzicht = await administratie.Rapportage.StelOverzichtOpAsync(TestAdministratie.Jaar2026, Ct);
 
-        overzicht.Balans.TotaalActiva.Should().Be(18_300m);
-        overzicht.Balans.TotaalPassiva.Should().Be(6_000m);
-        overzicht.Balans.Resultaat.Should().Be(2_300m);
-        overzicht.WinstVerlies.Resultaat.Should().Be(2_300m);
-        overzicht.Kasstroom.NettoMutatie.Should().Be(14_500m);
+        Assert.Equal(18_300m, overzicht.Balans.TotaalActiva);
+        Assert.Equal(6_000m, overzicht.Balans.TotaalPassiva);
+        Assert.Equal(2_300m, overzicht.Balans.Resultaat);
+        Assert.Equal(2_300m, overzicht.WinstVerlies.Resultaat);
+        Assert.Equal(14_500m, overzicht.Kasstroom.NettoMutatie);
     }
 
     [Fact]
@@ -43,9 +42,9 @@ public sealed class RapportageServiceTests
 
         var overzicht = await administratie.Rapportage.StelOverzichtOpAsync(TestAdministratie.Jaar2026, Ct);
 
-        overzicht.Ratio.CurrentRatio.Should().Be(7.65m);
-        overzicht.Ratio.QuickRatio.Should().Be(7.25m);
-        overzicht.Ratio.Solvabiliteit.Should().Be(0.6721m);
+        Assert.Equal(7.65m, overzicht.Ratio.CurrentRatio);
+        Assert.Equal(7.25m, overzicht.Ratio.QuickRatio);
+        Assert.Equal(0.6721m, overzicht.Ratio.Solvabiliteit);
     }
 
     [Fact]
@@ -58,8 +57,8 @@ public sealed class RapportageServiceTests
         var overzicht = await administratie.Rapportage.StelOverzichtOpAsync(eersteHalfjaar, Ct);
 
         // All scenario entries are dated 2026-06-15, so the balance sheet is still empty.
-        overzicht.Balans.TotaalActiva.Should().Be(0m);
-        overzicht.WinstVerlies.Resultaat.Should().Be(0m);
+        Assert.Equal(0m, overzicht.Balans.TotaalActiva);
+        Assert.Equal(0m, overzicht.WinstVerlies.Resultaat);
     }
 
     [Fact]
@@ -69,8 +68,8 @@ public sealed class RapportageServiceTests
 
         var overzicht = await administratie.Rapportage.StelOverzichtOpAsync(TestAdministratie.Jaar2026, Ct);
 
-        overzicht.Balans.TotaalActiva.Should().Be(0m);
-        overzicht.Ratio.CurrentRatio.Should().BeNull();
-        overzicht.IsConsistent.Should().BeTrue();
+        Assert.Equal(0m, overzicht.Balans.TotaalActiva);
+        Assert.Null(overzicht.Ratio.CurrentRatio);
+        Assert.True(overzicht.IsConsistent);
     }
 }

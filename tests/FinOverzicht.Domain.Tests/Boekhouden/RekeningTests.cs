@@ -1,6 +1,5 @@
 using FinOverzicht.Domain.Boekhouden;
 using FinOverzicht.Domain.Common;
-using FluentAssertions;
 
 namespace FinOverzicht.Domain.Tests.Boekhouden;
 
@@ -9,9 +8,7 @@ public sealed class RekeningTests
     [Fact]
     public void Constructor_ThrowsForEmptyId()
     {
-        var act = () => new Rekening(Guid.Empty, "1000", "Kas", RekeningSoort.Activa);
-
-        act.Should().Throw<DomeinException>();
+        Assert.Throws<DomeinException>(() => new Rekening(Guid.Empty, "1000", "Kas", RekeningSoort.Activa));
     }
 
     [Theory]
@@ -19,33 +16,27 @@ public sealed class RekeningTests
     [InlineData("   ")]
     public void Constructor_ThrowsForBlankNumber(string nummer)
     {
-        var act = () => new Rekening(Guid.NewGuid(), nummer, "Kas", RekeningSoort.Activa);
-
-        act.Should().Throw<DomeinException>();
+        Assert.Throws<DomeinException>(() => new Rekening(Guid.NewGuid(), nummer, "Kas", RekeningSoort.Activa));
     }
 
     [Fact]
     public void Constructor_ThrowsForBlankName()
     {
-        var act = () => new Rekening(Guid.NewGuid(), "1000", " ", RekeningSoort.Activa);
-
-        act.Should().Throw<DomeinException>();
+        Assert.Throws<DomeinException>(() => new Rekening(Guid.NewGuid(), "1000", " ", RekeningSoort.Activa));
     }
 
     [Fact]
     public void Constructor_ThrowsWhenCashFlagOnNonAsset()
     {
-        var act = () => new Rekening(Guid.NewGuid(), "2000", "Crediteuren", RekeningSoort.Passiva, isLiquideMiddel: true);
-
-        act.Should().Throw<DomeinException>();
+        Assert.Throws<DomeinException>(
+            () => new Rekening(Guid.NewGuid(), "2000", "Crediteuren", RekeningSoort.Passiva, isLiquideMiddel: true));
     }
 
     [Fact]
     public void Constructor_ThrowsWhenInventoryFlagOnNonAsset()
     {
-        var act = () => new Rekening(Guid.NewGuid(), "4000", "Kosten", RekeningSoort.Kosten, isVoorraad: true);
-
-        act.Should().Throw<DomeinException>();
+        Assert.Throws<DomeinException>(
+            () => new Rekening(Guid.NewGuid(), "4000", "Kosten", RekeningSoort.Kosten, isVoorraad: true));
     }
 
     [Fact]
@@ -53,8 +44,8 @@ public sealed class RekeningTests
     {
         var rekening = new Rekening(Guid.NewGuid(), " 1000 ", " Kas ", RekeningSoort.Activa);
 
-        rekening.Nummer.Should().Be("1000");
-        rekening.Naam.Should().Be("Kas");
+        Assert.Equal("1000", rekening.Nummer);
+        Assert.Equal("Kas", rekening.Naam);
     }
 
     [Theory]
@@ -67,7 +58,7 @@ public sealed class RekeningTests
     {
         var rekening = new Rekening(Guid.NewGuid(), "1000", "Test", soort);
 
-        rekening.HeeftDebetSaldo.Should().Be(verwacht);
+        Assert.Equal(verwacht, rekening.HeeftDebetSaldo);
     }
 
     [Fact]
@@ -76,10 +67,10 @@ public sealed class RekeningTests
         var rekening = new Rekening(Guid.NewGuid(), "1000", "Kas", RekeningSoort.Activa);
 
         rekening.Deactiveer();
-        rekening.IsActief.Should().BeFalse();
+        Assert.False(rekening.IsActief);
 
         rekening.Activeer();
-        rekening.IsActief.Should().BeTrue();
+        Assert.True(rekening.IsActief);
     }
 
     [Fact]
@@ -89,7 +80,7 @@ public sealed class RekeningTests
 
         rekening.Hernoem("Kas en bank");
 
-        rekening.Naam.Should().Be("Kas en bank");
+        Assert.Equal("Kas en bank", rekening.Naam);
     }
 
     [Fact]
@@ -97,9 +88,7 @@ public sealed class RekeningTests
     {
         var rekening = new Rekening(Guid.NewGuid(), "1000", "Kas", RekeningSoort.Activa);
 
-        var act = () => rekening.Hernoem("  ");
-
-        act.Should().Throw<DomeinException>();
+        Assert.Throws<DomeinException>(() => rekening.Hernoem("  "));
     }
 
     [Fact]
@@ -107,8 +96,6 @@ public sealed class RekeningTests
     {
         var rekening = new Rekening(Guid.NewGuid(), "2000", "Crediteuren", RekeningSoort.Passiva);
 
-        var act = () => rekening.ZetLiquideMiddel(true);
-
-        act.Should().Throw<DomeinException>();
+        Assert.Throws<DomeinException>(() => rekening.ZetLiquideMiddel(true));
     }
 }

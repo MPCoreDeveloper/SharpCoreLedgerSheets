@@ -1,7 +1,6 @@
 using System.Globalization;
 using FinOverzicht.Web.Localization;
 using FinOverzicht.Web.Resources;
-using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 
@@ -13,6 +12,8 @@ namespace FinOverzicht.ArchitectureTests;
 /// </summary>
 public sealed class LocalisatieTests
 {
+    private static readonly string[] OndersteundeTalen = ["nl", "en", "de", "fr", "es", "it", "pt", "pl"];
+
     private static readonly string[] Sleutels =
     [
         // Statement and report labels.
@@ -51,9 +52,12 @@ public sealed class LocalisatieTests
             foreach (var sleutel in Sleutels)
             {
                 var waarde = localizer[sleutel];
-                waarde.ResourceNotFound.Should().BeFalse(
-                    "sleutel '{0}' ontbreekt voor cultuur '{1}'", sleutel, cultuur);
-                waarde.Value.Should().NotBeNullOrWhiteSpace();
+                Assert.False(
+                    waarde.ResourceNotFound,
+                    $"sleutel '{sleutel}' ontbreekt voor cultuur '{cultuur}'");
+                Assert.False(
+                    string.IsNullOrWhiteSpace(waarde.Value),
+                    $"sleutel '{sleutel}' heeft geen waarde voor cultuur '{cultuur}'");
             }
         });
     }
@@ -61,22 +65,21 @@ public sealed class LocalisatieTests
     [Fact]
     public void AlleOndersteundeTalen_ZijnGetest()
     {
-        Talen.Ondersteund.Should().BeEquivalentTo(
-            "nl", "en", "de", "fr", "es", "it", "pt", "pl");
+        Assert.Equal(OndersteundeTalen, Talen.Ondersteund);
     }
 
     [Fact]
     public void Nederlands_WijktAfVanEngels()
     {
-        MetCultuur("nl", l => l["Balans"].Value.Should().Be("Balans"));
-        MetCultuur("en", l => l["Balans"].Value.Should().Be("Balance sheet"));
+        MetCultuur("nl", l => Assert.Equal("Balans", l["Balans"].Value));
+        MetCultuur("en", l => Assert.Equal("Balance sheet", l["Balans"].Value));
     }
 
     [Fact]
     public void DuitsEnFrans_ZijnVertaald()
     {
-        MetCultuur("de", l => l["Kasstroomoverzicht"].Value.Should().Be("Kapitalflussrechnung"));
-        MetCultuur("fr", l => l["Kasstroomoverzicht"].Value.Should().Be("Tableau des flux de trésorerie"));
+        MetCultuur("de", l => Assert.Equal("Kapitalflussrechnung", l["Kasstroomoverzicht"].Value));
+        MetCultuur("fr", l => Assert.Equal("Tableau des flux de trésorerie", l["Kasstroomoverzicht"].Value));
     }
 
     [Fact]
@@ -86,11 +89,11 @@ public sealed class LocalisatieTests
         {
             var labels = new LocalizedReportLabels(localizer);
 
-            labels.Balans.Should().Be("Balance sheet");
-            labels.Kasstroomoverzicht.Should().Be("Cash flow statement");
-            labels.Operationeel.Should().Be("Operating activities");
-            labels.InBalans.Should().Be("Balanced");
-            labels["Rekening"].Should().Be("Account");
+            Assert.Equal("Balance sheet", labels.Balans);
+            Assert.Equal("Cash flow statement", labels.Kasstroomoverzicht);
+            Assert.Equal("Operating activities", labels.Operationeel);
+            Assert.Equal("Balanced", labels.InBalans);
+            Assert.Equal("Account", labels["Rekening"]);
         });
     }
 
@@ -100,7 +103,7 @@ public sealed class LocalisatieTests
         MetCultuur("sv", localizer =>
         {
             // Swedish is not supported, so the neutral (Dutch) resource file applies.
-            localizer["Balans"].Value.Should().Be("Balans");
+            Assert.Equal("Balans", localizer["Balans"].Value);
         });
     }
 

@@ -2,7 +2,6 @@ using FinOverzicht.Reports.Abstractions;
 using FinOverzicht.Reports.Models;
 using FinOverzicht.Reports.Reporting;
 using FinOverzicht.Reports.Services;
-using FluentAssertions;
 
 namespace FinOverzicht.Reports.Tests;
 
@@ -16,11 +15,11 @@ public sealed class CsvReportExporterTests
     {
         var csv = _exporter.NaarCsv(_model);
 
-        csv.Should().Contain("Financieel overzicht");
-        csv.Should().Contain("Balans");
-        csv.Should().Contain("Activa");
-        csv.Should().Contain("9800.00");
-        csv.Should().Contain("3600.00");
+        Assert.Contains("Financieel overzicht", csv);
+        Assert.Contains("Balans", csv);
+        Assert.Contains("Activa", csv);
+        Assert.Contains("9800.00", csv);
+        Assert.Contains("3600.00", csv);
     }
 
     [Fact]
@@ -28,9 +27,9 @@ public sealed class CsvReportExporterTests
     {
         var csv = _exporter.NaarCsv(_model);
 
-        csv.Should().Contain("9800.00");
-        csv.Should().NotContain("9800,00");
-        csv.Split('\n').Should().Contain(line => line.TrimEnd('\r') == ",Totaal Activa,9800.00");
+        Assert.Contains("9800.00", csv);
+        Assert.DoesNotContain("9800,00", csv);
+        Assert.Contains(csv.Split('\n'), line => line.TrimEnd('\r') == ",Totaal Activa,9800.00");
     }
 
     [Fact]
@@ -38,12 +37,12 @@ public sealed class CsvReportExporterTests
     {
         var csv = _exporter.NaarVolledigeCsv(_model);
 
-        csv.Should().Contain("Balans");
-        csv.Should().Contain("Winst- en verliesrekening");
-        csv.Should().Contain("Kasstroomoverzicht");
-        csv.Should().Contain("Kengetallen");
-        csv.Should().Contain("Current ratio");
-        csv.Should().Contain("Solvabiliteit");
+        Assert.Contains("Balans", csv);
+        Assert.Contains("Winst- en verliesrekening", csv);
+        Assert.Contains("Kasstroomoverzicht", csv);
+        Assert.Contains("Kengetallen", csv);
+        Assert.Contains("Current ratio", csv);
+        Assert.Contains("Solvabiliteit", csv);
     }
 
     [Fact]
@@ -51,9 +50,9 @@ public sealed class CsvReportExporterTests
     {
         var csv = _exporter.NaarVolledigeCsv(_model);
 
-        csv.Should().Contain("Beginsaldo");
-        csv.Should().Contain("Netto kasstroom");
-        csv.Should().Contain("Eindsaldo");
+        Assert.Contains("Beginsaldo", csv);
+        Assert.Contains("Netto kasstroom", csv);
+        Assert.Contains("Eindsaldo", csv);
     }
 
     [Fact]
@@ -70,14 +69,12 @@ public sealed class CsvReportExporterTests
 
         var csv = _exporter.NaarVolledigeCsv(model);
 
-        csv.Should().Contain("\"Overzicht, compleet\"");
+        Assert.Contains("\"Overzicht, compleet\"", csv);
     }
 
     [Fact]
     public void NaarCsv_ThrowsForNullModel()
     {
-        var act = () => _exporter.NaarCsv(null!);
-
-        act.Should().Throw<ArgumentNullException>();
+        Assert.Throws<ArgumentNullException>(() => _exporter.NaarCsv(null!));
     }
 }

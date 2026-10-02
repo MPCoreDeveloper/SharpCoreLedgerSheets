@@ -1,5 +1,4 @@
 using FinOverzicht.Domain.Services;
-using FluentAssertions;
 
 namespace FinOverzicht.Domain.Tests.Rapporteren;
 
@@ -18,11 +17,11 @@ public sealed class RatioBerekeningTests
 
         var ratios = _berekening.Bereken(balans, winstVerlies);
 
-        ratios.CurrentRatio.Should().Be(7.65m);
-        ratios.QuickRatio.Should().Be(7.25m);
-        ratios.Solvabiliteit.Should().Be(0.6721m);
-        ratios.NettoWinstmarge.Should().Be(0.575m);
-        ratios.RentabiliteitEigenVermogen.Should().Be(0.1870m);
+        Assert.Equal(7.65m, ratios.CurrentRatio);
+        Assert.Equal(7.25m, ratios.QuickRatio);
+        Assert.Equal(0.6721m, ratios.Solvabiliteit);
+        Assert.Equal(0.575m, ratios.NettoWinstmarge);
+        Assert.Equal(0.1870m, ratios.RentabiliteitEigenVermogen);
     }
 
     [Fact]
@@ -36,10 +35,10 @@ public sealed class RatioBerekeningTests
 
         var ratios = _berekening.Bereken(balans, winstVerlies);
 
-        ratios.CurrentRatio.Should().BeNull();
-        ratios.Solvabiliteit.Should().BeNull();
-        ratios.NettoWinstmarge.Should().BeNull();
-        ratios.RentabiliteitEigenVermogen.Should().BeNull();
+        Assert.Null(ratios.CurrentRatio);
+        Assert.Null(ratios.Solvabiliteit);
+        Assert.Null(ratios.NettoWinstmarge);
+        Assert.Null(ratios.RentabiliteitEigenVermogen);
     }
 
     [Fact]
@@ -51,7 +50,7 @@ public sealed class RatioBerekeningTests
 
         var ratios = _berekening.Bereken(balans, winstVerlies);
 
-        ratios.QuickRatio.Should().BeLessThan(ratios.CurrentRatio!.Value);
+        Assert.True(ratios.QuickRatio < ratios.CurrentRatio!.Value);
     }
 
     [Fact]
@@ -59,11 +58,11 @@ public sealed class RatioBerekeningTests
     {
         var leeg = Domain.Rapporteren.RatioOverzicht.Leeg;
 
-        leeg.CurrentRatio.Should().BeNull();
-        leeg.QuickRatio.Should().BeNull();
-        leeg.Solvabiliteit.Should().BeNull();
-        leeg.NettoWinstmarge.Should().BeNull();
-        leeg.RentabiliteitEigenVermogen.Should().BeNull();
+        Assert.Null(leeg.CurrentRatio);
+        Assert.Null(leeg.QuickRatio);
+        Assert.Null(leeg.Solvabiliteit);
+        Assert.Null(leeg.NettoWinstmarge);
+        Assert.Null(leeg.RentabiliteitEigenVermogen);
     }
 
     [Fact]
@@ -72,10 +71,7 @@ public sealed class RatioBerekeningTests
         var balans = _balansOpsteller.StelOp(TestGrootboek.MetScenario(), TestGrootboek.Datum);
         var winstVerlies = _winstVerliesOpsteller.StelOp(TestGrootboek.MetScenario(), TestGrootboek.Jaar2026);
 
-        var act1 = () => _berekening.Bereken(null!, winstVerlies);
-        var act2 = () => _berekening.Bereken(balans, null!);
-
-        act1.Should().Throw<ArgumentNullException>();
-        act2.Should().Throw<ArgumentNullException>();
+        Assert.Throws<ArgumentNullException>(() => _berekening.Bereken(null!, winstVerlies));
+        Assert.Throws<ArgumentNullException>(() => _berekening.Bereken(balans, null!));
     }
 }

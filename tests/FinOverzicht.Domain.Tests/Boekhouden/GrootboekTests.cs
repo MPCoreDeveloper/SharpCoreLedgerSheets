@@ -1,6 +1,5 @@
 using FinOverzicht.Domain.Boekhouden;
 using FinOverzicht.Domain.Common;
-using FluentAssertions;
 
 namespace FinOverzicht.Domain.Tests.Boekhouden;
 
@@ -9,7 +8,7 @@ public sealed class GrootboekTests
     [Fact]
     public void DefaultsToEuro()
     {
-        new Grootboek().Valuta.Should().Be(Valuta.Eur);
+        Assert.Equal(Valuta.Eur, new Grootboek().Valuta);
     }
 
     [Fact]
@@ -19,8 +18,8 @@ public sealed class GrootboekTests
 
         var rekening = grootboek.VoegRekeningToe("1000", "Kas", RekeningSoort.Activa);
 
-        rekening.Id.Should().NotBe(Guid.Empty);
-        grootboek.Rekeningen.Should().ContainSingle();
+        Assert.NotEqual(Guid.Empty, rekening.Id);
+        Assert.Single(grootboek.Rekeningen);
     }
 
     [Fact]
@@ -29,9 +28,10 @@ public sealed class GrootboekTests
         var grootboek = new Grootboek();
         grootboek.VoegRekeningToe("1000", "Kas", RekeningSoort.Activa);
 
-        var act = () => grootboek.VoegRekeningToe("1000", "Kas 2", RekeningSoort.Activa);
+        var exceptie = Assert.Throws<DomeinException>(
+            () => grootboek.VoegRekeningToe("1000", "Kas 2", RekeningSoort.Activa));
 
-        act.Should().Throw<DomeinException>().WithMessage("*bestaat al*");
+        Assert.Contains("bestaat al", exceptie.Message);
     }
 
     [Fact]
@@ -40,8 +40,8 @@ public sealed class GrootboekTests
         var grootboek = new Grootboek();
         var kas = grootboek.VoegRekeningToe("1000", "Kas", RekeningSoort.Activa);
 
-        grootboek.ZoekRekening("1000").Should().BeSameAs(kas);
-        grootboek.ZoekRekening("1000 ").Should().BeNull();
+        Assert.Same(kas, grootboek.ZoekRekening("1000"));
+        Assert.Null(grootboek.ZoekRekening("1000 "));
     }
 
     [Fact]
@@ -50,8 +50,8 @@ public sealed class GrootboekTests
         var (grootboek, debet, credit) = TestGrootboek.MetTweeRekeningen();
         grootboek.Boek(Journaalpost.Nieuw(TestGrootboek.Datum, "Test").Debet(debet.Id, 250m).Credit(credit.Id, 250m));
 
-        grootboek.Saldo(debet.Id).Should().Be(250m);
-        grootboek.Saldo(credit.Id).Should().Be(-250m);
+        Assert.Equal(250m, grootboek.Saldo(debet.Id));
+        Assert.Equal(-250m, grootboek.Saldo(credit.Id));
     }
 
     [Fact]
@@ -62,9 +62,9 @@ public sealed class GrootboekTests
             .Debet(Guid.NewGuid(), 10m)
             .Credit(Guid.NewGuid(), 10m);
 
-        var act = () => grootboek.Boek(post);
+        var exceptie = Assert.Throws<DomeinException>(() => grootboek.Boek(post));
 
-        act.Should().Throw<DomeinException>().WithMessage("*onbekende rekening*");
+        Assert.Contains("onbekende rekening", exceptie.Message);
     }
 
     [Fact]
@@ -74,9 +74,9 @@ public sealed class GrootboekTests
         debet.Deactiveer();
         var post = Journaalpost.Nieuw(TestGrootboek.Datum, "Test").Debet(debet.Id, 10m).Credit(credit.Id, 10m);
 
-        var act = () => grootboek.Boek(post);
+        var exceptie = Assert.Throws<DomeinException>(() => grootboek.Boek(post));
 
-        act.Should().Throw<DomeinException>().WithMessage("*niet actief*");
+        Assert.Contains("niet actief", exceptie.Message);
     }
 
     [Fact]
@@ -86,9 +86,9 @@ public sealed class GrootboekTests
         var post = Journaalpost.Nieuw(TestGrootboek.Datum, "Test").Debet(debet.Id, 10m).Credit(credit.Id, 10m);
         grootboek.Boek(post);
 
-        var act = () => grootboek.Boek(post);
+        var exceptie = Assert.Throws<DomeinException>(() => grootboek.Boek(post));
 
-        act.Should().Throw<DomeinException>().WithMessage("*al geboekt*");
+        Assert.Contains("al geboekt", exceptie.Message);
     }
 
     [Fact]
@@ -97,9 +97,7 @@ public sealed class GrootboekTests
         var (grootboek, debet, credit) = TestGrootboek.MetTweeRekeningen();
         var post = Journaalpost.Nieuw(TestGrootboek.Datum, "Test").Debet(debet.Id, 10m).Credit(credit.Id, 5m);
 
-        var act = () => grootboek.Boek(post);
-
-        act.Should().Throw<DomeinException>();
+        Assert.Throws<DomeinException>(() => grootboek.Boek(post));
     }
 
     [Fact]
@@ -109,8 +107,8 @@ public sealed class GrootboekTests
         grootboek.Boek(Journaalpost.Nieuw(new DateOnly(2026, 1, 31), "Januari").Debet(debet.Id, 100m).Credit(credit.Id, 100m));
         grootboek.Boek(Journaalpost.Nieuw(new DateOnly(2026, 2, 28), "Februari").Debet(debet.Id, 50m).Credit(credit.Id, 50m));
 
-        grootboek.Saldo(debet.Id, new DateOnly(2026, 1, 31)).Should().Be(100m);
-        grootboek.Saldo(debet.Id, new DateOnly(2026, 2, 28)).Should().Be(150m);
+        Assert.Equal(100m, grootboek.Saldo(debet.Id, new DateOnly(2026, 1, 31)));
+        Assert.Equal(150m, grootboek.Saldo(debet.Id, new DateOnly(2026, 2, 28)));
     }
 
     [Fact]
@@ -120,13 +118,13 @@ public sealed class GrootboekTests
         grootboek.Boek(Journaalpost.Nieuw(new DateOnly(2025, 12, 31), "Vorig jaar").Debet(debet.Id, 100m).Credit(credit.Id, 100m));
         grootboek.Boek(Journaalpost.Nieuw(new DateOnly(2026, 3, 1), "Dit jaar").Debet(debet.Id, 40m).Credit(credit.Id, 40m));
 
-        grootboek.MutatieInPeriode(debet.Id, Periode.VoorJaar(2026)).Should().Be(40m);
+        Assert.Equal(40m, grootboek.MutatieInPeriode(debet.Id, Periode.VoorJaar(2026)));
     }
 
     [Fact]
     public void ControleTotaal_IsZeroForBalancedLedger()
     {
-        TestGrootboek.MetScenario().ControleTotaal().Should().Be(0m);
+        Assert.Equal(0m, TestGrootboek.MetScenario().ControleTotaal());
     }
 
     [Fact]
@@ -134,7 +132,7 @@ public sealed class GrootboekTests
     {
         var grootboek = TestGrootboek.MetScenario();
 
-        grootboek.Posten.Should().HaveCount(8);
-        grootboek.Posten.Should().BeAssignableTo<IReadOnlyList<Journaalpost>>();
+        Assert.Equal(8, grootboek.Posten.Count);
+        Assert.IsAssignableFrom<IReadOnlyList<Journaalpost>>(grootboek.Posten);
     }
 }

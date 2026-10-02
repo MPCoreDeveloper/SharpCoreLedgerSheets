@@ -4,7 +4,6 @@ using FinOverzicht.Application.Services;
 using FinOverzicht.Application.Tests.Fakes;
 using FinOverzicht.Domain.Boekhouden;
 using FinOverzicht.Domain.Common;
-using FluentAssertions;
 
 namespace FinOverzicht.Application.Tests.Services;
 
@@ -23,9 +22,9 @@ public sealed class RekeningServiceTests
         var rekening = await _service.VoegToeAsync(
             new RekeningToevoegenCommand("1000", "Kas", RekeningSoort.Activa, Vlottend: true, LiquideMiddel: true), Ct);
 
-        rekening.Nummer.Should().Be("1000");
-        rekening.IsLiquideMiddel.Should().BeTrue();
-        (await _service.AlleAsync(Ct)).Should().ContainSingle();
+        Assert.Equal("1000", rekening.Nummer);
+        Assert.True(rekening.IsLiquideMiddel);
+        Assert.Single(await _service.AlleAsync(Ct));
     }
 
     [Fact]
@@ -33,17 +32,14 @@ public sealed class RekeningServiceTests
     {
         await _service.VoegToeAsync(new RekeningToevoegenCommand("1000", "Kas", RekeningSoort.Activa), Ct);
 
-        var act = () => _service.VoegToeAsync(new RekeningToevoegenCommand("1000", "Kas 2", RekeningSoort.Activa), Ct);
-
-        await act.Should().ThrowAsync<DomeinException>();
+        await Assert.ThrowsAsync<DomeinException>(
+            () => _service.VoegToeAsync(new RekeningToevoegenCommand("1000", "Kas 2", RekeningSoort.Activa), Ct));
     }
 
     [Fact]
     public async Task VoegToeAsync_ThrowsForNullCommand()
     {
-        var act = () => _service.VoegToeAsync(null!, Ct);
-
-        await act.Should().ThrowAsync<ArgumentNullException>();
+        await Assert.ThrowsAsync<ArgumentNullException>(() => _service.VoegToeAsync(null!, Ct));
     }
 
     [Fact]
@@ -54,15 +50,13 @@ public sealed class RekeningServiceTests
         await _service.HernoemAsync("1000", "Kas en bank", Ct);
 
         var rekening = await _repository.ZoekOpNummerAsync("1000", Ct);
-        rekening!.Naam.Should().Be("Kas en bank");
+        Assert.Equal("Kas en bank", rekening!.Naam);
     }
 
     [Fact]
     public async Task HernoemAsync_ThrowsWhenAccountIsUnknown()
     {
-        var act = () => _service.HernoemAsync("9999", "Onbekend", Ct);
-
-        await act.Should().ThrowAsync<NietGevondenException>();
+        await Assert.ThrowsAsync<NietGevondenException>(() => _service.HernoemAsync("9999", "Onbekend", Ct));
     }
 
     [Fact]
@@ -72,14 +66,12 @@ public sealed class RekeningServiceTests
 
         await _service.DeactiveerAsync("1000", Ct);
 
-        (await _repository.ZoekOpNummerAsync("1000", Ct))!.IsActief.Should().BeFalse();
+        Assert.False((await _repository.ZoekOpNummerAsync("1000", Ct))!.IsActief);
     }
 
     [Fact]
     public async Task DeactiveerAsync_ThrowsWhenAccountIsUnknown()
     {
-        var act = () => _service.DeactiveerAsync("9999", Ct);
-
-        await act.Should().ThrowAsync<NietGevondenException>();
+        await Assert.ThrowsAsync<NietGevondenException>(() => _service.DeactiveerAsync("9999", Ct));
     }
 }

@@ -1,5 +1,4 @@
 using FinOverzicht.Domain.Services;
-using FluentAssertions;
 
 namespace FinOverzicht.Domain.Tests.Rapporteren;
 
@@ -13,10 +12,10 @@ public sealed class BalansOpstellerTests
     {
         var balans = _opsteller.StelOp(_grootboek, TestGrootboek.Datum);
 
-        balans.TotaalActiva.Should().Be(18_300m);
-        balans.TotaalPassiva.Should().Be(6_000m);
-        balans.TotaalEigenVermogen.Should().Be(10_000m);
-        balans.Resultaat.Should().Be(2_300m);
+        Assert.Equal(18_300m, balans.TotaalActiva);
+        Assert.Equal(6_000m, balans.TotaalPassiva);
+        Assert.Equal(10_000m, balans.TotaalEigenVermogen);
+        Assert.Equal(2_300m, balans.Resultaat);
     }
 
     [Fact]
@@ -24,9 +23,9 @@ public sealed class BalansOpstellerTests
     {
         var balans = _opsteller.StelOp(_grootboek, TestGrootboek.Datum);
 
-        balans.IsInBalans.Should().BeTrue();
-        balans.Verschil.Should().Be(0m);
-        balans.TotaalActiva.Should().Be(balans.TotaalCreditZijde);
+        Assert.True(balans.IsInBalans);
+        Assert.Equal(0m, balans.Verschil);
+        Assert.Equal(balans.TotaalCreditZijde, balans.TotaalActiva);
     }
 
     [Fact]
@@ -34,9 +33,9 @@ public sealed class BalansOpstellerTests
     {
         var balans = _opsteller.StelOp(_grootboek, TestGrootboek.Datum);
 
-        balans.Passiva.Single(r => r.Nummer == TestGrootboek.Crediteuren).Bedrag.Should().Be(2_000m);
-        balans.Passiva.Single(r => r.Nummer == TestGrootboek.Banklening).Bedrag.Should().Be(4_000m);
-        balans.EigenVermogen.Single().Bedrag.Should().Be(10_000m);
+        Assert.Equal(2_000m, balans.Passiva.Single(r => r.Nummer == TestGrootboek.Crediteuren).Bedrag);
+        Assert.Equal(4_000m, balans.Passiva.Single(r => r.Nummer == TestGrootboek.Banklening).Bedrag);
+        Assert.Equal(10_000m, balans.EigenVermogen.Single().Bedrag);
     }
 
     [Fact]
@@ -44,10 +43,10 @@ public sealed class BalansOpstellerTests
     {
         var balans = _opsteller.StelOp(_grootboek, TestGrootboek.Datum);
 
-        balans.Activa.Single(r => r.Nummer == TestGrootboek.Kas).LiquideMiddel.Should().BeTrue();
-        balans.Activa.Single(r => r.Nummer == TestGrootboek.Voorraad).Voorraad.Should().BeTrue();
-        balans.Passiva.Single(r => r.Nummer == TestGrootboek.Crediteuren).Vlottend.Should().BeTrue();
-        balans.Activa.Single(r => r.Nummer == TestGrootboek.Machines).Vlottend.Should().BeFalse();
+        Assert.True(balans.Activa.Single(r => r.Nummer == TestGrootboek.Kas).LiquideMiddel);
+        Assert.True(balans.Activa.Single(r => r.Nummer == TestGrootboek.Voorraad).Voorraad);
+        Assert.True(balans.Passiva.Single(r => r.Nummer == TestGrootboek.Crediteuren).Vlottend);
+        Assert.False(balans.Activa.Single(r => r.Nummer == TestGrootboek.Machines).Vlottend);
     }
 
     [Fact]
@@ -62,8 +61,8 @@ public sealed class BalansOpstellerTests
 
         var balans = _opsteller.StelOp(grootboek, TestGrootboek.Datum);
 
-        balans.Activa.Should().ContainSingle(r => r.Nummer == kas.Nummer);
-        balans.Activa.Should().NotContain(r => r.Nummer == bank.Nummer);
+        Assert.Single(balans.Activa, r => r.Nummer == kas.Nummer);
+        Assert.DoesNotContain(balans.Activa, r => r.Nummer == bank.Nummer);
     }
 
     [Fact]
@@ -78,15 +77,13 @@ public sealed class BalansOpstellerTests
         var voor = _opsteller.StelOp(grootboek, new DateOnly(2026, 4, 30));
         var na = _opsteller.StelOp(grootboek, new DateOnly(2026, 5, 1));
 
-        voor.TotaalActiva.Should().Be(0m);
-        na.TotaalActiva.Should().Be(1_000m);
+        Assert.Equal(0m, voor.TotaalActiva);
+        Assert.Equal(1_000m, na.TotaalActiva);
     }
 
     [Fact]
     public void StelOp_ThrowsForNullLedger()
     {
-        var act = () => _opsteller.StelOp(null!, TestGrootboek.Datum);
-
-        act.Should().Throw<ArgumentNullException>();
+        Assert.Throws<ArgumentNullException>(() => _opsteller.StelOp(null!, TestGrootboek.Datum));
     }
 }
