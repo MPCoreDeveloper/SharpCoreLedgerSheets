@@ -1,0 +1,122 @@
+@model FinancieelOverzichtModel
+@{
+    Layout = "_ReportLayout";
+    var labels = (IReportLabels)ViewData["Labels"]!;
+    var overzicht = Model.Overzicht;
+    var balans = overzicht.Balans;
+    var winstVerlies = overzicht.WinstVerlies;
+    var kasstroom = overzicht.Kasstroom;
+    var ratio = overzicht.Ratio;
+
+    var percentageRatio = new[]
+    {
+        (Titel: labels.Solvabiliteit, Waarde: ratio.Solvabiliteit),
+        (Titel: labels.NettoWinstmarge, Waarde: ratio.NettoWinstmarge),
+        (Titel: labels.RentabiliteitEigenVermogen, Waarde: ratio.RentabiliteitEigenVermogen),
+    };
+}
+<h2>@labels.OverzichtTitel</h2>
+
+<div class="columns">
+    <section>
+        <h3>@labels.Balans</h3>
+        <table>
+            <tbody>
+            <tr>
+                <td>@labels.Totaal @labels.Activa</td>
+                <td class="amount">@(balans.TotaalActiva.ToString("N2"))</td>
+            </tr>
+            <tr>
+                <td>@labels.Totaal @labels.Passiva</td>
+                <td class="amount">@(balans.TotaalPassiva.ToString("N2"))</td>
+            </tr>
+            <tr>
+                <td>@labels.Totaal @labels.EigenVermogen</td>
+                <td class="amount">@(balans.EigenVermogenInclusiefResultaat.ToString("N2"))</td>
+            </tr>
+            <tr class="total">
+                <td>@labels.Resultaat</td>
+                <td class="amount @(balans.Resultaat < 0m ? "negative" : string.Empty)">@(balans.Resultaat.ToString("N2"))</td>
+            </tr>
+            </tbody>
+        </table>
+        <p>
+            <span class="badge @(balans.IsInBalans ? "ok" : "warn")">
+                @(balans.IsInBalans ? labels.InBalans : labels.NietInBalans)
+            </span>
+        </p>
+    </section>
+
+    <section>
+        <h3>@labels.WinstEnVerlies</h3>
+        <table>
+            <tbody>
+            <tr>
+                <td>@labels.Totaal @labels.Opbrengsten</td>
+                <td class="amount">@(winstVerlies.TotaalOpbrengsten.ToString("N2"))</td>
+            </tr>
+            <tr>
+                <td>@labels.Totaal @labels.Kosten</td>
+                <td class="amount">@(winstVerlies.TotaalKosten.ToString("N2"))</td>
+            </tr>
+            <tr class="total">
+                <td>@labels.Resultaat</td>
+                <td class="amount @(winstVerlies.Resultaat < 0m ? "negative" : string.Empty)">@(winstVerlies.Resultaat.ToString("N2"))</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section>
+        <h3>@labels.Kasstroomoverzicht</h3>
+        <table>
+            <tbody>
+            <tr>
+                <td>@labels.Operationeel</td>
+                <td class="amount @(kasstroom.NettoOperationeel < 0m ? "negative" : string.Empty)">@(kasstroom.NettoOperationeel.ToString("N2"))</td>
+            </tr>
+            <tr>
+                <td>@labels.Investering</td>
+                <td class="amount @(kasstroom.NettoInvestering < 0m ? "negative" : string.Empty)">@(kasstroom.NettoInvestering.ToString("N2"))</td>
+            </tr>
+            <tr>
+                <td>@labels.Financiering</td>
+                <td class="amount @(kasstroom.NettoFinanciering < 0m ? "negative" : string.Empty)">@(kasstroom.NettoFinanciering.ToString("N2"))</td>
+            </tr>
+            <tr class="total">
+                <td>@labels.NettoMutatie</td>
+                <td class="amount @(kasstroom.NettoMutatie < 0m ? "negative" : string.Empty)">@(kasstroom.NettoMutatie.ToString("N2"))</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</div>
+
+<h2>@labels.Ratio</h2>
+<div class="columns">
+    <section>
+        <ul class="ratio-list">
+            <li>
+                <span>@labels.CurrentRatio</span>
+                <span class="ratio-value">@(ratio.CurrentRatio.HasValue ? ratio.CurrentRatio.Value.ToString("N2") : "–")</span>
+            </li>
+            <li>
+                <span>@labels.QuickRatio</span>
+                <span class="ratio-value">@(ratio.QuickRatio.HasValue ? ratio.QuickRatio.Value.ToString("N2") : "–")</span>
+            </li>
+        </ul>
+    </section>
+    <section>
+        <ul class="ratio-list">
+            @foreach (var item in percentageRatio)
+            {
+                <li>
+                    <span>@item.Titel</span>
+                    <span class="ratio-value">
+                        @(item.Waarde.HasValue ? (item.Waarde.Value * 100m).ToString("N1") + "%" : "–")
+                    </span>
+                </li>
+            }
+        </ul>
+    </section>
+</div>

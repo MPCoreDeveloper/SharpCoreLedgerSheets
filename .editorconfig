@@ -1,0 +1,90 @@
+# FinOverzicht - EditorConfig + code analysis configuration
+# https://learn.microsoft.com/dotnet/fundamentals/code-analysis/configuration-files
+
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+indent_style = space
+indent_size = 4
+trim_trailing_whitespace = true
+
+[*.cs]
+indent_size = 4
+
+[*.razor]
+indent_size = 4
+
+[*.cshtml]
+indent_size = 4
+
+[*.{json,yml,yaml,xml,csproj,props,slnx}]
+indent_size = 2
+indent_style = space
+
+########################################
+# Microsoft .NET code analysis (latest recommended)
+########################################
+
+# XML doc comments are optional for internal projects.
+[*.cs]
+dotnet_diagnostic.CS1591.severity = none
+
+# Test methods use underscores for readability (AAA naming).
+# Empty/placeholder tests are sometimes intentional (contract tests).
+[tests/**]
+dotnet_diagnostic.CA1707.severity = none
+dotnet_diagnostic.S1186.severity = none
+dotnet_diagnostic.S2699.severity = none
+
+########################################
+# SonarAnalyzer (SonarSource C#) - C# files
+########################################
+
+[*.cs]
+dotnet_diagnostic.CA1848.severity = suggestion
+dotnet_diagnostic.CA1873.severity = suggestion
+dotnet_diagnostic.CA1305.severity = suggestion
+dotnet_diagnostic.S1905.severity = suggestion
+dotnet_diagnostic.S3358.severity = suggestion
+dotnet_diagnostic.S3267.severity = suggestion
+dotnet_diagnostic.S6608.severity = suggestion
+dotnet_diagnostic.S3236.severity = suggestion
+dotnet_diagnostic.S6580.severity = suggestion
+dotnet_diagnostic.S8969.severity = suggestion
+dotnet_diagnostic.S8970.severity = suggestion
+dotnet_diagnostic.S6444.severity = suggestion
+dotnet_diagnostic.S1075.severity = suggestion
+dotnet_diagnostic.S1481.severity = suggestion
+dotnet_diagnostic.S4487.severity = suggestion
+dotnet_diagnostic.S2094.severity = suggestion
+dotnet_diagnostic.S1144.severity = suggestion
+dotnet_diagnostic.S5693.severity = suggestion
+dotnet_diagnostic.S6931.severity = suggestion
+dotnet_diagnostic.S6966.severity = suggestion
+dotnet_diagnostic.S1186.severity = suggestion
+dotnet_diagnostic.S6562.severity = suggestion
+dotnet_diagnostic.S2139.severity = suggestion
+dotnet_diagnostic.CA1859.severity = suggestion
+dotnet_diagnostic.CA1869.severity = suggestion
+
+########################################
+# SonarAnalyzer - Razor (.razor) and cshtml
+########################################
+
+[*.razor]
+dotnet_diagnostic.S8970.severity = suggestion
+dotnet_diagnostic.S1905.severity = suggestion
+dotnet_diagnostic.S6608.severity = suggestion
+dotnet_diagnostic.S5693.severity = suggestion
+dotnet_diagnostic.S3358.severity = suggestion
+
+[*.cshtml]
+dotnet_diagnostic.S3358.severity = suggestion
+dotnet_diagnostic.S6966.severity = suggestion
+dotnet_diagnostic.S8970.severity = suggestion
+dotnet_diagnostic.S1905.severity = suggestion
+dotnet_diagnostic.S6608.severity = suggestion
+dotnet_diagnostic.S5693.severity = suggestion

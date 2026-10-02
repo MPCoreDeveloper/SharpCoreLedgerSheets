@@ -1,0 +1,16 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/FinOverzicht.Domain/FinOverzicht.Domain.csproj" />
+    <Project Path="src/FinOverzicht.Application/FinOverzicht.Application.csproj" />
+    <Project Path="src/FinOverzicht.Infrastructure/FinOverzicht.Infrastructure.csproj" />
+    <Project Path="src/FinOverzicht.Reports/FinOverzicht.Reports.csproj" />
+    <Project Path="src/FinOverzicht.Web/FinOverzicht.Web.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/FinOverzicht.Domain.Tests/FinOverzicht.Domain.Tests.csproj" />
+    <Project Path="tests/FinOverzicht.Application.Tests/FinOverzicht.Application.Tests.csproj" />
+    <Project Path="tests/FinOverzicht.Infrastructure.Tests/FinOverzicht.Infrastructure.Tests.csproj" />
+    <Project Path="tests/FinOverzicht.Reports.Tests/FinOverzicht.Reports.Tests.csproj" />
+    <Project Path="tests/FinOverzicht.ArchitectureTests/FinOverzicht.ArchitectureTests.csproj" />
+  </Folder>
+</Solution>

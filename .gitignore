@@ -1,0 +1,52 @@
+## .NET build output
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+artifacts/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vs/
+
+## Test results / coverage
+[Tt]est[Rr]esult*/
+coverage*.json
+coverage*.xml
+coverage*.info
+*.coverage
+*.coveragexml
+
+## Build logs
+*.binlog
+*.log
+
+## NuGet
+*.nupkg
+*.snupkg
+packages/
+.nuget/
+
+## Node (optional front-end tooling)
+node_modules/
+**/wwwroot/dist/
+
+## SharpCoreDB database files (local, encrypted data - never commit)
+*.scdb
+*.scdb-wal
+*.scdb-shm
+*.db
+*.db-wal
+*.db-shm
+**/App_Data/
+
+## Secrets / production config
+appsettings.Production.json
+*.pfx
+*.publishsettings
+
+## OS junk
+.DS_Store
+Thumbs.db
+desktop.ini

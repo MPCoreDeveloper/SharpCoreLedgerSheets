@@ -1,0 +1,69 @@
+@model FinancieelOverzichtModel
+@{
+    Layout = "_ReportLayout";
+    var labels = (IReportLabels)ViewData["Labels"]!;
+    var rapport = Model.Overzicht.WinstVerlies;
+}
+<h2>@labels.WinstEnVerlies</h2>
+
+<h3>@labels.Opbrengsten</h3>
+<table>
+    <thead>
+    <tr>
+        <th>@labels.Rekening</th>
+        <th>@labels.Omschrijving</th>
+        <th class="amount">@labels.Bedrag</th>
+    </tr>
+    </thead>
+    <tbody>
+    @if (rapport.Opbrengsten.Count == 0)
+    {
+        <tr><td colspan="3" class="empty">@labels.GeenGegevens</td></tr>
+    }
+    @foreach (var regel in rapport.Opbrengsten)
+    {
+        <tr>
+            <td>@regel.Nummer</td>
+            <td>@regel.Omschrijving</td>
+            <td class="amount">@(regel.Bedrag.ToString("N2"))</td>
+        </tr>
+    }
+    <tr class="subtotal">
+        <td colspan="2">@labels.Totaal @labels.Opbrengsten</td>
+        <td class="amount">@(rapport.TotaalOpbrengsten.ToString("N2"))</td>
+    </tr>
+    </tbody>
+</table>
+
+<h3>@labels.Kosten</h3>
+<table>
+    <tbody>
+    @if (rapport.Kosten.Count == 0)
+    {
+        <tr><td colspan="2" class="empty">@labels.GeenGegevens</td></tr>
+    }
+    @foreach (var regel in rapport.Kosten)
+    {
+        <tr>
+            <td>@regel.Nummer &mdash; @regel.Omschrijving</td>
+            <td class="amount">@(regel.Bedrag.ToString("N2"))</td>
+        </tr>
+    }
+    <tr class="subtotal">
+        <td>@labels.Totaal @labels.Kosten</td>
+        <td class="amount">@(rapport.TotaalKosten.ToString("N2"))</td>
+    </tr>
+    <tr class="total">
+        <td>@labels.Resultaat</td>
+        <td class="amount @(rapport.Resultaat < 0m ? "negative" : string.Empty)">@(rapport.Resultaat.ToString("N2"))</td>
+    </tr>
+    </tbody>
+</table>
+
+@if (rapport.NettoMarge.HasValue)
+{
+    <p class="ratio-list">
+        <span>@labels.NettoWinstmarge</span>
+        <span class="ratio-value">@((rapport.NettoMarge.Value * 100m).ToString("N1"))%</span>
+    </p>
+}

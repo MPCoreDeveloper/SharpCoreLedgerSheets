@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+
+jobs:
+  build-test:
+    name: build & test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '11.0.x'
+          dotnet-quality: 'preview'
+
+      - name: Restore
+        run: dotnet restore FinOverzicht.slnx
+
+      - name: Build (warnings are errors)
+        run: dotnet build FinOverzicht.slnx -c Release --no-restore -warnaserror
+
+      - name: Test
+        run: dotnet test FinOverzicht.slnx -c Release --no-build
+
+      - name: Pack
+        if: matrix.os == 'ubuntu-latest'
+        run: dotnet pack FinOverzicht.slnx -c Release --no-build -o artifacts
+
+      - name: Upload packages
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-packages
+          path: artifacts/*.nupkg
+          if-no-files-found: error
+
+  security:
+    name: dependency audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '11.0.x'
+          dotnet-quality: 'preview'
+
+      - name: Restore
+        run: dotnet restore FinOverzicht.slnx
+
+      - name: Check for known vulnerabilities
+        run: dotnet list FinOverzicht.slnx package --vulnerable --include-transitive

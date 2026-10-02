@@ -1,0 +1,60 @@
+@model FinancieelOverzichtModel
+@{
+    Layout = "_ReportLayout";
+    var labels = (IReportLabels)ViewData["Labels"]!;
+    var kasstroom = Model.Overzicht.Kasstroom;
+}
+<h2>@labels.Kasstroomoverzicht</h2>
+
+<table>
+    <thead>
+    <tr>
+        <th>@labels.Omschrijving</th>
+        <th class="amount">@labels.Bedrag</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var sector in new[]
+    {
+        (Titel: labels.Operationeel, Regels: kasstroom.Operationeel, Netto: kasstroom.NettoOperationeel),
+        (Titel: labels.Investering, Regels: kasstroom.Investering, Netto: kasstroom.NettoInvestering),
+        (Titel: labels.Financiering, Regels: kasstroom.Financiering, Netto: kasstroom.NettoFinanciering),
+    })
+    {
+        <tr class="subtotal"><td colspan="2">@sector.Titel</td></tr>
+        if (sector.Regels.Count == 0)
+        {
+            <tr><td colspan="2" class="empty">@labels.GeenGegevens</td></tr>
+        }
+        foreach (var regel in sector.Regels)
+        {
+            <tr>
+                <td>@regel.Omschrijving</td>
+                <td class="amount @(regel.Bedrag < 0m ? "negative" : string.Empty)">@(regel.Bedrag.ToString("N2"))</td>
+            </tr>
+        }
+        <tr>
+            <td>@labels.Totaal @sector.Titel</td>
+            <td class="amount @(sector.Netto < 0m ? "negative" : string.Empty)">@(sector.Netto.ToString("N2"))</td>
+        </tr>
+    }
+    <tr class="subtotal">
+        <td>@labels.NettoMutatie</td>
+        <td class="amount @(kasstroom.NettoMutatie < 0m ? "negative" : string.Empty)">@(kasstroom.NettoMutatie.ToString("N2"))</td>
+    </tr>
+    <tr>
+        <td>@labels.BeginSaldo</td>
+        <td class="amount">@(kasstroom.BeginSaldo.ToString("N2"))</td>
+    </tr>
+    <tr class="total">
+        <td>@labels.EindSaldo</td>
+        <td class="amount">@(kasstroom.EindSaldo.ToString("N2"))</td>
+    </tr>
+    </tbody>
+</table>
+
+<p>
+    <span class="badge @(kasstroom.IsInBalans ? "ok" : "warn")">
+        @(kasstroom.IsInBalans ? labels.InBalans : labels.NietInBalans)
+    </span>
+</p>

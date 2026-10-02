@@ -1,0 +1,79 @@
+@page
+@model FinOverzicht.Web.Pages.RekeningenModel
+@inject IStringLocalizer<SharedResource> L
+@{
+    ViewData["Title"] = L["MenuRekeningen"];
+}
+<h1>@L["MenuRekeningen"]</h1>
+
+@if (Model.Foutmelding is not null)
+{
+    <div class="melding">@Model.Foutmelding</div>
+}
+
+<h3>@L["Nieuw"]</h3>
+<form method="post">
+    <div class="velden">
+        <div class="veld">
+            <label for="nummer">@L["Nummer"]</label>
+            <input id="nummer" name="Nummer" value="@Model.Nummer" required maxlength="24" />
+        </div>
+        <div class="veld">
+            <label for="naam">@L["Naam"]</label>
+            <input id="naam" name="Naam" value="@Model.Naam" required maxlength="120" />
+        </div>
+        <div class="veld">
+            <label for="soort">@L["Soort"]</label>
+            <select id="soort" name="Soort">
+                @foreach (var soort in Model.Soorten)
+                {
+                    <option value="@soort" selected="@(Model.Soort == soort)">@L[soort.ToString()]</option>
+                }
+            </select>
+        </div>
+        <div class="veld">
+            <label for="vlottend">@L["Vlottend"]</label>
+            <input id="vlottend" name="Vlottend" type="checkbox" value="true" checked="@Model.Vlottend" />
+        </div>
+        <div class="veld">
+            <label for="liquide">@L["LiquideMiddel"]</label>
+            <input id="liquide" name="LiquideMiddel" type="checkbox" value="true" checked="@Model.LiquideMiddel" />
+        </div>
+        <div class="veld">
+            <label for="voorraad">@L["Voorraad"]</label>
+            <input id="voorraad" name="Voorraad" type="checkbox" value="true" checked="@Model.Voorraad" />
+        </div>
+    </div>
+    <button type="submit">@L["Toevoegen"]</button>
+</form>
+
+<h3>@L["MenuRekeningen"]</h3>
+<table>
+    <thead>
+    <tr>
+        <th>@L["Nummer"]</th>
+        <th>@L["Naam"]</th>
+        <th>@L["Soort"]</th>
+        <th>@L["Vlottend"]</th>
+        <th>@L["LiquideMiddel"]</th>
+        <th>@L["Voorraad"]</th>
+    </tr>
+    </thead>
+    <tbody>
+    @if (Model.AlleRekeningen.Count == 0)
+    {
+        <tr><td colspan="6" class="muted">@L["GeenGegevens"]</td></tr>
+    }
+    @foreach (var rekening in Model.AlleRekeningen)
+    {
+        <tr>
+            <td>@rekening.Nummer</td>
+            <td>@rekening.Naam</td>
+            <td>@L[rekening.Soort.ToString()]</td>
+            <td>@(rekening.IsVlottend ? "✓" : string.Empty)</td>
+            <td>@(rekening.IsLiquideMiddel ? "✓" : string.Empty)</td>
+            <td>@(rekening.IsVoorraad ? "✓" : string.Empty)</td>
+        </tr>
+    }
+    </tbody>
+</table>

@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net11.0</TargetFramework>
+    <RootNamespace>FinOverzicht.Web</RootNamespace>
+    <!-- The web host is an application, not a library: do not produce a NuGet package for it. -->
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FinOverzicht.Application\FinOverzicht.Application.csproj" />
+    <ProjectReference Include="..\FinOverzicht.Infrastructure\FinOverzicht.Infrastructure.csproj" />
+    <ProjectReference Include="..\FinOverzicht.Reports\FinOverzicht.Reports.csproj" />
+  </ItemGroup>
+
+</Project>

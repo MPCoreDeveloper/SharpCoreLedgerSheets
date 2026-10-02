@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net11.0</TargetFramework>
+    <RootNamespace>FinOverzicht.Infrastructure</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FinOverzicht.Domain\FinOverzicht.Domain.csproj" />
+    <ProjectReference Include="..\FinOverzicht.Application\FinOverzicht.Application.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- SharpCoreDB (MPCoreDeveloper) is the embedded, encrypted, file-based database for FinOverzicht.
+         Always the newest release candidate aligned with .NET 11 / C# 15. -->
+    <PackageReference Include="SharpCoreDB" Version="2.1.0-RC.3" />
+  </ItemGroup>
+
+</Project>

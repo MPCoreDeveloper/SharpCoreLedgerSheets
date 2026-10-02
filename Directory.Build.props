@@ -1,0 +1,43 @@
+<Project>
+
+  <PropertyGroup>
+    <!-- FinOverzicht always targets the newest stable .NET / C# combination.
+         .NET 11 (RC) => C# 15. -->
+    <LangVersion>15.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <InvariantGlobalization>false</InvariantGlobalization>
+
+    <!-- Microsoft code analysis: newest recommended ruleset. -->
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <AnalysisMode>Recommended</AnalysisMode>
+    <AnalysisModeBehavior>Default</AnalysisModeBehavior>
+
+    <!-- xUnit v3 test projects run on Microsoft.Testing.Platform (MTP) - see global.json "test.runner". -->
+    <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
+
+    <!-- Repository metadata (OSS). -->
+    <Authors>MPCoreDeveloper</Authors>
+    <Company>MPCoreDeveloper</Company>
+    <Product>FinOverzicht</Product>
+    <Description>Double-entry bookkeeping engine with the three core financial statements (balance sheet, profit and loss, cash flow) and the key ratios, for small businesses and individuals.</Description>
+    <PackageTags>finance;accounting;bookkeeping;balance-sheet;profit-and-loss;cash-flow;ratios;sharpcoredb</PackageTags>
+    <RepositoryUrl>https://github.com/MPCoreDeveloper/FinOverzicht</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/MPCoreDeveloper/FinOverzicht</PackageProjectUrl>
+    <VersionPrefix>1.0.0</VersionPrefix>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- SonarSource static analysis (C#) - latest stable. -->
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="10.34.0.3385">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+</Project>

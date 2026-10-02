@@ -1,0 +1,53 @@
+@*
+    FinOverzicht report layout.
+    Self-contained: styling is injected through ViewData["ReportCss"], so the document needs no
+    network access and prints to PDF identically. The layout deliberately reads only ViewData
+    (never Model) so it renders for every report model type.
+*@
+@{
+    var titel = ViewData["Title"] as string ?? "FinOverzicht";
+    var omschrijving = ViewData["Description"] as string;
+    var administratie = ViewData["Administratie"] as string;
+    var periode = ViewData["Periode"] as string;
+    var gegenereerdOp = ViewData["GeneratedAt"] as string;
+}
+<!DOCTYPE html>
+<html lang="@System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@titel — FinOverzicht</title>
+    <style>@Html.Raw(ViewData["ReportCss"])</style>
+</head>
+<body>
+<div class="report-shell">
+    <header class="report-header">
+        <div>
+            <h1>@titel</h1>
+            @if (!string.IsNullOrWhiteSpace(omschrijving))
+            {
+                <p>@omschrijving</p>
+            }
+        </div>
+        <div class="generated">
+            @if (!string.IsNullOrWhiteSpace(administratie))
+            {
+                <div>@administratie</div>
+            }
+            @if (!string.IsNullOrWhiteSpace(periode))
+            {
+                <div>@periode</div>
+            }
+            @if (!string.IsNullOrWhiteSpace(gegenereerdOp))
+            {
+                <div>@gegenereerdOp</div>
+            }
+        </div>
+    </header>
+    <main>
+        @RenderBody()
+    </main>
+    <footer class="report-footer">© @DateTime.Now.Year FinOverzicht</footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net11.0</TargetFramework>
+    <RootNamespace>FinOverzicht.Reports</RootNamespace>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+    <!-- Compile .cshtml views into the assembly so IRazorViewEngine can find them in the class library. -->
+    <RazorCompileOnBuild>true</RazorCompileOnBuild>
+    <RazorCompileOnPublish>true</RazorCompileOnPublish>
+    <!-- Sonar suggestions in cshtml templates (no bugs): nested ternary, sync render. -->
+    <NoWarn>$(NoWarn);S3358;S6966</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FinOverzicht.Domain\FinOverzicht.Domain.csproj" />
+    <ProjectReference Include="..\FinOverzicht.Application\FinOverzicht.Application.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Required for Razor views + MVC view rendering in a class library. -->
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+</Project>
