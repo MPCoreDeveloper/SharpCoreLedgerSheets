@@ -9,7 +9,7 @@ FinOverzicht.Web                ASP.NET Core host (Razor Pages, localization, DI
   |
   +-- FinOverzicht.Reports      Razor templates, ReportRegistry, IReportRenderer, CSV exporter
   |
-  +-- FinOverzicht.Infrastructure   SharpCoreDB adapters implementing the Application ports
+  +-- FinOverzicht.Infrastructure   SharpCoreDB adapters + CAMT.053/CSV statement readers
   |
   +-- FinOverzicht.Application      use cases + port definitions (IRekeningRepository, ...)
              |
@@ -42,6 +42,10 @@ of a small administration is tiny, and this choice buys three things:
 | `Grootboek` | aggregate | Accounts + entries; `Boek`, `Herstel`, `Saldo`, `MutatieInPeriode` |
 | `Balans`, `WinstVerlies`, `KasstroomOverzicht`, `RatioOverzicht` | immutable results | The statements and the ratios |
 | `BalansOpsteller`, `WinstVerliesOpsteller`, `KasstroomOpsteller`, `RatioBerekening` | domain services | Derive the statements from the ledger |
+| `BankTransactie` | entity | An imported bank movement: signed amount, the bank's reference, counterparty and status |
+| `TegenrekeningRegel` | entity | A matching rule: keyword → counterparty account, with a confirmation count |
+| `Boekingsvoorstel` | immutable result | The suggested counterparty account plus its certainty (0-100) and reason |
+| `MatchingAssistent` | domain service | `StelVoor`: IBAN > confirmed keyword > account name/number |
 
 ### Sign convention
 
@@ -79,9 +83,37 @@ cash, and `KasstroomOverzicht.IsInBalans` asserts it.
 | `IJournaalpostService` | List and post entries; resolves account numbers to identities |
 | `IGrootboekLader` | Rehydrate a complete `Grootboek` from the ports |
 | `IRapportageService` | Compose the statement builders into a `FinancieelOverzicht` for a period |
+| `IBankstaatService` | Import a statement, list movements, propose a counterparty account, book or ignore a movement |
 
-Ports: `IRekeningRepository`, `IJournaalpostRepository`. The application layer never mentions the
-storage engine; `AddFinOverzichtApplication()` registers the use cases and the domain services.
+Ports: `IRekeningRepository`, `IJournaalpostRepository`, `IBankstaatRepository`,
+`ITegenrekeningRegelRepository` and `IBankstaatImporteur`. The application layer never mentions the
+storage engine or a bank format; `AddFinOverzichtApplication()` registers the use cases and the
+domain services.
+
+### Bank import flow
+
+```
+BankstaatService.ImporteerAsync
+    -> IBankstaatImporteur (first reader whose KanVerwerken says yes)
+    -> BankTransactie per movement, keyed on bank account + bank reference
+    -> IBankstaatRepository.BestaandeSleutelsAsync: duplicates are skipped, not overwritten
+BankstaatService.VoorstelAsync     -> IMatchingAssistent (one movement)
+BankstaatService.VoorstellenAsync  -> IMatchingAssistent (a whole list; ledger + learned rules read once)
+BankstaatService.BoekAsync         -> IJournaalpostService (balanced entry) + rule upsert (confirmations + 1)
+```
+
+The import page uses the batch variant: the number of open movements drives the number of proposals,
+not the number of times the ledger and the learned rules are read. A statement of a few hundred
+movements therefore costs two reads, not a few hundred round trips.
+
+`IBankstaatImporteur` is the seam that keeps formats out of the domain: a new bank format is one
+class in the infrastructure layer plus one registration. Two rules are deliberate:
+
+1. **Only booked movements.** A CAMT `PDNG` entry can still change or disappear, so booking it would
+   create an entry the next statement contradicts.
+2. **Import is idempotent.** A movement without a bank reference gets a content-derived `SYN-`
+   reference, because identifying a movement by anything less stable would duplicate it on the next
+   import of an overlapping period.
 
 ## 4. Infrastructure
 
@@ -95,6 +127,13 @@ storage engine; `AddFinOverzichtApplication()` registers the use cases and the d
 - repository calls are serialized on the database handle because the embedded engine is not
   designed for concurrent writers.
 
+Statement readers implement `IBankstaatImporteur` and live here, not in the domain:
+`Camt053Importeur` matches XML elements on their **local name** (so every CAMT.053 version and
+namespace is accepted, and `DBIT`/`CRDT` decides the sign), while `CsvImporteur` finds columns by
+their normalised header name and detects the delimiter and the number notation per file. Both throw
+a `DomeinException` with a message that can be shown to the user as-is, and both fall back to
+`SynthetischeReferentie` when the bank supplies no reference at all.
+
 ### Schema
 
 | Table | Purpose | Key columns |
@@ -102,6 +141,8 @@ storage engine; `AddFinOverzichtApplication()` registers the use cases and the d
 | `rekeningen` | Chart of accounts | `id`, `nummer`, `naam`, `soort`, `is_actief`, `is_vlottend`, `is_liquide_middel`, `is_voorraad` |
 | `posten` | Journal entries | `id`, `datum` (ISO-8601 text), `omschrijving`, `referentie` |
 | `postregels` | Entry lines | `id`, `post_id`, `volgnummer`, `rekening_id`, `debet`, `credit`, `omschrijving` |
+| `bankmutaties` | Imported bank movements | `id`, `bank_nr`, `datum`, `bedrag`, `valuta`, `referentie`, `tegenpartij`, `iban`, `omschrijving`, `status`, `post_id` |
+| `matchregels` | Matching rules learned from confirmed bookings | `trefwoord` (unique), `tegenrekening`, `bevestigingen` |
 
 Amounts are `DECIMAL`; dates are `yyyy-MM-dd` text so they sort chronologically. **Every table and
 index name is deliberately short**: SharpCoreDB derives metadata block names such as
@@ -141,6 +182,10 @@ provider remembers the choice, and a short middleware writes that cookie with `H
 and `SameSite=Lax`. `FinPageModel` converts expected domain/storage failures into readable messages
 instead of stack traces.
 
+Pages stay thin: `Rekeningen` and `Boekingen` pass what they are given to a service, and `Bankimport`
+uploads a statement, shows the proposal per open movement and offers *book* or *ignore* — the
+assistant decides nothing on its own, the user always confirms.
+
 The `SharedResource` marker type lives in `Resources/` next to its `.resx` files, which is exactly
 what the default `ResourceManagerStringLocalizer` naming convention expects — so
 `IStringLocalizer<SharedResource>` resolves `FinOverzicht.Web.Resources.SharedResource[.<culture>]`.
@@ -149,9 +194,9 @@ what the default `ResourceManagerStringLocalizer` naming convention expects — 
 
 | Layer | Approach |
 | --- | --- |
-| Domain | Pure unit tests over a shared ledger scenario (`TestGrootboek`) with hand-computed expectations |
+| Domain | Pure unit tests over a shared ledger scenario (`TestGrootboek`) with hand-computed expectations; bank movements, matching rules and the assistant are covered the same way |
 | Application | Use cases against in-memory repositories that implement the ports |
-| Infrastructure | Real encrypted SharpCoreDB databases in the temp folder, including reopen durability |
+| Infrastructure | Real encrypted SharpCoreDB databases in the temp folder, including reopen durability, plus the CAMT.053/CSV readers against real statement fragments |
 | Reports | Full Razor rendering through a real service provider, plus CSV assertions |
 | Cross-cutting | NetArchTest layer rules, naming rules and localization completeness |
 

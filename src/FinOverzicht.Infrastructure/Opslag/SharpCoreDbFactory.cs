@@ -34,6 +34,7 @@ internal sealed class SharpCoreDbFactory(
 
         var database = databaseFactory.Create(pad, _options.MasterWachtwoord);
         GrootboekSchema.ZorgVoorSchema(database);
+        BankstaatSchema.ZorgVoorSchema(database);
         return database;
     }
 }

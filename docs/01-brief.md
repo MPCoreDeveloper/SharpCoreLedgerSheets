@@ -43,14 +43,14 @@ Many small businesses would rather keep a single, encrypted file on their own ma
   closing cash.
 - Encrypted embedded storage (SharpCoreDB, single `.scdb` file).
 - Reports as self-contained, print-ready HTML plus CSV export.
-- Web application: dashboard, chart of accounts, journal entries, report viewer.
+- Web application: dashboard, chart of accounts, journal entries, bank import, report viewer.
 - Localization: Dutch (default), English, German, French, Spanish, Italian, Portuguese, Polish.
 - OSS delivery: MIT license, CI on Linux/Windows/macOS, architecture tests, contribution guide.
 
 **Out of scope (v1.0)**
 
 - Multiple currencies within one ledger and exchange-rate revaluation.
-- VAT/tax returns, invoice generation, bank statement import, payroll.
+- VAT/tax returns, invoice generation, payroll.
 - Consolidation of several administrations.
 - Multi-user access, roles and audit trails.
 - Server-side PDF generation (print-to-PDF from the browser covers it).

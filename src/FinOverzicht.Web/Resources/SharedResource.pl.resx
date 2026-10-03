@@ -58,4 +58,21 @@
   <data name="LiquideMiddel" xml:space="preserve"><value>Środki pieniężne</value></data>
   <data name="Voorraad" xml:space="preserve"><value>Zapasy</value></data>
   <data name="Nieuw" xml:space="preserve"><value>Nowy</value></data>
+  <data name="MenuBankimport" xml:space="preserve"><value>Import bankowy</value></data>
+  <data name="AfschriftImporteren" xml:space="preserve"><value>Importuj wyciąg bankowy</value></data>
+  <data name="OpenstaandeMutaties" xml:space="preserve"><value>Otwarte operacje</value></data>
+  <data name="Bankrekening" xml:space="preserve"><value>Konto bankowe</value></data>
+  <data name="Bestand" xml:space="preserve"><value>Plik</value></data>
+  <data name="Formaat" xml:space="preserve"><value>Format</value></data>
+  <data name="Automatisch" xml:space="preserve"><value>Automatycznie</value></data>
+  <data name="Camt053" xml:space="preserve"><value>CAMT.053 (XML)</value></data>
+  <data name="Csv" xml:space="preserve"><value>CSV</value></data>
+  <data name="Importeren" xml:space="preserve"><value>Importuj</value></data>
+  <data name="ImportResultaat" xml:space="preserve"><value>Odczytano: {0}, dodano: {1}, pominięto: {2}.</value></data>
+  <data name="AllesAlBekend" xml:space="preserve"><value>Wszystkie operacje w tym pliku zostały już zaimportowane.</value></data>
+  <data name="Tegenrekening" xml:space="preserve"><value>Konto przeciwstawne</value></data>
+  <data name="Voorstel" xml:space="preserve"><value>Propozycja</value></data>
+  <data name="Zekerheid" xml:space="preserve"><value>Pewność</value></data>
+  <data name="GeenVoorstel" xml:space="preserve"><value>Brak propozycji</value></data>
+  <data name="Negeren" xml:space="preserve"><value>Ignoruj</value></data>
 </root>

@@ -9,9 +9,16 @@ internal sealed class InMemoryRekeningRepository : IRekeningRepository
 {
     private readonly Dictionary<Guid, Rekening> _rekeningen = [];
 
-    public Task<IReadOnlyList<Rekening>> AlleAsync(CancellationToken ct = default) =>
-        Task.FromResult<IReadOnlyList<Rekening>>(
+    /// <summary>How often the accounts were read; proves that a batch proposal reads them once.</summary>
+    public int AantalKeerGelezen { get; private set; }
+
+    public Task<IReadOnlyList<Rekening>> AlleAsync(CancellationToken ct = default)
+    {
+        AantalKeerGelezen++;
+
+        return Task.FromResult<IReadOnlyList<Rekening>>(
             _rekeningen.Values.OrderBy(r => r.Nummer, StringComparer.Ordinal).ToList());
+    }
 
     public Task<Rekening?> ZoekOpNummerAsync(string nummer, CancellationToken ct = default) =>
         Task.FromResult(_rekeningen.Values.FirstOrDefault(

@@ -1,4 +1,5 @@
 using FinOverzicht.Application.Services;
+using FinOverzicht.Domain.Bankzaken;
 using FinOverzicht.Domain.Services;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -23,12 +24,14 @@ public static class FinOverzichtApplicationExtensions
         services.AddSingleton<IWinstVerliesOpsteller, WinstVerliesOpsteller>();
         services.AddSingleton<IKasstroomOpsteller, KasstroomOpsteller>();
         services.AddSingleton<IRatioBerekening, RatioBerekening>();
+        services.AddSingleton<IMatchingAssistent, MatchingAssistent>();
 
         // Application use cases.
         services.AddScoped<IGrootboekLader, GrootboekLader>();
         services.AddScoped<IRekeningService, RekeningService>();
         services.AddScoped<IJournaalpostService, JournaalpostService>();
         services.AddScoped<IRapportageService, RapportageService>();
+        services.AddScoped<IBankstaatService, BankstaatService>();
 
         return services;
     }

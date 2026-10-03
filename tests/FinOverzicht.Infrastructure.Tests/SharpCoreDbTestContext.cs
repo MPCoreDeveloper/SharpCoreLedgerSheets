@@ -33,6 +33,13 @@ internal sealed class SharpCoreDbTestContext : IAsyncDisposable
 
     public IJournaalpostRepository Posten => _provider.GetRequiredService<IJournaalpostRepository>();
 
+    public IBankstaatRepository Bankstaat => _provider.GetRequiredService<IBankstaatRepository>();
+
+    public ITegenrekeningRegelRepository Matchregels => _provider.GetRequiredService<ITegenrekeningRegelRepository>();
+
+    /// <summary>The statement readers, in the order the application asks them.</summary>
+    public IReadOnlyList<IBankstaatImporteur> Importeurs => [.. _provider.GetServices<IBankstaatImporteur>()];
+
     public IDatabase Database => _provider.GetRequiredService<IDatabase>();
 
     /// <summary>Closes and reopens the database on the same file to prove durability.</summary>

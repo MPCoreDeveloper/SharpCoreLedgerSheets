@@ -41,6 +41,8 @@ reconcile (assets = liabilities + equity, and opening cash + movement = closing 
   for spreadsheets.
 - **Localized** in Dutch (default), English, German, French, Spanish, Italian, Portuguese and
   Polish — report labels come from `IReportLabels`, so templates stay language-neutral.
+- **Bank statements come in as they are** — CAMT.053 (XML) or CSV, with a matching assistant that
+  proposes a counterparty account per movement and learns from the bookings you confirm.
 - **Architecture tests** guard the layering, and the build is warning-free under the Microsoft and
   Sonar analyzers.
 
@@ -51,7 +53,7 @@ FinOverzicht.Web            ASP.NET Core (Razor Pages) + localization
       |
       +-- FinOverzicht.Reports         Razor report templates, registry, CSV export
       |
-      +-- FinOverzicht.Infrastructure  SharpCoreDB repositories (ports live in Application)
+      +-- FinOverzicht.Infrastructure  SharpCoreDB repositories + CAMT.053/CSV statement readers
       |
       +-- FinOverzicht.Application     use cases: account/entry services, reporting service
                  |
@@ -60,8 +62,8 @@ FinOverzicht.Web            ASP.NET Core (Razor Pages) + localization
 
 Dependencies point inwards only. `FinOverzicht.Domain` has **zero** package references: the
 bookkeeping rules, the three statements and the ratios are pure, deterministic and fully unit
-tested. `Application` defines the storage ports, `Infrastructure` implements them with SharpCoreDB,
-`Reports` renders, and `Web` composes.
+tested. `Application` defines the storage ports, `Infrastructure` implements them with SharpCoreDB
+and reads the bank statement formats, `Reports` renders, and `Web` composes.
 
 ### Domain model
 
@@ -75,6 +77,9 @@ tested. `Application` defines the storage ports, `Infrastructure` implements the
 | Ledger | `Grootboek` | Accounts plus entries; the single source of truth |
 | Statements | `Balans`, `WinstVerlies`, `KasstroomOverzicht`, `RatioOverzicht` | Immutable results |
 | Builders | `BalansOpsteller`, `WinstVerliesOpsteller`, `KasstroomOpsteller`, `RatioBerekening` | Pure domain services |
+| Bank movement | `BankTransactie` | Signed movement with the bank's reference; account + reference form the import key |
+| Matching rule | `TegenrekeningRegel` | Keyword → counterparty account, learned from a confirmed booking |
+| Proposal | `Boekingsvoorstel` | Suggested counterparty account with a certainty (0-100) and the reason |
 
 Cash flow classification is derived, not configured: an entry touching a cash account is
 *operating* when its counterpart is revenue or an expense, *investing* when the counterpart is a
@@ -98,8 +103,8 @@ dotnet user-secrets set "FinOverzicht:Opslag:MasterWachtwoord" "choose-a-strong-
 dotnet run
 ```
 
-Then open the dashboard, add accounts under **Rekeningen**, post entries under **Boekingen** and
-view the statements under **Rapport**.
+Then open the dashboard, add accounts under **Rekeningen**, post entries under **Boekingen**, import
+a bank statement under **Bankimport** and view the statements under **Rapport**.
 
 > The master password can also be supplied through the environment variable
 > `FinOverzicht__Opslag__MasterWachtwoord`. **Losing it means losing the data** — FinOverzicht never
@@ -145,6 +150,26 @@ and no CDN. Print it (or use the *Print* link in the web app) to get a PDF from 
 avoids shipping a headless browser inside a small package. Register a custom `IReportRenderer` if
 you need server-side PDF generation.
 
+## Bank import
+
+Import a bank statement under **Bankimport**: choose the ledger account it belongs to, upload a
+CAMT.053 (XML) or CSV file, and FinOverzicht reads it. The reader follows the format rather than the
+bank: XML elements are matched on their local name (so every CAMT.053 version and namespace works)
+and CSV columns are recognised by their header names, with the delimiter and the number notation
+detected. Only **booked** movements are read — a pending movement can still change.
+
+The matching assistant then proposes a counterparty account per movement and says why: an IBAN you
+booked before counts as certain (100), a keyword you confirmed scores 90, and an account whose name
+or number appears in the movement scores 70. From 90 the proposal is pre-selected; below that it is
+shown as a hint. Confirmations are remembered as rules, so the same counterparty is recognised next
+month — the assistant never invents a rule on its own. All proposals are built in one pass: the
+ledger and the learned rules are read once per page, however many movements the statement holds.
+
+Importing is **idempotent**: a movement is identified by the bank account plus the bank's own
+reference, so re-importing the same statement adds nothing. When a bank supplies no reference at all,
+FinOverzicht derives one from the content of the movement (`SYN-…`); two movements that share their
+date, amount, currency and text then count as one.
+
 ## Localization
 
 Dutch is the default and the neutral fallback. Translations ship for English, German, French,
@@ -163,9 +188,9 @@ dotnet test FinOverzicht.slnx
 
 | Suite | Focus |
 | --- | --- |
-| `FinOverzicht.Domain.Tests` | Value objects, ledger invariants, statement maths, ratios |
+| `FinOverzicht.Domain.Tests` | Value objects, ledger invariants, statement maths, ratios, bank movements and matching |
 | `FinOverzicht.Application.Tests` | Use cases against in-memory repositories |
-| `FinOverzicht.Infrastructure.Tests` | Real encrypted SharpCoreDB round-trips and reopen durability |
+| `FinOverzicht.Infrastructure.Tests` | Real encrypted SharpCoreDB round-trips, reopen durability and the CAMT.053/CSV readers |
 | `FinOverzicht.Reports.Tests` | Report registry, CSV export and full Razor rendering |
 | `FinOverzicht.ArchitectureTests` | Layer dependencies, naming and localization completeness |
 

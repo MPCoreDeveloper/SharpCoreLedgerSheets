@@ -1,4 +1,5 @@
 using FinOverzicht.Application.Abstractions;
+using FinOverzicht.Infrastructure.Bankzaken;
 using FinOverzicht.Infrastructure.Options;
 using FinOverzicht.Infrastructure.Opslag;
 using Microsoft.Extensions.DependencyInjection;
@@ -37,6 +38,13 @@ public static class FinOverzichtInfrastructureExtensions
 
         services.AddSingleton<IRekeningRepository, SharpCoreDbRekeningRepository>();
         services.AddSingleton<IJournaalpostRepository, SharpCoreDbJournaalpostRepository>();
+        services.AddSingleton<IBankstaatRepository, SharpCoreDbBankstaatRepository>();
+        services.AddSingleton<ITegenrekeningRegelRepository, SharpCoreDbTegenrekeningRegelRepository>();
+
+        // The statement readers: the bank import picks the first one that recognises the file, so the
+        // XML reader is asked before the CSV reader (a CAMT file is never valid CSV).
+        services.AddSingleton<IBankstaatImporteur, Camt053Importeur>();
+        services.AddSingleton<IBankstaatImporteur, CsvImporteur>();
 
         return services;
     }

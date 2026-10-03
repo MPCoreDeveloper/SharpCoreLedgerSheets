@@ -1,6 +1,7 @@
 using FinOverzicht.Application.Models;
 using FinOverzicht.Application.Services;
 using FinOverzicht.Application.Tests.Fakes;
+using FinOverzicht.Domain.Bankzaken;
 using FinOverzicht.Domain.Boekhouden;
 using FinOverzicht.Domain.Services;
 
@@ -24,11 +25,28 @@ internal sealed class TestAdministratie
             new WinstVerliesOpsteller(),
             new KasstroomOpsteller(),
             new RatioBerekening());
+        BankstaatService = new BankstaatService(
+            Bankstaat,
+            Regels,
+            Rekeningen,
+            JournaalpostService,
+            new MatchingAssistent(),
+            [FakeImporteur, CamtImporteur]);
     }
 
     public InMemoryRekeningRepository Rekeningen { get; } = new();
 
     public InMemoryJournaalpostRepository Posten { get; } = new();
+
+    public InMemoryBankstaatRepository Bankstaat { get; } = new();
+
+    public InMemoryTegenrekeningRegelRepository Regels { get; } = new();
+
+    /// <summary>Statement reader for the <c>.fake</c> test format, detected by its extension.</summary>
+    public FakeBankstaatImporteur FakeImporteur { get; } = new(".fake", BankstaatFormaat.Csv);
+
+    /// <summary>Statement reader that can only be selected by forcing <see cref="BankstaatFormaat.Camt053"/>.</summary>
+    public FakeBankstaatImporteur CamtImporteur { get; } = new(".camt", BankstaatFormaat.Camt053);
 
     public RekeningService RekeningService { get; }
 
@@ -37,6 +55,8 @@ internal sealed class TestAdministratie
     public GrootboekLader Lader { get; }
 
     public RapportageService Rapportage { get; }
+
+    public BankstaatService BankstaatService { get; }
 
     /// <summary>Financial year used by the seed data.</summary>
     public static Periode Jaar2026 => Periode.VoorJaar(2026);

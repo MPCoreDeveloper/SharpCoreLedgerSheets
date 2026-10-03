@@ -112,12 +112,32 @@
 
 **Status: done.**
 
+## Epic 9 — Bank import and the matching assistant
+
+*Goal: get a real bank statement into the ledger without typing it over.*
+
+| ID | Story | Done when | Evidence |
+| --- | --- | --- | --- |
+| 9.1 | Statement formats | CAMT.053 and CSV are first-class formats, so a reader never guesses | `BankstaatFormaat` |
+| 9.2 | Imported movement | Signed amount plus the bank's reference; bank account + reference form the import key | `BankTransactieTests` |
+| 9.3 | Matching rule | Keyword, counterparty account and confirmation count, learned from a confirmed booking | `TegenrekeningRegelTests` |
+| 9.4 | Matching assistant | Certainty 0-100 with a reason (IBAN 100, keyword 90, account name/number 70); reliable from 90 | `MatchingAssistentTests`, `BoekingsvoorstelTests` |
+| 9.5 | Import use case | Reads a statement, skips movements that were imported before, reports read/added/skipped | `BankstaatServiceTests` |
+| 9.6 | CAMT.053 reader | Namespace- and version-agnostic; booked movements only; reference fallback `AcctSvcrRef` → `NtryRef` → `EndToEndId` → `TxId` → `InstrId` | `Camt053ImporteurTests` |
+| 9.7 | CSV reader | Columns found by header name, delimiter and number notation detected, quoted fields supported | `CsvImporteurTests` |
+| 9.8 | Stable fallback reference | A movement without a bank reference gets a content-derived `SYN-` reference, so importing twice never duplicates | `Camt053ImporteurTests`, `CsvImporteurTests` |
+| 9.9 | Storage | Movements and matching rules round-trip; one rule per keyword, so conflicting rules cannot exist | `SharpCoreDbBankstaatRepositoryTests`, `SharpCoreDbTegenrekeningRegelRepositoryTests` |
+| 9.10 | Web page | Upload a statement, see the proposal per movement, book it or ignore it | `Pages/Bankimport.cshtml`, `BankimportModel` |
+| 9.11 | Batch proposal | Every open movement is proposed in one pass: the ledger and the learned rules are read once per page load, not once per movement | `BankstaatServiceTests` |
+
+**Status: done.**
+
 ## Verification log
 
 | Gate | Result |
 | --- | --- |
 | `dotnet build FinOverzicht.slnx` | Succeeds — **0 warnings / 0 errors** |
-| `dotnet test FinOverzicht.slnx` | **179 passed**, 0 failed, 0 skipped |
+| `dotnet test FinOverzicht.slnx` | **329 passed**, 0 failed, 0 skipped (146 domain, 56 application, 79 infrastructure, 26 reports, 22 architecture) |
 | Live smoke test | Dashboard `200`; `?culture=en` renders "Balance sheet"; `/Rapport?handler=Html` returns a self-contained HTML document with embedded CSS |
 
 ## Learn / adjust
@@ -134,16 +154,27 @@ What the build phase taught us, and what changed as a result:
    tests, which fail loudly when a key does not resolve.
 4. **Cash flow classification needed an explicit rule rather than configuration.** Deriving it from
    the counterpart account type made it testable and kept the configuration surface small.
+5. **A statement without bank references cannot be identified by reference.** The import key is the
+   bank account plus the bank's reference, so a movement without one now gets a content-derived
+   `SYN-` reference. Re-importing the same file stays safe, at the price that two movements sharing
+   their date, amount, currency and text count as one — the honest trade-off of not asking the user
+   to resolve duplicates.
+6. **CSV columns are found by header name, not by position.** Every bank exports its own column
+   order and its own number notation; matching normalised header names (and detecting the delimiter
+   per file) reads both Dutch and English exports without a bank-specific reader.
+7. **A proposal per movement is an N+1 waiting to happen.** The import page first asked the assistant
+   for every movement separately, so the ledger and the learned rules were read again and again for
+   the same two tables. Proposals are now built in one pass (`VoorstellenAsync`), and a test asserts
+   the read count so a later refactor cannot quietly bring the extra reads back.
 
 ## Next (post-1.0 backlog)
 
 Ordered by value, not committed:
 
 1. **VAT handling** — rates per line, a VAT return summary, and VAT payable/receivable accounts.
-2. **Bank import** — CAMT.053 / CSV import with a matching assistant for outstanding items.
-3. **Multiple currencies** — per-entry rate, revaluation, and a currency-aware cash flow statement.
-4. **Invoice generation** — from posted entries, with PDF through a pluggable renderer.
-5. **Ledger CSV/Excel round-trip** — import and export for migration and archival.
-6. **Multi-administration** — one file per client, selectable, with consolidation later.
-7. **Audit trail** — immutable entry history with correcting entries instead of edits.
+2. **Multiple currencies** — per-entry rate, revaluation, and a currency-aware cash flow statement.
+3. **Invoice generation** — from posted entries, with PDF through a pluggable renderer.
+4. **Ledger CSV/Excel round-trip** — import and export for migration and archival.
+5. **Multi-administration** — one file per client, selectable, with consolidation later.
+6. **Audit trail** — immutable entry history with correcting entries instead of edits.
 

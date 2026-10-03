@@ -34,6 +34,11 @@ public sealed class LocalisatieTests
         "Nummer", "Naam", "Soort", "Datum",
         "Boeken", "Toevoegen", "Debet", "Credit",
         "Referentie", "Jaar", "Vlottend", "LiquideMiddel", "Voorraad", "Nieuw",
+        // Bank import.
+        "MenuBankimport", "AfschriftImporteren", "OpenstaandeMutaties", "Bankrekening", "Bestand",
+        "Formaat", "Automatisch", "Camt053", "Csv", "Importeren",
+        "ImportResultaat", "AllesAlBekend", "Tegenrekening", "Voorstel", "Zekerheid",
+        "GeenVoorstel", "Negeren",
     ];
 
     [Theory]

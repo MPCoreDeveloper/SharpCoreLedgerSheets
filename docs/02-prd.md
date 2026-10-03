@@ -63,6 +63,7 @@
 | FR-5.4 | The report viewer renders the selected report and offers CSV download and print | Manual |
 | FR-5.5 | Language can be switched and the choice persists | `LocalisatieTests` + cookie middleware |
 | FR-5.6 | Expected failures (domain rules, missing data) show a readable message | `FinPageModel` |
+| FR-5.7 | A bank statement can be uploaded; every open movement shows the proposal and can be booked or ignored | `Pages/Bankimport.cshtml`, manual |
 
 ### FR-6 Localization
 
@@ -72,6 +73,20 @@
 | FR-6.2 | Every supported language defines every key | `IedereTaal_BevatAlleSleutels` |
 | FR-6.3 | An unsupported culture falls back to Dutch | `OnbekendeCultuur_ValtTerugOpNederlands` |
 | FR-6.4 | Numbers and dates follow the request culture | `ToString("N2")` / `"d"` with `CurrentCulture` |
+
+### FR-7 Bank import
+
+| ID | Requirement | Verified by |
+| --- | --- | --- |
+| FR-7.1 | A statement (CAMT.053 XML or CSV) can be imported for a chosen ledger account | `Camt053ImporteurTests`, `CsvImporteurTests` |
+| FR-7.2 | The reader follows the format, not the bank: XML by local name, CSV columns by header name | `Lees_IgnoresNamespaceAndVersion`, `Lees_RecognisesHeaderNamesInAnyForm` |
+| FR-7.3 | Only movements the bank has booked are imported | `Lees_SkipsPendingMovements` |
+| FR-7.4 | Importing the same statement twice never duplicates a movement | `BankstaatServiceTests`, `Lees_DerivesAStableReferenceWhenTheBankSuppliesNone` |
+| FR-7.5 | The assistant proposes a counterparty account with a certainty and a reason; from 90 it is pre-selected | `MatchingAssistentTests`, `BoekingsvoorstelTests` |
+| FR-7.6 | The assistant only learns from confirmed bookings, and each rule counts its confirmations | `BankstaatServiceTests`, `TegenrekeningRegelTests` |
+| FR-7.7 | A movement can be booked as a balanced entry or ignored; a booked movement cannot be ignored | `BankstaatServiceTests` |
+| FR-7.8 | Movements and matching rules survive closing and reopening the database | `SharpCoreDbBankstaatRepositoryTests`, `SharpCoreDbTegenrekeningRegelRepositoryTests` |
+| FR-7.9 | Every proposal for the open movements is built in one pass: the ledger and the learned rules are read once per page load, not once per movement | `VoorstellenAsync_LeestDeRekeningenEnDeRegelsEenKeer` |
 
 ## 2. Non-functional requirements
 
