@@ -8,35 +8,35 @@
 
 | ID | Requirement | Verified by |
 | --- | --- | --- |
-| FR-1.1 | An account has a unique number, a name and one of five types: assets, liabilities, equity, revenue, expenses | `RekeningTests`, repository tests |
-| FR-1.2 | An account can be flagged as current (short-term), as inventory, and/or as cash | `RekeningTests`, `BalansOpstellerTests` |
-| FR-1.3 | A journal entry has a date, a description, an optional reference and at least two lines | `JournaalpostTests` |
-| FR-1.4 | A line is either a debit or a credit — never both, never neither, never negative | `JournaalpostTests` |
-| FR-1.5 | Total debit must equal total credit before an entry can be posted | `JournaalpostTests`, `GrootboekTests` |
-| FR-1.6 | Posting to an unknown or deactivated account is rejected | `GrootboekTests`, `JournaalpostServiceTests` |
-| FR-1.7 | The same entry cannot be posted twice | `GrootboekTests` |
+| FR-1.1 | An account has a unique number, a name and one of five types: assets, liabilities, equity, revenue, expenses | `AccountTests`, repository tests |
+| FR-1.2 | An account can be flagged as current (short-term), as inventory, and/or as cash | `AccountTests`, `BalanceSheetBuilderTests` |
+| FR-1.3 | A journal entry has a date, a description, an optional reference and at least two lines | `JournalEntryTests` |
+| FR-1.4 | A line is either a debit or a credit — never both, never neither, never negative | `JournalEntryTests` |
+| FR-1.5 | Total debit must equal total credit before an entry can be posted | `JournalEntryTests`, `LedgerTests` |
+| FR-1.6 | Posting to an unknown or deactivated account is rejected | `LedgerTests`, `JournalEntryServiceTests` |
+| FR-1.7 | The same entry cannot be posted twice | `LedgerTests` |
 
 ### FR-2 Statements
 
 | ID | Requirement | Verified by |
 | --- | --- | --- |
-| FR-2.1 | The balance sheet shows assets, liabilities, equity and the result as of a date | `BalansOpstellerTests` |
-| FR-2.2 | Assets must equal liabilities + equity + result, and the statement reports whether it does | `BalansOpstellerTests` |
-| FR-2.3 | Credit-normal accounts (liabilities, equity, revenue) are presented as positive amounts | `BalansOpstellerTests`, `WinstVerliesOpstellerTests` |
-| FR-2.4 | Accounts without a balance (or without movement in the period) are omitted | `BalansOpstellerTests`, `WinstVerliesOpstellerTests` |
-| FR-2.5 | The profit and loss statement covers a period and reports revenue, expenses and the result | `WinstVerliesOpstellerTests` |
-| FR-2.6 | The cash flow statement splits movements into operating, investing and financing activities | `KasstroomOpstellerTests` |
-| FR-2.7 | Cash flow classification follows the counterpart account type (revenue/expense → operating, non-cash asset → investing, liability/equity → financing) | `KasstroomOpstellerTests` |
-| FR-2.8 | Entries without a cash movement do not appear in the cash flow statement | `KasstroomOpstellerTests` |
-| FR-2.9 | Opening cash + net movement equals closing cash | `KasstroomOpstellerTests` |
-| FR-2.10 | Ratios: current, quick, solvency, net profit margin, return on equity | `RatioBerekeningTests` |
-| FR-2.11 | A ratio whose denominator is zero is reported as *not available*, never as a division error | `RatioBerekeningTests` |
+| FR-2.1 | The balance sheet shows assets, liabilities, equity and the result as of a date | `BalanceSheetBuilderTests` |
+| FR-2.2 | Assets must equal liabilities + equity + result, and the statement reports whether it does | `BalanceSheetBuilderTests` |
+| FR-2.3 | Credit-normal accounts (liabilities, equity, revenue) are presented as positive amounts | `BalanceSheetBuilderTests`, `ProfitAndLossBuilderTests` |
+| FR-2.4 | Accounts without a balance (or without movement in the period) are omitted | `BalanceSheetBuilderTests`, `ProfitAndLossBuilderTests` |
+| FR-2.5 | The profit and loss statement covers a period and reports revenue, expenses and the result | `ProfitAndLossBuilderTests` |
+| FR-2.6 | The cash flow statement splits movements into operating, investing and financing activities | `CashFlowBuilderTests` |
+| FR-2.7 | Cash flow classification follows the counterpart account type (revenue/expense → operating, non-cash asset → investing, liability/equity → financing) | `CashFlowBuilderTests` |
+| FR-2.8 | Entries without a cash movement do not appear in the cash flow statement | `CashFlowBuilderTests` |
+| FR-2.9 | Opening cash + net movement equals closing cash | `CashFlowBuilderTests` |
+| FR-2.10 | Ratios: current, quick, solvency, net profit margin, return on equity | `RatioCalculatorTests` |
+| FR-2.11 | A ratio whose denominator is zero is reported as *not available*, never as a division error | `RatioCalculatorTests` |
 
 ### FR-3 Storage
 
 | ID | Requirement | Verified by |
 | --- | --- | --- |
-| FR-3.1 | The administration is stored in one encrypted SharpCoreDB file, protected by a master password | `SharpCoreDbRekeningRepositoryTests` |
+| FR-3.1 | The administration is stored in one encrypted SharpCoreDB file, protected by a master password | `SharpCoreDbAccountRepositoryTests` |
 | FR-3.2 | Schema creation is idempotent and runs on every start | Infrastructure tests (reopen) |
 | FR-3.3 | Data survives closing and reopening the database | `Data_SurvivesReopen` tests |
 | FR-3.4 | Deleting an entry removes its lines too | `VerwijderenAsync_RemovesEntryAndItsLines` |
@@ -61,7 +61,7 @@
 | FR-5.2 | Accounts can be listed and created | Manual |
 | FR-5.3 | Entries can be listed per year and posted as a two-line entry | Manual |
 | FR-5.4 | The report viewer renders the selected report and offers CSV download and print | Manual |
-| FR-5.5 | Language can be switched and the choice persists | `LocalisatieTests` + cookie middleware |
+| FR-5.5 | Language can be switched and the choice persists | `LocalizationTests` + cookie middleware |
 | FR-5.6 | Expected failures (domain rules, missing data) show a readable message | `FinPageModel` |
 | FR-5.7 | A bank statement can be uploaded; every open movement shows the proposal and can be booked or ignored | `Pages/Bankimport.cshtml`, manual |
 
@@ -69,7 +69,7 @@
 
 | ID | Requirement | Verified by |
 | --- | --- | --- |
-| FR-6.1 | Eight languages: nl (default), en, de, fr, es, it, pt, pl | `LocalisatieTests` |
+| FR-6.1 | Eight languages: nl (default), en, de, fr, es, it, pt, pl | `LocalizationTests` |
 | FR-6.2 | Every supported language defines every key | `IedereTaal_BevatAlleSleutels` |
 | FR-6.3 | An unsupported culture falls back to Dutch | `OnbekendeCultuur_ValtTerugOpNederlands` |
 | FR-6.4 | Numbers and dates follow the request culture | `ToString("N2")` / `"d"` with `CurrentCulture` |
@@ -82,17 +82,17 @@
 | FR-7.2 | The reader follows the format, not the bank: XML by local name, CSV columns by header name | `Lees_IgnoresNamespaceAndVersion`, `Lees_RecognisesHeaderNamesInAnyForm` |
 | FR-7.3 | Only movements the bank has booked are imported | `Lees_SkipsPendingMovements` |
 | FR-7.4 | Importing the same statement twice never duplicates a movement | `BankstaatServiceTests`, `Lees_DerivesAStableReferenceWhenTheBankSuppliesNone` |
-| FR-7.5 | The assistant proposes a counterparty account with a certainty and a reason; from 90 it is pre-selected | `MatchingAssistentTests`, `BoekingsvoorstelTests` |
-| FR-7.6 | The assistant only learns from confirmed bookings, and each rule counts its confirmations | `BankstaatServiceTests`, `TegenrekeningRegelTests` |
+| FR-7.5 | The assistant proposes a counterparty account with a certainty and a reason; from 90 it is pre-selected | `MatchingAssistentTests`, `PostingProposalTests` |
+| FR-7.6 | The assistant only learns from confirmed bookings, and each rule counts its confirmations | `BankstaatServiceTests`, `CounterAccountRuleTests` |
 | FR-7.7 | A movement can be booked as a balanced entry or ignored; a booked movement cannot be ignored | `BankstaatServiceTests` |
-| FR-7.8 | Movements and matching rules survive closing and reopening the database | `SharpCoreDbBankstaatRepositoryTests`, `SharpCoreDbTegenrekeningRegelRepositoryTests` |
-| FR-7.9 | Every proposal for the open movements is built in one pass: the ledger and the learned rules are read once per page load, not once per movement | `VoorstellenAsync_LeestDeRekeningenEnDeRegelsEenKeer` |
+| FR-7.8 | Movements and matching rules survive closing and reopening the database | `SharpCoreDbBankstaatRepositoryTests`, `SharpCoreDbCounterAccountRuleRepositoryTests` |
+| FR-7.9 | Every proposal for the open movements is built in one pass: the ledger and the learned rules are read once per page load, not once per movement | `VoorstellenAsync_LeestDeAccountenEnDeRegelsEenKeer` |
 
 ## 2. Non-functional requirements
 
 | ID | Requirement |
 | --- | --- |
-| NFR-1 | `FinOverzicht.Domain` has no package references and no framework dependencies |
+| NFR-1 | `LedgerSheets.Domain` has no package references and no framework dependencies |
 | NFR-2 | Layers depend inwards only; enforced by architecture tests |
 | NFR-3 | The build produces zero warnings under the Microsoft + Sonar analyzers |
 | NFR-4 | All tests pass on Linux, Windows and macOS in CI |
@@ -107,7 +107,7 @@
 | --- | --- | --- |
 | Domain has zero package references | Put entities in the storage project | The accounting rules are the risky part; keeping them dependency-free makes them testable and portable |
 | Money as a `decimal` value object with a currency | `double` or raw `decimal` | Rounding and mixed-currency bugs are the classic accounting defect; the type prevents them |
-| `Grootboek` in memory, statements derived | SQL aggregation per statement | Keeps the accounting logic in one testable place and independent of the storage engine |
+| `Ledger` in memory, statements derived | SQL aggregation per statement | Keeps the accounting logic in one testable place and independent of the storage engine |
 | Store amounts as `DECIMAL`, dates as ISO-8601 text | Store `DateTime` | ISO text sorts chronologically and is unambiguous across cultures |
 | Index and table names kept short | Descriptive long names | SharpCoreDB derives metadata block names from them and caps a block name at 31 characters |
 | Cash flow classified from counterpart accounts | A configurable classification per account | Fewer knobs, an explicit documented rule, and it can be tested |
@@ -119,7 +119,7 @@
 A release is acceptable when:
 
 1. All eight success criteria of the brief are demonstrated by automated tests.
-2. `dotnet build FinOverzicht.slnx` and `dotnet test FinOverzicht.slnx` are green and warning-free on
+2. `dotnet build LedgerSheets.slnx` and `dotnet test LedgerSheets.slnx` are green and warning-free on
    all three CI operating systems.
 3. The README lets a new user go from clone to a visible balance sheet without reading source code.
 

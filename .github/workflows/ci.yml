@@ -32,17 +32,17 @@ jobs:
           dotnet-quality: 'preview'
 
       - name: Restore
-        run: dotnet restore FinOverzicht.slnx
+        run: dotnet restore LedgerSheets.slnx
 
       - name: Build (warnings are errors)
-        run: dotnet build FinOverzicht.slnx -c Release --no-restore -warnaserror
+        run: dotnet build LedgerSheets.slnx -c Release --no-restore -warnaserror
 
       - name: Test
-        run: dotnet test FinOverzicht.slnx -c Release --no-build
+        run: dotnet test LedgerSheets.slnx -c Release --no-build
 
       - name: Pack
         if: matrix.os == 'ubuntu-latest'
-        run: dotnet pack FinOverzicht.slnx -c Release --no-build -o artifacts
+        run: dotnet pack LedgerSheets.slnx -c Release --no-build -o artifacts
 
       - name: Upload packages
         if: matrix.os == 'ubuntu-latest'
@@ -67,7 +67,7 @@ jobs:
           dotnet-quality: 'preview'
 
       - name: Restore
-        run: dotnet restore FinOverzicht.slnx
+        run: dotnet restore LedgerSheets.slnx
 
       - name: Check for known vulnerabilities
-        run: dotnet list FinOverzicht.slnx package --vulnerable --include-transitive
+        run: dotnet list LedgerSheets.slnx package --vulnerable --include-transitive

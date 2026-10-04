@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="BalanceSheet" xml:space="preserve"><value>Stato patrimoniale</value></data>
+  <data name="ProfitAndLoss" xml:space="preserve"><value>Conto economico</value></data>
+  <data name="CashFlowStatement" xml:space="preserve"><value>Rendiconto finanziario</value></data>
+  <data name="Ratio" xml:space="preserve"><value>Indici chiave</value></data>
+  <data name="Assets" xml:space="preserve"><value>Attivo</value></data>
+  <data name="Liabilities" xml:space="preserve"><value>Passivo</value></data>
+  <data name="Equity" xml:space="preserve"><value>Patrimonio netto</value></data>
+  <data name="Result" xml:space="preserve"><value>Risultato</value></data>
+  <data name="Revenue" xml:space="preserve"><value>Ricavi</value></data>
+  <data name="Costs" xml:space="preserve"><value>Costi</value></data>
+  <data name="Total" xml:space="preserve"><value>Totale</value></data>
+  <data name="Operating" xml:space="preserve"><value>Attività operativa</value></data>
+  <data name="Investing" xml:space="preserve"><value>Attività di investimento</value></data>
+  <data name="Financing" xml:space="preserve"><value>Attività di finanziamento</value></data>
+  <data name="OpeningBalance" xml:space="preserve"><value>Saldo iniziale</value></data>
+  <data name="ClosingBalance" xml:space="preserve"><value>Saldo finale</value></data>
+  <data name="NetMovement" xml:space="preserve"><value>Flusso di cassa netto</value></data>
+  <data name="CurrentRatio" xml:space="preserve"><value>Indice di liquidità generale</value></data>
+  <data name="QuickRatio" xml:space="preserve"><value>Indice di liquidità immediata</value></data>
+  <data name="Solvency" xml:space="preserve"><value>Solvibilità</value></data>
+  <data name="NetProfitMargin" xml:space="preserve"><value>Margine netto</value></data>
+  <data name="ReturnOnEquity" xml:space="preserve"><value>Redditività del capitale proprio</value></data>
+  <data name="Account" xml:space="preserve"><value>Conto</value></data>
+  <data name="Description" xml:space="preserve"><value>Descrizione</value></data>
+  <data name="Amount" xml:space="preserve"><value>Importo</value></data>
+  <data name="NoData" xml:space="preserve"><value>Nessun dato disponibile per questo periodo.</value></data>
+  <data name="GeneratedOn" xml:space="preserve"><value>Generato il</value></data>
+  <data name="Period" xml:space="preserve"><value>Periodo</value></data>
+  <data name="Balanced" xml:space="preserve"><value>In pareggio</value></data>
+  <data name="NotBalanced" xml:space="preserve"><value>Non in pareggio</value></data>
+  <data name="OverviewTitle" xml:space="preserve"><value>Panoramica finanziaria</value></data>
+  <data name="OverviewDescription" xml:space="preserve"><value>Stato patrimoniale, risultato, flussi di cassa e indici chiave in un unico documento.</value></data>
+  <data name="AppTitle" xml:space="preserve"><value>LedgerSheets</value></data>
+  <data name="MenuDashboard" xml:space="preserve"><value>Dashboard</value></data>
+  <data name="MenuAccounts" xml:space="preserve"><value>Conti</value></data>
+  <data name="MenuJournal" xml:space="preserve"><value>Scritture</value></data>
+  <data name="MenuReport" xml:space="preserve"><value>Report</value></data>
+  <data name="Language" xml:space="preserve"><value>Lingua</value></data>
+  <data name="DownloadCsv" xml:space="preserve"><value>Scarica CSV</value></data>
+  <data name="Print" xml:space="preserve"><value>Stampa</value></data>
+  <data name="Number" xml:space="preserve"><value>Numero</value></data>
+  <data name="Name" xml:space="preserve"><value>Nome</value></data>
+  <data name="Type" xml:space="preserve"><value>Tipo</value></data>
+  <data name="Date" xml:space="preserve"><value>Data</value></data>
+  <data name="Post" xml:space="preserve"><value>Registra</value></data>
+  <data name="Add" xml:space="preserve"><value>Aggiungi</value></data>
+  <data name="Debit" xml:space="preserve"><value>Dare</value></data>
+  <data name="Credit" xml:space="preserve"><value>Avere</value></data>
+  <data name="Reference" xml:space="preserve"><value>Riferimento</value></data>
+  <data name="Year" xml:space="preserve"><value>Anno</value></data>
+  <data name="Current" xml:space="preserve"><value>Corrente</value></data>
+  <data name="CashEquivalent" xml:space="preserve"><value>Disponibilità liquide</value></data>
+  <data name="Inventory" xml:space="preserve"><value>Rimanenze</value></data>
+  <data name="New" xml:space="preserve"><value>Nuovo</value></data>
+  <data name="MenuBankImport" xml:space="preserve"><value>Importazione bancaria</value></data>
+  <data name="StatementImport" xml:space="preserve"><value>Importa estratto conto</value></data>
+  <data name="OpenMovements" xml:space="preserve"><value>Movimenti aperti</value></data>
+  <data name="BankAccount" xml:space="preserve"><value>Conto bancario</value></data>
+  <data name="File" xml:space="preserve"><value>File</value></data>
+  <data name="Format" xml:space="preserve"><value>Formato</value></data>
+  <data name="Automatic" xml:space="preserve"><value>Automatico</value></data>
+  <data name="Camt053" xml:space="preserve"><value>CAMT.053 (XML)</value></data>
+  <data name="Csv" xml:space="preserve"><value>CSV</value></data>
+  <data name="Import" xml:space="preserve"><value>Importa</value></data>
+  <data name="ImportResult" xml:space="preserve"><value>Letti: {0}, aggiunti: {1}, ignorati: {2}.</value></data>
+  <data name="AllAlreadyKnown" xml:space="preserve"><value>Tutti i movimenti in questo file erano già stati importati.</value></data>
+  <data name="CounterAccount" xml:space="preserve"><value>Conto di contropartita</value></data>
+  <data name="Proposal" xml:space="preserve"><value>Proposta</value></data>
+  <data name="Confidence" xml:space="preserve"><value>Affidabilità</value></data>
+  <data name="NoProposal" xml:space="preserve"><value>Nessuna proposta</value></data>
+  <data name="Ignore" xml:space="preserve"><value>Ignora</value></data>
+</root>

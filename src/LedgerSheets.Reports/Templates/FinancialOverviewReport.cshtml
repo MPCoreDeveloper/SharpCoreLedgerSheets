@@ -1,0 +1,122 @@
+@model FinancialOverviewModel
+@{
+    Layout = "_ReportLayout";
+    var labels = (IReportLabels)ViewData["Labels"]!;
+    var overview = Model.Overview;
+    var balanceSheet = overview.BalanceSheet;
+    var profitAndLoss = overview.ProfitAndLoss;
+    var cashFlow = overview.CashFlow;
+    var ratio = overview.Ratio;
+
+    var percentageRatio = new[]
+    {
+        (Title: labels.Solvency, Value: ratio.Solvency),
+        (Title: labels.NetProfitMargin, Value: ratio.NetProfitMargin),
+        (Title: labels.ReturnOnEquity, Value: ratio.ReturnOnEquity),
+    };
+}
+<h2>@labels.OverviewTitle</h2>
+
+<div class="columns">
+    <section>
+        <h3>@labels.BalanceSheet</h3>
+        <table>
+            <tbody>
+            <tr>
+                <td>@labels.Total @labels.Assets</td>
+                <td class="amount">@(balanceSheet.TotalAssets.ToString("N2"))</td>
+            </tr>
+            <tr>
+                <td>@labels.Total @labels.Liabilities</td>
+                <td class="amount">@(balanceSheet.TotalLiabilities.ToString("N2"))</td>
+            </tr>
+            <tr>
+                <td>@labels.Total @labels.Equity</td>
+                <td class="amount">@(balanceSheet.EquityIncludingResult.ToString("N2"))</td>
+            </tr>
+            <tr class="total">
+                <td>@labels.Result</td>
+                <td class="amount @(balanceSheet.Result < 0m ? "negative" : string.Empty)">@(balanceSheet.Result.ToString("N2"))</td>
+            </tr>
+            </tbody>
+        </table>
+        <p>
+            <span class="badge @(balanceSheet.IsBalanced ? "ok" : "warn")">
+                @(balanceSheet.IsBalanced ? labels.Balanced : labels.NotBalanced)
+            </span>
+        </p>
+    </section>
+
+    <section>
+        <h3>@labels.ProfitAndLoss</h3>
+        <table>
+            <tbody>
+            <tr>
+                <td>@labels.Total @labels.Revenue</td>
+                <td class="amount">@(profitAndLoss.TotalRevenue.ToString("N2"))</td>
+            </tr>
+            <tr>
+                <td>@labels.Total @labels.Costs</td>
+                <td class="amount">@(profitAndLoss.TotalCosts.ToString("N2"))</td>
+            </tr>
+            <tr class="total">
+                <td>@labels.Result</td>
+                <td class="amount @(profitAndLoss.Result < 0m ? "negative" : string.Empty)">@(profitAndLoss.Result.ToString("N2"))</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section>
+        <h3>@labels.CashFlowStatement</h3>
+        <table>
+            <tbody>
+            <tr>
+                <td>@labels.Operating</td>
+                <td class="amount @(cashFlow.NetOperating < 0m ? "negative" : string.Empty)">@(cashFlow.NetOperating.ToString("N2"))</td>
+            </tr>
+            <tr>
+                <td>@labels.Investing</td>
+                <td class="amount @(cashFlow.NetInvesting < 0m ? "negative" : string.Empty)">@(cashFlow.NetInvesting.ToString("N2"))</td>
+            </tr>
+            <tr>
+                <td>@labels.Financing</td>
+                <td class="amount @(cashFlow.NetFinancing < 0m ? "negative" : string.Empty)">@(cashFlow.NetFinancing.ToString("N2"))</td>
+            </tr>
+            <tr class="total">
+                <td>@labels.NetMovement</td>
+                <td class="amount @(cashFlow.NetMovement < 0m ? "negative" : string.Empty)">@(cashFlow.NetMovement.ToString("N2"))</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</div>
+
+<h2>@labels.Ratio</h2>
+<div class="columns">
+    <section>
+        <ul class="ratio-list">
+            <li>
+                <span>@labels.CurrentRatio</span>
+                <span class="ratio-value">@(ratio.CurrentRatio.HasValue ? ratio.CurrentRatio.Value.ToString("N2") : "–")</span>
+            </li>
+            <li>
+                <span>@labels.QuickRatio</span>
+                <span class="ratio-value">@(ratio.QuickRatio.HasValue ? ratio.QuickRatio.Value.ToString("N2") : "–")</span>
+            </li>
+        </ul>
+    </section>
+    <section>
+        <ul class="ratio-list">
+            @foreach (var item in percentageRatio)
+            {
+                <li>
+                    <span>@item.Title</span>
+                    <span class="ratio-value">
+                        @(item.Value.HasValue ? (item.Value.Value * 100m).ToString("N1") + "%" : "–")
+                    </span>
+                </li>
+            }
+        </ul>
+    </section>
+</div>

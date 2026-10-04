@@ -5,15 +5,15 @@
 ## 1. Layering
 
 ```
-FinOverzicht.Web                ASP.NET Core host (Razor Pages, localization, DI composition)
+LedgerSheets.Web                ASP.NET Core host (Razor Pages, localization, DI composition)
   |
-  +-- FinOverzicht.Reports      Razor templates, ReportRegistry, IReportRenderer, CSV exporter
+  +-- LedgerSheets.Reports      Razor templates, ReportRegistry, IReportRenderer, CSV exporter
   |
-  +-- FinOverzicht.Infrastructure   SharpCoreDB adapters + CAMT.053/CSV statement readers
+  +-- LedgerSheets.Infrastructure   SharpCoreDB adapters + CAMT.053/CSV statement readers
   |
-  +-- FinOverzicht.Application      use cases + port definitions (IRekeningRepository, ...)
+  +-- LedgerSheets.Application      use cases + port definitions (IAccountRepository, ...)
              |
-             +-- FinOverzicht.Domain    entities, value objects, statements, ratios (no dependencies)
+             +-- LedgerSheets.Domain    entities, value objects, statements, ratios (no dependencies)
 ```
 
 Dependency direction is tested, not merely intended: `LaagAfhankelijkhedenTests` fails the build if
@@ -22,11 +22,11 @@ outwards.
 
 ### Why an in-memory ledger?
 
-Statements are computed from a rehydrated `Grootboek` rather than from SQL aggregates. The ledger
+Statements are computed from a rehydrated `Ledger` rather than from SQL aggregates. The ledger
 of a small administration is tiny, and this choice buys three things:
 
 1. the accounting rules live in exactly one place and are unit-testable without a database;
-2. the storage engine is replaceable (the ports are `IRekeningRepository` / `IJournaalpostRepository`);
+2. the storage engine is replaceable (the ports are `IAccountRepository` / `IJournalEntryRepository`);
 3. a report needs history anyway — cumulative equity and the cash *opening* balance require entries
    older than the reporting period.
 
@@ -34,17 +34,17 @@ of a small administration is tiny, and this choice buys three things:
 
 | Type | Kind | Responsibility |
 | --- | --- | --- |
-| `Valuta` | value object | ISO-4217 code, symbol, decimals |
-| `Bedrag` | value object (struct) | Rounded money; refuses mixed-currency arithmetic |
-| `Periode` | value object (struct) | Inclusive date range with `Bevat` and `VoorJaar` |
-| `Rekening` | entity | An account and its classification flags |
-| `Journaalpost` / `JournaalpostRegel` | entity | A balanced entry and its lines |
-| `Grootboek` | aggregate | Accounts + entries; `Boek`, `Herstel`, `Saldo`, `MutatieInPeriode` |
-| `Balans`, `WinstVerlies`, `KasstroomOverzicht`, `RatioOverzicht` | immutable results | The statements and the ratios |
-| `BalansOpsteller`, `WinstVerliesOpsteller`, `KasstroomOpsteller`, `RatioBerekening` | domain services | Derive the statements from the ledger |
-| `BankTransactie` | entity | An imported bank movement: signed amount, the bank's reference, counterparty and status |
-| `TegenrekeningRegel` | entity | A matching rule: keyword → counterparty account, with a confirmation count |
-| `Boekingsvoorstel` | immutable result | The suggested counterparty account plus its certainty (0-100) and reason |
+| `Currency` | value object | ISO-4217 code, symbol, decimals |
+| `Amount` | value object (struct) | Rounded money; refuses mixed-currency arithmetic |
+| `Period` | value object (struct) | Inclusive date range with `Bevat` and `VoorJaar` |
+| `Account` | entity | An account and its classification flags |
+| `JournalEntry` / `JournalEntryLine` | entity | A balanced entry and its lines |
+| `Ledger` | aggregate | Accounts + entries; `Boek`, `Herstel`, `Saldo`, `MutatieInPeriod` |
+| `BalanceSheet`, `ProfitAndLoss`, `CashFlowStatement`, `RatioOverview` | immutable results | The statements and the ratios |
+| `BalanceSheetBuilder`, `ProfitAndLossBuilder`, `CashFlowBuilder`, `RatioCalculator` | domain services | Derive the statements from the ledger |
+| `BankTransaction` | entity | An imported bank movement: signed amount, the bank's reference, counterparty and status |
+| `CounterAccountRule` | entity | A matching rule: keyword → counterparty account, with a confirmation count |
+| `PostingProposal` | immutable result | The suggested counterparty account plus its certainty (0-100) and reason |
 | `MatchingAssistent` | domain service | `StelVoor`: IBAN > confirmed keyword > account name/number |
 
 ### Sign convention
@@ -73,21 +73,21 @@ is `sum(Debet − Credit)` over those cash lines, classified by the counterpart 
 
 Movements are aggregated per section and description; entries without a cash movement are skipped.
 The result reconciles by construction: opening cash plus the three section totals equals closing
-cash, and `KasstroomOverzicht.IsInBalans` asserts it.
+cash, and `CashFlowStatement.IsBalanced` asserts it.
 
 ## 3. Application layer
 
 | Service | Responsibility |
 | --- | --- |
-| `IRekeningService` | List, create, rename and deactivate accounts |
-| `IJournaalpostService` | List and post entries; resolves account numbers to identities |
-| `IGrootboekLader` | Rehydrate a complete `Grootboek` from the ports |
+| `IAccountService` | List, create, rename and deactivate accounts |
+| `IJournalEntryService` | List and post entries; resolves account numbers to identities |
+| `ILedgerLader` | Rehydrate a complete `Ledger` from the ports |
 | `IRapportageService` | Compose the statement builders into a `FinancieelOverzicht` for a period |
 | `IBankstaatService` | Import a statement, list movements, propose a counterparty account, book or ignore a movement |
 
-Ports: `IRekeningRepository`, `IJournaalpostRepository`, `IBankstaatRepository`,
-`ITegenrekeningRegelRepository` and `IBankstaatImporteur`. The application layer never mentions the
-storage engine or a bank format; `AddFinOverzichtApplication()` registers the use cases and the
+Ports: `IAccountRepository`, `IJournalEntryRepository`, `IBankstaatRepository`,
+`ICounterAccountRuleRepository` and `IBankstaatImporteur`. The application layer never mentions the
+storage engine or a bank format; `AddLedgerSheetsApplication()` registers the use cases and the
 domain services.
 
 ### Bank import flow
@@ -95,11 +95,11 @@ domain services.
 ```
 BankstaatService.ImporteerAsync
     -> IBankstaatImporteur (first reader whose KanVerwerken says yes)
-    -> BankTransactie per movement, keyed on bank account + bank reference
+    -> BankTransaction per movement, keyed on bank account + bank reference
     -> IBankstaatRepository.BestaandeSleutelsAsync: duplicates are skipped, not overwritten
 BankstaatService.VoorstelAsync     -> IMatchingAssistent (one movement)
 BankstaatService.VoorstellenAsync  -> IMatchingAssistent (a whole list; ledger + learned rules read once)
-BankstaatService.BoekAsync         -> IJournaalpostService (balanced entry) + rule upsert (confirmations + 1)
+BankstaatService.BoekAsync         -> IJournalEntryService (balanced entry) + rule upsert (confirmations + 1)
 ```
 
 The import page uses the batch variant: the number of open movements drives the number of proposals,
@@ -117,7 +117,7 @@ class in the infrastructure layer plus one registration. Two rules are deliberat
 
 ## 4. Infrastructure
 
-`AddFinOverzichtOpslag(configure)` wires SharpCoreDB:
+`AddLedgerSheetsStorage(configure)` wires SharpCoreDB:
 
 - `AddSharpCoreDB()` provides the crypto services and `DatabaseFactory`;
 - `ISharpCoreDbFactory.Open()` validates the master password, creates the directory, opens (or
@@ -148,7 +148,7 @@ Amounts are `DECIMAL`; dates are `yyyy-MM-dd` text so they sort chronologically.
 index name is deliberately short**: SharpCoreDB derives metadata block names such as
 `table:<table>:overflow` and caps a block name at 31 characters.
 
-Rehydration uses `Grootboek.Herstel` rather than `Boek`: historical entries may reference accounts
+Rehydration uses `Ledger.Herstel` rather than `Boek`: historical entries may reference accounts
 that have since been deactivated, so the "account must be active" rule applies when posting, not
 when loading. Balance and account existence are still enforced on load.
 
@@ -166,7 +166,7 @@ layout never touches `Model` and templates never hard-code a word. `IReportLabel
 keeps the engine language-neutral: the web app binds it to `IStringLocalizer`, and a test can bind
 it to anything.
 
-`AddFinOverzichtReports()` also registers `DiagnosticSource`/`DiagnosticListener` with `TryAdd`, so
+`AddLedgerSheetsReports()` also registers `DiagnosticSource`/`DiagnosticListener` with `TryAdd`, so
 the engine renders inside a bare service provider (tests, console tools) as well as inside a full
 web host.
 
@@ -182,19 +182,19 @@ provider remembers the choice, and a short middleware writes that cookie with `H
 and `SameSite=Lax`. `FinPageModel` converts expected domain/storage failures into readable messages
 instead of stack traces.
 
-Pages stay thin: `Rekeningen` and `Boekingen` pass what they are given to a service, and `Bankimport`
+Pages stay thin: `Accounten` and `Boekingen` pass what they are given to a service, and `Bankimport`
 uploads a statement, shows the proposal per open movement and offers *book* or *ignore* — the
 assistant decides nothing on its own, the user always confirms.
 
 The `SharedResource` marker type lives in `Resources/` next to its `.resx` files, which is exactly
 what the default `ResourceManagerStringLocalizer` naming convention expects — so
-`IStringLocalizer<SharedResource>` resolves `FinOverzicht.Web.Resources.SharedResource[.<culture>]`.
+`IStringLocalizer<SharedResource>` resolves `LedgerSheets.Web.Resources.SharedResource[.<culture>]`.
 
 ## 7. Testing strategy
 
 | Layer | Approach |
 | --- | --- |
-| Domain | Pure unit tests over a shared ledger scenario (`TestGrootboek`) with hand-computed expectations; bank movements, matching rules and the assistant are covered the same way |
+| Domain | Pure unit tests over a shared ledger scenario (`TestLedger`) with hand-computed expectations; bank movements, matching rules and the assistant are covered the same way |
 | Application | Use cases against in-memory repositories that implement the ports |
 | Infrastructure | Real encrypted SharpCoreDB databases in the temp folder, including reopen durability, plus the CAMT.053/CSV readers against real statement fragments |
 | Reports | Full Razor rendering through a real service provider, plus CSV assertions |

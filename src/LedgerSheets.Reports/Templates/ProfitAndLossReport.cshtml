@@ -1,0 +1,69 @@
+@model FinancialOverviewModel
+@{
+    Layout = "_ReportLayout";
+    var labels = (IReportLabels)ViewData["Labels"]!;
+    var report = Model.Overview.ProfitAndLoss;
+}
+<h2>@labels.ProfitAndLoss</h2>
+
+<h3>@labels.Revenue</h3>
+<table>
+    <thead>
+    <tr>
+        <th>@labels.Account</th>
+        <th>@labels.Description</th>
+        <th class="amount">@labels.Amount</th>
+    </tr>
+    </thead>
+    <tbody>
+    @if (report.Revenue.Count == 0)
+    {
+        <tr><td colspan="3" class="empty">@labels.NoData</td></tr>
+    }
+    @foreach (var line in report.Revenue)
+    {
+        <tr>
+            <td>@line.Number</td>
+            <td>@line.Description</td>
+            <td class="amount">@(line.Amount.ToString("N2"))</td>
+        </tr>
+    }
+    <tr class="subtotal">
+        <td colspan="2">@labels.Total @labels.Revenue</td>
+        <td class="amount">@(report.TotalRevenue.ToString("N2"))</td>
+    </tr>
+    </tbody>
+</table>
+
+<h3>@labels.Costs</h3>
+<table>
+    <tbody>
+    @if (report.Costs.Count == 0)
+    {
+        <tr><td colspan="2" class="empty">@labels.NoData</td></tr>
+    }
+    @foreach (var line in report.Costs)
+    {
+        <tr>
+            <td>@line.Number &mdash; @line.Description</td>
+            <td class="amount">@(line.Amount.ToString("N2"))</td>
+        </tr>
+    }
+    <tr class="subtotal">
+        <td>@labels.Total @labels.Costs</td>
+        <td class="amount">@(report.TotalCosts.ToString("N2"))</td>
+    </tr>
+    <tr class="total">
+        <td>@labels.Result</td>
+        <td class="amount @(report.Result < 0m ? "negative" : string.Empty)">@(report.Result.ToString("N2"))</td>
+    </tr>
+    </tbody>
+</table>
+
+@if (report.NetMargin.HasValue)
+{
+    <p class="ratio-list">
+        <span>@labels.NetProfitMargin</span>
+        <span class="ratio-value">@((report.NetMargin.Value * 100m).ToString("N1"))%</span>
+    </p>
+}

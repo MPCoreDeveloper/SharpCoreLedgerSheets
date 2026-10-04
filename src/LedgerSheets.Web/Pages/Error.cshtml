@@ -1,0 +1,9 @@
+@page
+@model LedgerSheets.Web.Pages.ErrorModel
+@inject IStringLocalizer<SharedResource> L
+@{
+    ViewData["Title"] = "Error";
+}
+<h1>@L["MenuDashboard"]</h1>
+<p class="lead">Er is iets misgegaan. Check the configuratie (with name the master-password from the database) and try the again.</p>
+<p><a href="/">@L["MenuDashboard"]</a></p>

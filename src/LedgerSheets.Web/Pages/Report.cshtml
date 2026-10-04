@@ -1,0 +1,37 @@
+@page
+@model LedgerSheets.Web.Pages.ReportModel
+@inject IStringLocalizer<SharedResource> L
+@{
+    ViewData["Title"] = L["MenuReport"];
+    var htmlUrl = Url.Page("/Report", "Html", new { report = Model.Key, year = Model.Year });
+    var csvUrl = Url.Page("/Report", "Csv", new { report = Model.Key, year = Model.Year });
+}
+<h1>@L["MenuReport"]</h1>
+<p class="lead">
+    @{
+        var active = Model.Reports.FirstOrDefault(r => r.Key == Model.Key);
+    }
+    @(active is null ? string.Empty : Model.DescriptionFrom(active))
+</p>
+
+<form method="get" class="toolbar">
+    <label for="report">@L["MenuReport"]</label>
+    <select id="report" name="report">
+        @foreach (var definition in Model.Reports)
+        {
+            <option value="@definition.Key" selected="@(Model.Key == definition.Key)">@Model.TitleFrom(definition)</option>
+        }
+    </select>
+    <label for="year">@L["Year"]</label>
+    <input id="year" name="year" type="number" min="1900" max="2999" value="@Model.Year" />
+    <button type="submit">@L["MenuReport"]</button>
+    <a href="@csvUrl">@L["DownloadCsv"]</a>
+    <a href="@htmlUrl" target="_blank" rel="noopener">@L["Print"]</a>
+</form>
+
+@if (Model.ErrorMessage is not null)
+{
+    <div class="melding">@Model.ErrorMessage</div>
+}
+
+<iframe class="report-frame" src="@htmlUrl" title="@L["MenuReport"]"></iframe>

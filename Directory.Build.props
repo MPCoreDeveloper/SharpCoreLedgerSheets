@@ -1,7 +1,7 @@
 <Project>
 
   <PropertyGroup>
-    <!-- FinOverzicht always targets the newest stable .NET / C# combination.
+    <!-- LedgerSheets always targets the newest stable .NET / C# combination.
          .NET 11 (RC) => C# 15. -->
     <LangVersion>15.0</LangVersion>
     <Nullable>enable</Nullable>
@@ -20,13 +20,13 @@
     <!-- Repository metadata (OSS). -->
     <Authors>MPCoreDeveloper</Authors>
     <Company>MPCoreDeveloper</Company>
-    <Product>FinOverzicht</Product>
+    <Product>LedgerSheets</Product>
     <Description>Double-entry bookkeeping engine with the three core financial statements (balance sheet, profit and loss, cash flow) and the key ratios, for small businesses and individuals.</Description>
     <PackageTags>finance;accounting;bookkeeping;balance-sheet;profit-and-loss;cash-flow;ratios;sharpcoredb</PackageTags>
-    <RepositoryUrl>https://github.com/MPCoreDeveloper/FinOverzicht</RepositoryUrl>
+    <RepositoryUrl>https://github.com/MPCoreDeveloper/LedgerSheets</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/MPCoreDeveloper/FinOverzicht</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/MPCoreDeveloper/LedgerSheets</PackageProjectUrl>
     <VersionPrefix>1.0.0</VersionPrefix>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>

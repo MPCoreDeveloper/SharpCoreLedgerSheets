@@ -8,11 +8,11 @@
 
 | ID | Story | Done when | Evidence |
 | --- | --- | --- | --- |
-| 1.1 | Money, currency and period value objects | Amounts round to the currency's decimals; mixed-currency arithmetic throws | `BedragTests`, `ValutaTests`, `PeriodeTests` |
-| 1.2 | Account entity with classification flags | Five types; current/inventory/cash flags validated per type | `RekeningTests` |
-| 1.3 | Journal entry with balanced lines | Debit XOR credit; at least two lines; totals must match | `JournaalpostTests` |
-| 1.4 | Ledger aggregate | Unique account numbers; posting validates existence, active state and balance | `GrootboekTests` |
-| 1.5 | Rehydration | A stored ledger loads back with the same identities and balances | `GrootboekLaderTests`, infrastructure reopen tests |
+| 1.1 | Money, currency and period value objects | Amounts round to the currency's decimals; mixed-currency arithmetic throws | `AmountTests`, `CurrencyTests`, `PeriodTests` |
+| 1.2 | Account entity with classification flags | Five types; current/inventory/cash flags validated per type | `AccountTests` |
+| 1.3 | Journal entry with balanced lines | Debit XOR credit; at least two lines; totals must match | `JournalEntryTests` |
+| 1.4 | Ledger aggregate | Unique account numbers; posting validates existence, active state and balance | `LedgerTests` |
+| 1.5 | Rehydration | A stored ledger loads back with the same identities and balances | `LedgerLaderTests`, infrastructure reopen tests |
 
 **Status: done.**
 
@@ -22,10 +22,10 @@
 
 | ID | Story | Done when | Evidence |
 | --- | --- | --- | --- |
-| 2.1 | Balance sheet | Assets, liabilities, equity and result as of a date; credit-normal accounts presented positive; balance asserted | `BalansOpstellerTests` |
-| 2.2 | Profit and loss statement | Revenue, expenses and result for a period | `WinstVerliesOpstellerTests` |
-| 2.3 | Cash flow statement | Operating/investing/financing sections, opening and closing cash, reconciliation asserted | `KasstroomOpstellerTests` |
-| 2.4 | Ratios | Current, quick, solvency, net margin, return on equity; unavailable instead of a division error | `RatioBerekeningTests` |
+| 2.1 | Balance sheet | Assets, liabilities, equity and result as of a date; credit-normal accounts presented positive; balance asserted | `BalanceSheetBuilderTests` |
+| 2.2 | Profit and loss statement | Revenue, expenses and result for a period | `ProfitAndLossBuilderTests` |
+| 2.3 | Cash flow statement | Operating/investing/financing sections, opening and closing cash, reconciliation asserted | `CashFlowBuilderTests` |
+| 2.4 | Ratios | Current, quick, solvency, net margin, return on equity; unavailable instead of a division error | `RatioCalculatorTests` |
 
 **Status: done.**
 
@@ -35,9 +35,9 @@
 
 | ID | Story | Done when | Evidence |
 | --- | --- | --- | --- |
-| 3.1 | Storage ports | Accounts and entries are abstractions the application owns | `IRekeningRepository`, `IJournaalpostRepository` |
-| 3.2 | Account service | Create, rename, deactivate; duplicate numbers rejected | `RekeningServiceTests` |
-| 3.3 | Entry service | Account numbers resolved; inactive/unknown accounts and unbalanced entries rejected | `JournaalpostServiceTests` |
+| 3.1 | Storage ports | Accounts and entries are abstractions the application owns | `IAccountRepository`, `IJournalEntryRepository` |
+| 3.2 | Account service | Create, rename, deactivate; duplicate numbers rejected | `AccountServiceTests` |
+| 3.3 | Entry service | Account numbers resolved; inactive/unknown accounts and unbalanced entries rejected | `JournalEntryServiceTests` |
 | 3.4 | Reporting service | One call returns balance sheet, P&L, cash flow and ratios for a period | `RapportageServiceTests` |
 
 **Status: done.**
@@ -49,8 +49,8 @@
 | ID | Story | Done when | Evidence |
 | --- | --- | --- | --- |
 | 4.1 | SharpCoreDB factory and schema | Idempotent schema; missing master password yields an actionable error | `SharpCoreDbFactory` + repository tests |
-| 4.2 | Account repository | Full round-trip of every property and flag | `SharpCoreDbRekeningRepositoryTests` |
-| 4.3 | Entry repository | Entries and lines round-trip in order; period filter; delete removes lines | `SharpCoreDbJournaalpostRepositoryTests` |
+| 4.2 | Account repository | Full round-trip of every property and flag | `SharpCoreDbAccountRepositoryTests` |
+| 4.3 | Entry repository | Entries and lines round-trip in order; period filter; delete removes lines | `SharpCoreDbJournalEntryRepositoryTests` |
 | 4.4 | Durability | Data survives closing and reopening the database | `Data_SurvivesReopen` tests |
 
 **Status: done.**
@@ -65,7 +65,7 @@
 | 5.2 | Razor rendering | Compiled templates render outside an HTTP request | `RazorViewToStringRenderer`, `HtmlReportRendererTests` |
 | 5.3 | Self-contained HTML | Embedded styling, no JavaScript, no external URLs, print-ready | `HtmlReportRendererTests` |
 | 5.4 | CSV export | RFC 4180, invariant numbers, quoted when needed | `CsvReportExporterTests` |
-| 5.5 | Localized labels | All report text via `IReportLabels`; no literals in templates | `IReportLabels`, `LocalisatieTests` |
+| 5.5 | Localized labels | All report text via `IReportLabels`; no literals in templates | `IReportLabels`, `LocalizationTests` |
 
 **Status: done.**
 
@@ -119,14 +119,14 @@
 | ID | Story | Done when | Evidence |
 | --- | --- | --- | --- |
 | 9.1 | Statement formats | CAMT.053 and CSV are first-class formats, so a reader never guesses | `BankstaatFormaat` |
-| 9.2 | Imported movement | Signed amount plus the bank's reference; bank account + reference form the import key | `BankTransactieTests` |
-| 9.3 | Matching rule | Keyword, counterparty account and confirmation count, learned from a confirmed booking | `TegenrekeningRegelTests` |
-| 9.4 | Matching assistant | Certainty 0-100 with a reason (IBAN 100, keyword 90, account name/number 70); reliable from 90 | `MatchingAssistentTests`, `BoekingsvoorstelTests` |
+| 9.2 | Imported movement | Signed amount plus the bank's reference; bank account + reference form the import key | `BankTransactionTests` |
+| 9.3 | Matching rule | Keyword, counterparty account and confirmation count, learned from a confirmed booking | `CounterAccountRuleTests` |
+| 9.4 | Matching assistant | Certainty 0-100 with a reason (IBAN 100, keyword 90, account name/number 70); reliable from 90 | `MatchingAssistentTests`, `PostingProposalTests` |
 | 9.5 | Import use case | Reads a statement, skips movements that were imported before, reports read/added/skipped | `BankstaatServiceTests` |
 | 9.6 | CAMT.053 reader | Namespace- and version-agnostic; booked movements only; reference fallback `AcctSvcrRef` → `NtryRef` → `EndToEndId` → `TxId` → `InstrId` | `Camt053ImporteurTests` |
 | 9.7 | CSV reader | Columns found by header name, delimiter and number notation detected, quoted fields supported | `CsvImporteurTests` |
 | 9.8 | Stable fallback reference | A movement without a bank reference gets a content-derived `SYN-` reference, so importing twice never duplicates | `Camt053ImporteurTests`, `CsvImporteurTests` |
-| 9.9 | Storage | Movements and matching rules round-trip; one rule per keyword, so conflicting rules cannot exist | `SharpCoreDbBankstaatRepositoryTests`, `SharpCoreDbTegenrekeningRegelRepositoryTests` |
+| 9.9 | Storage | Movements and matching rules round-trip; one rule per keyword, so conflicting rules cannot exist | `SharpCoreDbBankstaatRepositoryTests`, `SharpCoreDbCounterAccountRuleRepositoryTests` |
 | 9.10 | Web page | Upload a statement, see the proposal per movement, book it or ignore it | `Pages/Bankimport.cshtml`, `BankimportModel` |
 | 9.11 | Batch proposal | Every open movement is proposed in one pass: the ledger and the learned rules are read once per page load, not once per movement | `BankstaatServiceTests` |
 
@@ -136,8 +136,8 @@
 
 | Gate | Result |
 | --- | --- |
-| `dotnet build FinOverzicht.slnx` | Succeeds — **0 warnings / 0 errors** |
-| `dotnet test FinOverzicht.slnx` | **329 passed**, 0 failed, 0 skipped (146 domain, 56 application, 79 infrastructure, 26 reports, 22 architecture) |
+| `dotnet build LedgerSheets.slnx` | Succeeds — **0 warnings / 0 errors** |
+| `dotnet test LedgerSheets.slnx` | **329 passed**, 0 failed, 0 skipped (146 domain, 56 application, 79 infrastructure, 26 reports, 22 architecture) |
 | Live smoke test | Dashboard `200`; `?culture=en` renders "Balance sheet"; `/Rapport?handler=Html` returns a self-contained HTML document with embedded CSS |
 
 ## Learn / adjust

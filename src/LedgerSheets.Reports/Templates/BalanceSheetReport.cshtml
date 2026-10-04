@@ -1,0 +1,90 @@
+@model FinancialOverviewModel
+@{
+    Layout = "_ReportLayout";
+    var labels = (IReportLabels)ViewData["Labels"]!;
+    var balanceSheet = Model.Overview.BalanceSheet;
+}
+<h2>@labels.BalanceSheet</h2>
+
+<div class="columns">
+    <section>
+        <h3>@labels.Assets</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>@labels.Account</th>
+                <th>@labels.Description</th>
+                <th class="amount">@labels.Amount</th>
+            </tr>
+            </thead>
+            <tbody>
+            @if (balanceSheet.Assets.Count == 0)
+            {
+                <tr><td colspan="3" class="empty">@labels.NoData</td></tr>
+            }
+            @foreach (var line in balanceSheet.Assets)
+            {
+                <tr>
+                    <td>@line.Number</td>
+                    <td>@line.Description</td>
+                    <td class="amount">@(line.Amount.ToString("N2"))</td>
+                </tr>
+            }
+            <tr class="total">
+                <td colspan="2">@labels.Total @labels.Assets</td>
+                <td class="amount">@(balanceSheet.TotalAssets.ToString("N2"))</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section>
+        <h3>@labels.Liabilities</h3>
+        <table>
+            <tbody>
+            @if (balanceSheet.Liabilities.Count == 0)
+            {
+                <tr><td colspan="2" class="empty">@labels.NoData</td></tr>
+            }
+            @foreach (var line in balanceSheet.Liabilities)
+            {
+                <tr>
+                    <td>@line.Number &mdash; @line.Description</td>
+                    <td class="amount">@(line.Amount.ToString("N2"))</td>
+                </tr>
+            }
+            <tr class="subtotal">
+                <td>@labels.Total @labels.Liabilities</td>
+                <td class="amount">@(balanceSheet.TotalLiabilities.ToString("N2"))</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h3>@labels.Equity</h3>
+        <table>
+            <tbody>
+            @foreach (var line in balanceSheet.Equity)
+            {
+                <tr>
+                    <td>@line.Number &mdash; @line.Description</td>
+                    <td class="amount">@(line.Amount.ToString("N2"))</td>
+                </tr>
+            }
+            <tr>
+                <td>@labels.Result</td>
+                <td class="amount @(balanceSheet.Result < 0m ? "negative" : string.Empty)">@(balanceSheet.Result.ToString("N2"))</td>
+            </tr>
+            <tr class="total">
+                <td>@labels.Total @labels.Equity</td>
+                <td class="amount">@(balanceSheet.EquityIncludingResult.ToString("N2"))</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</div>
+
+<p>
+    <span class="badge @(balanceSheet.IsBalanced ? "ok" : "warn")">
+        @(balanceSheet.IsBalanced ? labels.Balanced : labels.NotBalanced)
+    </span>
+</p>

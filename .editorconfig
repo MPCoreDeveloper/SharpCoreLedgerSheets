@@ -1,4 +1,4 @@
-# FinOverzicht - EditorConfig + code analysis configuration
+# LedgerSheets - EditorConfig + code analysis configuration
 # https://learn.microsoft.com/dotnet/fundamentals/code-analysis/configuration-files
 
 root = true

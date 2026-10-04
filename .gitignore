@@ -50,3 +50,7 @@ appsettings.Production.json
 .DS_Store
 Thumbs.db
 desktop.ini
+
+## The Dutch-to-English refactor tooling (mapping, driver, one-shot diagnostics). Kept local: it is
+## a working artifact of the rename, not part of the product.
+.refactor/

@@ -1,0 +1,60 @@
+@model FinancialOverviewModel
+@{
+    Layout = "_ReportLayout";
+    var labels = (IReportLabels)ViewData["Labels"]!;
+    var cashFlow = Model.Overview.CashFlow;
+}
+<h2>@labels.CashFlowStatement</h2>
+
+<table>
+    <thead>
+    <tr>
+        <th>@labels.Description</th>
+        <th class="amount">@labels.Amount</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var sector in new[]
+    {
+        (Title: labels.Operating, Lines: cashFlow.Operating, Net: cashFlow.NetOperating),
+        (Title: labels.Investing, Lines: cashFlow.Investing, Net: cashFlow.NetInvesting),
+        (Title: labels.Financing, Lines: cashFlow.Financing, Net: cashFlow.NetFinancing),
+    })
+    {
+        <tr class="subtotal"><td colspan="2">@sector.Title</td></tr>
+        if (sector.Lines.Count == 0)
+        {
+            <tr><td colspan="2" class="empty">@labels.NoData</td></tr>
+        }
+        foreach (var line in sector.Lines)
+        {
+            <tr>
+                <td>@line.Description</td>
+                <td class="amount @(line.Amount < 0m ? "negative" : string.Empty)">@(line.Amount.ToString("N2"))</td>
+            </tr>
+        }
+        <tr>
+            <td>@labels.Total @sector.Title</td>
+            <td class="amount @(sector.Net < 0m ? "negative" : string.Empty)">@(sector.Net.ToString("N2"))</td>
+        </tr>
+    }
+    <tr class="subtotal">
+        <td>@labels.NetMovement</td>
+        <td class="amount @(cashFlow.NetMovement < 0m ? "negative" : string.Empty)">@(cashFlow.NetMovement.ToString("N2"))</td>
+    </tr>
+    <tr>
+        <td>@labels.OpeningBalance</td>
+        <td class="amount">@(cashFlow.OpeningBalance.ToString("N2"))</td>
+    </tr>
+    <tr class="total">
+        <td>@labels.ClosingBalance</td>
+        <td class="amount">@(cashFlow.ClosingBalance.ToString("N2"))</td>
+    </tr>
+    </tbody>
+</table>
+
+<p>
+    <span class="badge @(cashFlow.IsBalanced ? "ok" : "warn")">
+        @(cashFlow.IsBalanced ? labels.Balanced : labels.NotBalanced)
+    </span>
+</p>

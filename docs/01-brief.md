@@ -61,8 +61,8 @@ Many small businesses would rather keep a single, encrypted file on their own ma
 | # | Criterion | How it is verified |
 | --- | --- | --- |
 | S1 | A posted journal entry that is not in balance is rejected | Domain tests |
-| S2 | Assets equal liabilities + equity for any valid ledger | Domain tests + `Balans.IsInBalans` |
-| S3 | Opening cash + net movement equals closing cash | Domain tests + `KasstroomOverzicht.IsInBalans` |
+| S2 | Assets equal liabilities + equity for any valid ledger | Domain tests + `BalanceSheet.IsBalanced` |
+| S3 | Opening cash + net movement equals closing cash | Domain tests + `CashFlowStatement.IsBalanced` |
 | S4 | The same ledger yields three consistent statements | Application tests over a seeded scenario |
 | S5 | Data survives closing and reopening the database | Infrastructure tests |
 | S6 | Reports render as self-contained HTML with no JS or CDN | Report rendering tests |
