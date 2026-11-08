@@ -117,7 +117,10 @@ Quality gates before a pull request is mergeable:
 1. `dotnet build SharpCoreLedgerSheets.slnx -warnaserror` - zero warnings.
 2. `dotnet test SharpCoreLedgerSheets.slnx` - green, including the architecture and localization tests.
 3. `dotnet list SharpCoreLedgerSheets.slnx package --vulnerable --include-transitive` - no known vulnerabilities.
-4. The behaviour change is described, the reasoning is explained, and the spec artifacts are updated
+4. `dotnet stryker` on the project you touched - mutation testing shows whether the tests would notice a
+   change. The score is watched, not gated: the baselines live in `specs/004-mutation-testing/` and CI runs
+   the full mutation sweep weekly.
+5. The behaviour change is described, the reasoning is explained, and the spec artifacts are updated
    when a decision changes.
 
 Commits stay small and explain *why*. Test dependencies stay free (see principle IX).
@@ -131,4 +134,4 @@ PATCH for clarifications. Every review verifies compliance with the principles a
 that violates a principle must be justified in the feature's `plan.md` (Complexity Tracking) rather
 than silently accepted.
 
-**Version**: 1.2.0 | **Ratified**: 2026-11-08 | **Last Amended**: 2026-11-08
+**Version**: 1.3.0 | **Ratified**: 2026-11-08 | **Last Amended**: 2026-11-08

@@ -18,6 +18,10 @@ coverage*.info
 *.coverage
 *.coveragexml
 
+## Mutation testing (Stryker.NET)
+**/StrykerOutput/
+stryker.log
+
 ## Build logs
 *.binlog
 *.log

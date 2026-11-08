@@ -263,6 +263,41 @@ dotnet test SharpCoreLedgerSheets.slnx
 | `SharpCoreLedgerSheets.Reports.Tests` | Report registry, CSV export and full Razor rendering |
 | `SharpCoreLedgerSheets.ArchitectureTests` | Layer dependencies, naming and localization completeness |
 
+## Mutation testing
+
+The suite proves the code does what the tests say; mutation testing proves the other direction — that the
+tests would *notice* when the code is wrong. [Stryker.NET](https://stryker-mutator.io) is pinned in
+`.config/dotnet-tools.json` (so it restores with the repository) and configured per test project in
+`stryker-config.json`:
+
+```bash
+dotnet tool restore
+cd tests/SharpCoreLedgerSheets.Domain.Tests
+dotnet stryker                          # full run of the domain
+dotnet stryker --mutate "Accounting/Amount.cs"   # scope it while iterating
+```
+
+| Project | Mutated code | Why |
+| --- | --- | --- |
+| `Domain.Tests` | `SharpCoreLedgerSheets.Domain` | The accounting rules: a surviving mutant here is a bug the suite would not catch |
+| `Application.Tests` | `SharpCoreLedgerSheets.Application` | Use cases: account/entry/reporting/bank-import rules |
+| `Reports.Tests` | `Services/`, `Models/`, `Reporting/` | Registry, rendering and CSV export |
+| `Infrastructure.Tests` | `Banking/` | The CAMT.053/CSV readers (opt-in: the storage tests spin up real databases) |
+
+Reports land in `StrykerOutput/<timestamp>/reports/` as HTML and JSON (`domain-mutation-report.html`).
+`.github/workflows/mutation.yml` runs the three main projects every Monday and on demand, uploading the
+reports as artifacts.
+
+Three deliberate configuration choices:
+
+- **`"test-runner": "mtp"`** — the test projects are xunit.v3 on Microsoft.Testing.Platform. With the
+  default VSTest runner Stryker's coverage analysis mapped no tests to mutants, so everything "survived";
+  with MTP the mapping works and the score is real.
+- **`ignore-mutations: ["string"]`** — mutating user-facing message text says nothing about behaviour, and
+  this project has a whole message catalogue.
+- **`thresholds.break = 0`** — the score is a diagnostic, not a gate. Raise it once the baseline is stable
+  enough to defend.
+
 ## Requirements
 
 - .NET SDK **11.0** (pinned in `global.json`; the solution targets `net11.0` / C# 15)

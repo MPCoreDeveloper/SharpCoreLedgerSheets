@@ -34,6 +34,11 @@ database server, no Node.js.
    Two conventions that follow from that:
    - The expected value comes first: `Assert.Equal(expected, actual)`, `Assert.Contains(needle, haystack)`.
    - Message checks read `Assert.Contains("...", Assert.Throws<DomainException>(() => ...).Message`.
+6. **Mutation testing.** Covered code is not the same as tested code: Stryker.NET (pinned in
+   `.config/dotnet-tools.json`) checks whether the tests would *notice* a change. Run it for the project
+   you touched — `dotnet tool restore`, then `dotnet stryker` in `tests/SharpCoreLedgerSheets.*Tests`
+   (or `dotnet stryker --mutate "Accounting/Amount.cs"` while iterating). A surviving mutant is a test gap:
+   kill it with a test, or ignore the mutation together with the reason — never lower the threshold.
 
 ## Code style
 

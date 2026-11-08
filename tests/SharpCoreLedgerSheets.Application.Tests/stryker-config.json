@@ -1,0 +1,34 @@
+{
+  "stryker-config": {
+    "project": "SharpCoreLedgerSheets.Application.csproj",
+    "project-info": {
+      "name": "SharpCoreLedgerSheets.Application",
+      "module": "SharpCoreLedgerSheets.Application"
+    },
+    "mutation-level": "Standard",
+    "language-version": "latest",
+    "test-runner": "mtp",
+    "concurrency": 6,
+    "coverage-analysis": "perTest",
+    "ignore-mutations": [
+      "string"
+    ],
+    "thresholds": {
+      "high": 80,
+      "low": 60,
+      "break": 0
+    },
+    "reporters": [
+      "Progress",
+      "Html",
+      "Json",
+      "Cleartext"
+    ],
+    "report-file-name": "application-mutation-report",
+    "since": {
+      "enabled": false,
+      "target": "main"
+    },
+    "break-on-initial-test-failure": true
+  }
+}
