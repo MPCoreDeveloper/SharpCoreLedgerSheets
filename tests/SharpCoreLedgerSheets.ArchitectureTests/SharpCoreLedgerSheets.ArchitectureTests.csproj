@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net11.0</TargetFramework>
+    <RootNamespace>SharpCoreLedgerSheets.ArchitectureTests</RootNamespace>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="10.1.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.11.0" />
+    <PackageReference Include="NetArchTest.Rules" Version="1.3.2" />
+    <PackageReference Include="Microsoft.Extensions.Localization" Version="11.0.0-rc.3.26522.148" />
+    <PackageReference Include="xunit.v3" Version="4.0.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="4.0.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\SharpCoreLedgerSheets.Domain\SharpCoreLedgerSheets.Domain.csproj" />
+    <ProjectReference Include="..\..\src\SharpCoreLedgerSheets.Application\SharpCoreLedgerSheets.Application.csproj" />
+    <ProjectReference Include="..\..\src\SharpCoreLedgerSheets.Infrastructure\SharpCoreLedgerSheets.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\SharpCoreLedgerSheets.Reports\SharpCoreLedgerSheets.Reports.csproj" />
+    <ProjectReference Include="..\..\src\SharpCoreLedgerSheets.Web\SharpCoreLedgerSheets.Web.csproj" />
+  </ItemGroup>
+
+</Project>

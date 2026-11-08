@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net11.0</TargetFramework>
+    <RootNamespace>SharpCoreLedgerSheets.Infrastructure</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SharpCoreLedgerSheets.Domain\SharpCoreLedgerSheets.Domain.csproj" />
+    <ProjectReference Include="..\SharpCoreLedgerSheets.Application\SharpCoreLedgerSheets.Application.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- SharpCoreDB (MPCoreDeveloper) is the embedded, encrypted, file-based database for SharpCoreLedgerSheets.
+         Always the newest stable release line. -->
+    <PackageReference Include="SharpCoreDB" Version="2.1.2" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,36 @@
+# Keep the pinned dependencies current: NuGet packages and the GitHub Actions used by CI.
+# Updates arrive as pull requests, so the zero-warning build and the 329-test suite decide whether a
+# bump is acceptable - which is exactly what CI is for.
+version: 2
+
+updates:
+  - package-ecosystem: "nuget"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 10
+    groups:
+      analyzers:
+        patterns:
+          - "SonarAnalyzer.*"
+      test-stack:
+        patterns:
+          - "xunit.*"
+          - "Microsoft.NET.Test.Sdk"
+          - "coverlet.collector"
+      architecture-tests:
+        patterns:
+          - "NetArchTest.*"
+          - "Microsoft.Extensions.Localization"
+    labels:
+      - "dependencies"
+      - "nuget"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    labels:
+      - "dependencies"
+      - "github-actions"

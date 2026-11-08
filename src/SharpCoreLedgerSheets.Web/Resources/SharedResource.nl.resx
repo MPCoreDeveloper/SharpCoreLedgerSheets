@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="BalanceSheet" xml:space="preserve"><value>Balans</value></data>
+  <data name="ProfitAndLoss" xml:space="preserve"><value>Winst- en verliesrekening</value></data>
+  <data name="CashFlowStatement" xml:space="preserve"><value>Kasstroomoverzicht</value></data>
+  <data name="Ratio" xml:space="preserve"><value>Kengetallen</value></data>
+  <data name="Assets" xml:space="preserve"><value>Activa</value></data>
+  <data name="Liabilities" xml:space="preserve"><value>Passiva</value></data>
+  <data name="Equity" xml:space="preserve"><value>Eigen vermogen</value></data>
+  <data name="Result" xml:space="preserve"><value>Resultaat</value></data>
+  <data name="Revenue" xml:space="preserve"><value>Opbrengsten</value></data>
+  <data name="Costs" xml:space="preserve"><value>Kosten</value></data>
+  <data name="Total" xml:space="preserve"><value>Totaal</value></data>
+  <data name="Operating" xml:space="preserve"><value>Operationele activiteiten</value></data>
+  <data name="Investing" xml:space="preserve"><value>Investeringsactiviteiten</value></data>
+  <data name="Financing" xml:space="preserve"><value>Financieringsactiviteiten</value></data>
+  <data name="OpeningBalance" xml:space="preserve"><value>Beginsaldo</value></data>
+  <data name="ClosingBalance" xml:space="preserve"><value>Eindsaldo</value></data>
+  <data name="NetMovement" xml:space="preserve"><value>Netto kasstroom</value></data>
+  <data name="CurrentRatio" xml:space="preserve"><value>Current ratio</value></data>
+  <data name="QuickRatio" xml:space="preserve"><value>Quick ratio</value></data>
+  <data name="Solvency" xml:space="preserve"><value>Solvabiliteit</value></data>
+  <data name="NetProfitMargin" xml:space="preserve"><value>Netto winstmarge</value></data>
+  <data name="ReturnOnEquity" xml:space="preserve"><value>Rentabiliteit eigen vermogen</value></data>
+  <data name="Account" xml:space="preserve"><value>Rekening</value></data>
+  <data name="Description" xml:space="preserve"><value>Omschrijving</value></data>
+  <data name="Amount" xml:space="preserve"><value>Bedrag</value></data>
+  <data name="NoData" xml:space="preserve"><value>Geen gegevens beschikbaar voor deze periode.</value></data>
+  <data name="GeneratedOn" xml:space="preserve"><value>Gegenereerd op</value></data>
+  <data name="Period" xml:space="preserve"><value>Periode</value></data>
+  <data name="Balanced" xml:space="preserve"><value>In balans</value></data>
+  <data name="NotBalanced" xml:space="preserve"><value>Niet in balans</value></data>
+  <data name="OverviewTitle" xml:space="preserve"><value>Financieel overzicht</value></data>
+  <data name="OverviewDescription" xml:space="preserve"><value>Balans, resultaat, kasstroom en kengetallen in één document.</value></data>
+  <data name="AppTitle" xml:space="preserve"><value>SharpCoreLedgerSheets</value></data>
+  <data name="MenuDashboard" xml:space="preserve"><value>Dashboard</value></data>
+  <data name="MenuAccounts" xml:space="preserve"><value>Rekeningen</value></data>
+  <data name="MenuJournal" xml:space="preserve"><value>Boekingen</value></data>
+  <data name="MenuReport" xml:space="preserve"><value>Rapport</value></data>
+  <data name="Language" xml:space="preserve"><value>Taal</value></data>
+  <data name="DownloadCsv" xml:space="preserve"><value>Download CSV</value></data>
+  <data name="Print" xml:space="preserve"><value>Afdrukken</value></data>
+  <data name="Number" xml:space="preserve"><value>Nummer</value></data>
+  <data name="Name" xml:space="preserve"><value>Naam</value></data>
+  <data name="Type" xml:space="preserve"><value>Soort</value></data>
+  <data name="Date" xml:space="preserve"><value>Datum</value></data>
+  <data name="Post" xml:space="preserve"><value>Boeken</value></data>
+  <data name="Add" xml:space="preserve"><value>Toevoegen</value></data>
+  <data name="Debit" xml:space="preserve"><value>Debet</value></data>
+  <data name="Credit" xml:space="preserve"><value>Credit</value></data>
+  <data name="Reference" xml:space="preserve"><value>Referentie</value></data>
+  <data name="Year" xml:space="preserve"><value>Jaar</value></data>
+  <data name="Current" xml:space="preserve"><value>Vlottend</value></data>
+  <data name="CashEquivalent" xml:space="preserve"><value>Liquide middel</value></data>
+  <data name="Inventory" xml:space="preserve"><value>Voorraad</value></data>
+  <data name="New" xml:space="preserve"><value>Nieuw</value></data>
+  <data name="MenuBankImport" xml:space="preserve"><value>Bankimport</value></data>
+  <data name="StatementImport" xml:space="preserve"><value>Bankafschrift importeren</value></data>
+  <data name="OpenMovements" xml:space="preserve"><value>Openstaande mutaties</value></data>
+  <data name="BankAccount" xml:space="preserve"><value>Bankrekening</value></data>
+  <data name="File" xml:space="preserve"><value>Bestand</value></data>
+  <data name="Format" xml:space="preserve"><value>Formaat</value></data>
+  <data name="Automatic" xml:space="preserve"><value>Automatisch</value></data>
+  <data name="Camt053" xml:space="preserve"><value>CAMT.053 (XML)</value></data>
+  <data name="Csv" xml:space="preserve"><value>CSV</value></data>
+  <data name="Import" xml:space="preserve"><value>Importeren</value></data>
+  <data name="ImportResult" xml:space="preserve"><value>Gelezen: {0}, toegevoegd: {1}, overgeslagen: {2}.</value></data>
+  <data name="AllAlreadyKnown" xml:space="preserve"><value>Alle mutaties in dit bestand waren al eerder geïmporteerd.</value></data>
+  <data name="CounterAccount" xml:space="preserve"><value>Tegenrekening</value></data>
+  <data name="Proposal" xml:space="preserve"><value>Voorstel</value></data>
+  <data name="Confidence" xml:space="preserve"><value>Zekerheid</value></data>
+  <data name="NoProposal" xml:space="preserve"><value>Geen voorstel</value></data>
+  <data name="Ignore" xml:space="preserve"><value>Negeren</value></data>
+  <data name="StarterChart" xml:space="preserve"><value>Startrekeningschema</value></data>
+  <data name="StarterChartHint" xml:space="preserve"><value>Zet in één keer een compleet basisschema neer. Rekeningnummers die al bestaan blijven ongemoeid.</value></data>
+  <data name="StarterChartLoad" xml:space="preserve"><value>Schema laden</value></data>
+  <data name="StarterChartCreated" xml:space="preserve"><value>{0} rekeningen aangemaakt.</value></data>
+  <data name="StarterChartDutch" xml:space="preserve"><value>Nederlands MKB (RGS)</value></data>
+  <data name="StarterChartInternational" xml:space="preserve"><value>Internationaal (Engels)</value></data>
+  <data name="Msg_AccountIdRequired" xml:space="preserve"><value>Een rekening moet een uniek id hebben.</value></data>
+  <data name="Msg_AccountNumberRequired" xml:space="preserve"><value>Een rekening moet een nummer hebben.</value></data>
+  <data name="Msg_AccountNameRequired" xml:space="preserve"><value>Een rekening moet een naam hebben.</value></data>
+  <data name="Msg_AccountCashOnlyForAssets" xml:space="preserve"><value>Alleen activa kunnen als liquide middel worden gemarkeerd.</value></data>
+  <data name="Msg_AccountInventoryOnlyForAssets" xml:space="preserve"><value>Alleen activa kunnen als voorraad worden gemarkeerd.</value></data>
+  <data name="Msg_AccountNumberDuplicate" xml:space="preserve"><value>Rekeningnummer '{0}' bestaat al in het grootboek.</value></data>
+  <data name="Msg_AccountNumberExists" xml:space="preserve"><value>Rekeningnummer '{0}' bestaat al.</value></data>
+  <data name="Msg_AccountAlreadyRegistered" xml:space="preserve"><value>Deze rekening is al opgenomen in het grootboek.</value></data>
+  <data name="Msg_AccountNotFound" xml:space="preserve"><value>Rekening '{0}' is niet gevonden.</value></data>
+  <data name="Msg_AccountInactive" xml:space="preserve"><value>Rekening '{0}' ({1}) is niet actief.</value></data>
+  <data name="Msg_AmountCurrencyRequired" xml:space="preserve"><value>Een bedrag zonder valuta kan niet worden gebruikt in een berekening.</value></data>
+  <data name="Msg_AmountCurrencyMismatch" xml:space="preserve"><value>Valuta's komen niet overeen: {0} versus {1}.</value></data>
+  <data name="Msg_PeriodEndsBeforeStart" xml:space="preserve"><value>De einddatum ({0:yyyy-MM-dd}) ligt voor de startdatum ({1:yyyy-MM-dd}).</value></data>
+  <data name="Msg_EntryIdRequired" xml:space="preserve"><value>Een journaalpost moet een uniek id hebben.</value></data>
+  <data name="Msg_EntryDescriptionRequired" xml:space="preserve"><value>Een journaalpost moet een omschrijving hebben.</value></data>
+  <data name="Msg_EntryNeedsTwoLines" xml:space="preserve"><value>Journaalpost '{0}' moet minimaal twee regels hebben.</value></data>
+  <data name="Msg_EntryNotBalanced" xml:space="preserve"><value>Journaalpost '{0}' is niet in balans: debet {1} versus credit {2}.</value></data>
+  <data name="Msg_EntryAlreadyPosted" xml:space="preserve"><value>Deze journaalpost is al geboekt.</value></data>
+  <data name="Msg_EntryUnknownAccount" xml:space="preserve"><value>De journaalpost verwijst naar een onbekende rekening.</value></data>
+  <data name="Msg_LineAccountRequired" xml:space="preserve"><value>Een boekingsregel moet naar een rekening verwijzen.</value></data>
+  <data name="Msg_LineNegativeAmount" xml:space="preserve"><value>Debet en credit mogen niet negatief zijn.</value></data>
+  <data name="Msg_LineDebitAndCredit" xml:space="preserve"><value>Een boekingsregel mag niet zowel debet als credit bevatten.</value></data>
+  <data name="Msg_LineAmountRequired" xml:space="preserve"><value>Een boekingsregel moet een debet- of creditbedrag hebben.</value></data>
+  <data name="Msg_TransactionIdRequired" xml:space="preserve"><value>Een banktransactie moet een uniek id hebben.</value></data>
+  <data name="Msg_TransactionBankAccountRequired" xml:space="preserve"><value>Een banktransactie moet horen bij een grootboekrekening van de bank.</value></data>
+  <data name="Msg_TransactionReferenceRequired" xml:space="preserve"><value>Een banktransactie moet de referentie van de bank hebben.</value></data>
+  <data name="Msg_TransactionAmountRequired" xml:space="preserve"><value>Een banktransactie zonder bedrag kan niet worden geboekt.</value></data>
+  <data name="Msg_TransactionEntryRequired" xml:space="preserve"><value>Een geboekte banktransactie moet naar een journaalpost verwijzen.</value></data>
+  <data name="Msg_MovementAlreadyBooked" xml:space="preserve"><value>De bankmutatie van {0:dd-MM-yyyy} is al verwerkt.</value></data>
+  <data name="Msg_MovementNotFound" xml:space="preserve"><value>Bankmutatie '{0}' is niet gevonden.</value></data>
+  <data name="Msg_BookedMovementCannotBeIgnored" xml:space="preserve"><value>Een geboekte bankmutatie kan niet worden genegeerd.</value></data>
+  <data name="Msg_CounterAccountIsBankAccount" xml:space="preserve"><value>De tegenrekening van een bankmutatie mag niet de bankrekening zelf zijn.</value></data>
+  <data name="Msg_RuleAccountRequired" xml:space="preserve"><value>Een matchingregel moet naar een grootboekrekening verwijzen.</value></data>
+  <data name="Msg_RuleKeywordTooShort" xml:space="preserve"><value>Een matchingregel moet een trefwoord van minimaal {0} tekens hebben.</value></data>
+  <data name="Msg_RuleConfirmationsRequired" xml:space="preserve"><value>Een matchingregel moet minstens één keer zijn bevestigd.</value></data>
+  <data name="Msg_ProposalTransactionRequired" xml:space="preserve"><value>Een boekingsvoorstel hoort bij een banktransactie.</value></data>
+  <data name="Msg_ProposalAccountRequired" xml:space="preserve"><value>Een boekingsvoorstel moet een tegenrekening hebben.</value></data>
+  <data name="Msg_ProposalAccountNameRequired" xml:space="preserve"><value>Een boekingsvoorstel moet de naam van de tegenrekening hebben.</value></data>
+  <data name="Msg_ProposalCertaintyRange" xml:space="preserve"><value>De zekerheid van een boekingsvoorstel ligt tussen 0 en 100.</value></data>
+  <data name="Msg_ProposalReasonRequired" xml:space="preserve"><value>Een boekingsvoorstel moet uitleggen waarom het wordt gedaan.</value></data>
+  <data name="Msg_StatementFileRequired" xml:space="preserve"><value>Kies eerst een bankafschrift (CAMT.053 of CSV) om te importeren.</value></data>
+  <data name="Msg_NoImporterForFormat" xml:space="preserve"><value>Er is geen lezer voor het format '{0}'.</value></data>
+  <data name="Msg_UnsupportedStatementFile" xml:space="preserve"><value>Het bestand '{0}' is geen ondersteund bankafschrift (CAMT.053 of CSV).</value></data>
+  <data name="Msg_StatementHasNoBookedMovements" xml:space="preserve"><value>Het CAMT.053-bestand bevat geen geboekte bankmutaties.</value></data>
+  <data name="Msg_StatementNotReadableXml" xml:space="preserve"><value>Het bestand is geen leesbaar XML-bestand (CAMT.053): {0}</value></data>
+  <data name="Msg_StatementNotACamtFile" xml:space="preserve"><value>Het bestand is geen CAMT.053-bankafschrift: het element BkToCstmrStmt ontbreekt.</value></data>
+  <data name="Msg_StatementUnreadableAmount" xml:space="preserve"><value>Een mutatie in het CAMT.053-bestand heeft geen leesbaar bedrag (Amt).</value></data>
+  <data name="Msg_StatementUnsupportedCurrency" xml:space="preserve"><value>De valuta '{0}' uit het CAMT.053-bestand wordt niet ondersteund.</value></data>
+  <data name="Msg_StatementUnreadableBookingDate" xml:space="preserve"><value>Een mutatie in het CAMT.053-bestand heeft geen leesbare boekdatum.</value></data>
+  <data name="Msg_CsvHasNoHeader" xml:space="preserve"><value>Het CSV-bestand heeft geen kopregel met bankmutaties.</value></data>
+  <data name="Msg_CsvMissingColumn" xml:space="preserve"><value>Het CSV-bestand heeft geen herkenbare kopregel: de kolom '{0}' ontbreekt.</value></data>
+  <data name="Msg_CsvHasNoMovements" xml:space="preserve"><value>Het CSV-bestand bevat geen bankmutaties.</value></data>
+  <data name="Msg_CsvUnreadableAmount" xml:space="preserve"><value>Regel {0} van het CSV-bestand heeft geen leesbaar bedrag ('{1}').</value></data>
+</root>

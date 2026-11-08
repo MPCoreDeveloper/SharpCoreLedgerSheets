@@ -1,0 +1,16 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/SharpCoreLedgerSheets.Domain/SharpCoreLedgerSheets.Domain.csproj" />
+    <Project Path="src/SharpCoreLedgerSheets.Application/SharpCoreLedgerSheets.Application.csproj" />
+    <Project Path="src/SharpCoreLedgerSheets.Infrastructure/SharpCoreLedgerSheets.Infrastructure.csproj" />
+    <Project Path="src/SharpCoreLedgerSheets.Reports/SharpCoreLedgerSheets.Reports.csproj" />
+    <Project Path="src/SharpCoreLedgerSheets.Web/SharpCoreLedgerSheets.Web.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/SharpCoreLedgerSheets.Domain.Tests/SharpCoreLedgerSheets.Domain.Tests.csproj" />
+    <Project Path="tests/SharpCoreLedgerSheets.Application.Tests/SharpCoreLedgerSheets.Application.Tests.csproj" />
+    <Project Path="tests/SharpCoreLedgerSheets.Infrastructure.Tests/SharpCoreLedgerSheets.Infrastructure.Tests.csproj" />
+    <Project Path="tests/SharpCoreLedgerSheets.Reports.Tests/SharpCoreLedgerSheets.Reports.Tests.csproj" />
+    <Project Path="tests/SharpCoreLedgerSheets.ArchitectureTests/SharpCoreLedgerSheets.ArchitectureTests.csproj" />
+  </Folder>
+</Solution>

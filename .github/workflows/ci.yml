@@ -23,30 +23,30 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v6
         with:
           dotnet-version: '11.0.x'
           dotnet-quality: 'preview'
 
       - name: Restore
-        run: dotnet restore LedgerSheets.slnx
+        run: dotnet restore SharpCoreLedgerSheets.slnx
 
       - name: Build (warnings are errors)
-        run: dotnet build LedgerSheets.slnx -c Release --no-restore -warnaserror
+        run: dotnet build SharpCoreLedgerSheets.slnx -c Release --no-restore -warnaserror
 
       - name: Test
-        run: dotnet test LedgerSheets.slnx -c Release --no-build
+        run: dotnet test SharpCoreLedgerSheets.slnx -c Release --no-build
 
       - name: Pack
         if: matrix.os == 'ubuntu-latest'
-        run: dotnet pack LedgerSheets.slnx -c Release --no-build -o artifacts
+        run: dotnet pack SharpCoreLedgerSheets.slnx -c Release --no-build -o artifacts
 
       - name: Upload packages
         if: matrix.os == 'ubuntu-latest'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: nuget-packages
           path: artifacts/*.nupkg
@@ -58,16 +58,16 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v6
         with:
           dotnet-version: '11.0.x'
           dotnet-quality: 'preview'
 
       - name: Restore
-        run: dotnet restore LedgerSheets.slnx
+        run: dotnet restore SharpCoreLedgerSheets.slnx
 
       - name: Check for known vulnerabilities
-        run: dotnet list LedgerSheets.slnx package --vulnerable --include-transitive
+        run: dotnet list SharpCoreLedgerSheets.slnx package --vulnerable --include-transitive

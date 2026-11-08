@@ -1,0 +1,104 @@
+@page
+@model SharpCoreLedgerSheets.Web.Pages.AccountsModel
+@using SharpCoreLedgerSheets.Domain.Accounting
+@inject IStringLocalizer<SharedResource> L
+@{
+    ViewData["Title"] = L["MenuAccounts"];
+}
+<h1>@L["MenuAccounts"]</h1>
+
+@if (Model.ErrorMessage is not null)
+{
+    <div class="melding">@Model.ErrorMessage</div>
+}
+
+@if (Model.CreatedCount is { } created)
+{
+    <div class="melding ok">@string.Format(L["StarterChartCreated"].Value, created)</div>
+}
+
+<h3>@L["StarterChart"]</h3>
+<form method="post" asp-page-handler="Starter">
+    <p class="hint">@L["StarterChartHint"]</p>
+    <div class="velden">
+        <div class="veld">
+            <label for="schema">@L["StarterChart"]</label>
+            <select id="schema" name="Chart">
+                @foreach (var chart in Model.StarterCharts)
+                {
+                    <option value="@chart" selected="@(Model.Chart == chart)">
+                        @(chart == StarterChart.DutchMkb ? L["StarterChartDutch"].Value : L["StarterChartInternational"].Value)
+                    </option>
+                }
+            </select>
+        </div>
+    </div>
+    <button type="submit">@L["StarterChartLoad"]</button>
+</form>
+
+<h3>@L["New"]</h3>
+<form method="post">
+    <div class="velden">
+        <div class="veld">
+            <label for="nummer">@L["Number"]</label>
+            <input id="nummer" name="Number" value="@Model.Number" required maxlength="24" />
+        </div>
+        <div class="veld">
+            <label for="naam">@L["Name"]</label>
+            <input id="naam" name="Name" value="@Model.Name" required maxlength="120" />
+        </div>
+        <div class="veld">
+            <label for="soort">@L["Type"]</label>
+            <select id="soort" name="Type">
+                @foreach (var type in Model.Types)
+                {
+                    <option value="@type" selected="@(Model.Type == type)">@L[type.ToString()]</option>
+                }
+            </select>
+        </div>
+        <div class="veld">
+            <label for="vlottend">@L["Current"]</label>
+            <input id="vlottend" name="Current" type="checkbox" value="true" checked="@Model.Current" />
+        </div>
+        <div class="veld">
+            <label for="liquide">@L["CashEquivalent"]</label>
+            <input id="liquide" name="CashEquivalent" type="checkbox" value="true" checked="@Model.CashEquivalent" />
+        </div>
+        <div class="veld">
+            <label for="voorraad">@L["Inventory"]</label>
+            <input id="voorraad" name="Inventory" type="checkbox" value="true" checked="@Model.Inventory" />
+        </div>
+    </div>
+    <button type="submit">@L["Add"]</button>
+</form>
+
+<h3>@L["MenuAccounts"]</h3>
+<table>
+    <thead>
+    <tr>
+        <th>@L["Number"]</th>
+        <th>@L["Name"]</th>
+        <th>@L["Type"]</th>
+        <th>@L["Current"]</th>
+        <th>@L["CashEquivalent"]</th>
+        <th>@L["Inventory"]</th>
+    </tr>
+    </thead>
+    <tbody>
+    @if (Model.AllAccounts.Count == 0)
+    {
+        <tr><td colspan="6" class="muted">@L["NoData"]</td></tr>
+    }
+    @foreach (var account in Model.AllAccounts)
+    {
+        <tr>
+            <td>@account.Number</td>
+            <td>@account.Name</td>
+            <td>@L[account.Type.ToString()]</td>
+            <td>@(account.IsCurrent ? "✓" : string.Empty)</td>
+            <td>@(account.IsCashEquivalent ? "✓" : string.Empty)</td>
+            <td>@(account.IsInventory ? "✓" : string.Empty)</td>
+        </tr>
+    }
+    </tbody>
+</table>

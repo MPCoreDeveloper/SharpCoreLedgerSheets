@@ -1,0 +1,62 @@
+@*
+    SharpCoreLedgerSheets report layout.
+    Self-contained: styling is injected through ViewData["ReportCss"], so the document needs no
+    network access and prints to PDF identically. The layout deliberately reads only ViewData
+    (never Model) so it renders for every report model type.
+*@
+@{
+    var title = ViewData["Title"] as string ?? "SharpCoreLedgerSheets";
+    var description = ViewData["Description"] as string;
+    var administration = ViewData["Administration"] as string;
+    var period = ViewData["Period"] as string;
+    var generatedOn = ViewData["GeneratedAt"] as string;
+    var logo = ViewData["ReportLogo"] as string;
+}
+<!DOCTYPE html>
+<html lang="@System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@title — SharpCoreLedgerSheets</title>
+    <style>@Html.Raw(ViewData["ReportCss"])</style>
+</head>
+<body>
+<div class="report-shell">
+    <header class="report-header">
+        <div>
+            <div class="report-brand">
+                @if (!string.IsNullOrWhiteSpace(logo))
+                {
+                    @* A data URI: the logo travels inside the document, so the report stays self-contained. *@
+                    <img src="@logo" alt="SharpCoreLedgerSheets" />
+                }
+                <span>SharpCoreLedgerSheets</span>
+            </div>
+            <h1>@title</h1>
+            @if (!string.IsNullOrWhiteSpace(description))
+            {
+                <p>@description</p>
+            }
+        </div>
+        <div class="generated">
+            @if (!string.IsNullOrWhiteSpace(administration))
+            {
+                <div>@administration</div>
+            }
+            @if (!string.IsNullOrWhiteSpace(period))
+            {
+                <div>@period</div>
+            }
+            @if (!string.IsNullOrWhiteSpace(generatedOn))
+            {
+                <div>@generatedOn</div>
+            }
+        </div>
+    </header>
+    <main>
+        @RenderBody()
+    </main>
+    <footer class="report-footer">© @DateTime.Now.Year SharpCoreLedgerSheets</footer>
+</div>
+</body>
+</html>

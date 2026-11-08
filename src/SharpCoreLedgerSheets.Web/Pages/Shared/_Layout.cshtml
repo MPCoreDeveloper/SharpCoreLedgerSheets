@@ -1,0 +1,46 @@
+@using System.Globalization
+@inject IStringLocalizer<SharedResource> L
+@{
+    var currentLanguage = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+    var path = Context.Request.Path.Value ?? "/";
+    var existingQuery = Context.Request.QueryString.Value ?? string.Empty;
+    var separator = string.IsNullOrEmpty(existingQuery) ? "?" : "&";
+}
+<!DOCTYPE html>
+<html lang="@currentLanguage">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] — @L["AppTitle"]</title>
+    <link rel="icon" type="image/png" href="~/img/favicon.png" />
+    <link rel="stylesheet" href="~/site.css" asp-append-version="true" />
+</head>
+<body>
+<header class="topbar">
+    <a class="brand" href="/">
+        <img class="brand-logo" src="~/img/logo.png" alt="@L["AppTitle"]" width="34" height="34" />
+        <span>@L["AppTitle"]</span>
+    </a>
+    <nav>
+        <a href="/">@L["MenuDashboard"]</a>
+        <a href="/Accounts">@L["MenuAccounts"]</a>
+        <a href="/Journal">@L["MenuJournal"]</a>
+        <a href="/BankImport">@L["MenuBankImport"]</a>
+        <a href="/Report">@L["MenuReport"]</a>
+    </nav>
+    <div class="talen" title="@L["Language"]">
+        @foreach (var language in Languages.Supported)
+        {
+            <a class="@(currentLanguage == language ? "active" : null)"
+               href="@(path + existingQuery + separator + "culture=" + language)"
+               hreflang="@language"
+               title="@Languages.DisplayName(language)">@language</a>
+        }
+    </div>
+</header>
+<main class="page">
+    @RenderBody()
+</main>
+<footer class="voet">© @DateTime.Now.Year @L["AppTitle"] — MIT</footer>
+</body>
+</html>

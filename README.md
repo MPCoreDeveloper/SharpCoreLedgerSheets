@@ -1,19 +1,32 @@
-# LedgerSheets
+<div align="center">
 
-**The three core financial statements — balance sheet, profit & loss and cash flow — for small
-businesses and individuals, in one small, dependency-light .NET package.**
+<img src="assets/logo/sharpcoreledgersheets-512.png" alt="SharpCoreLedgerSheets logo" width="150" />
 
-LedgerSheets is an embedded accounting engine and web application built on
-[SharpCoreDB](https://github.com/MPCoreDeveloper/SharpCoreDB): a double-entry ledger is the single
-source of truth, and every statement plus the key ratios are derived from it. Data is stored in a
-single encrypted `.scdb` file that never leaves your machine.
+# SharpCoreLedgerSheets
 
-[![CI](https://github.com/MPCoreDeveloper/LedgerSheets/actions/workflows/ci.yml/badge.svg)](https://github.com/MPCoreDeveloper/LedgerSheets/actions/workflows/ci.yml)
+**The three core financial statements — balance sheet, profit & loss and cash flow — for the Dutch
+MKB and small businesses anywhere, in one small, dependency-light .NET package.**
+
+[![CI](https://github.com/MPCoreDeveloper/SharpCoreLedgerSheets/actions/workflows/ci.yml/badge.svg)](https://github.com/MPCoreDeveloper/SharpCoreLedgerSheets/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![.NET 11](https://img.shields.io/badge/.NET-11-blue.svg)](https://dotnet.microsoft.com/download)
 [![C# 15](https://img.shields.io/badge/C%23-15-purple.svg)](https://learn.microsoft.com/dotnet/csharp/)
 
+</div>
+
+SharpCoreLedgerSheets is an embedded accounting engine and web application built on
+[SharpCoreDB](https://github.com/MPCoreDeveloper/SharpCoreDB): a double-entry ledger is the single
+source of truth, and every statement plus the key ratios are derived from it. Data is stored in a
+single encrypted `.scdb` file that never leaves your machine.
+
+> **Dutch first, international by design.** The interface, the number and date formatting and the
+> report labels are Dutch out of the box — `nl` is the default culture, because the target market is
+> the Dutch MKB — and switchable per user to English, German, French, Spanish, Italian, Portuguese or
+> Polish. The code, the API and the database schema are English, so a contributor never needs Dutch
+> to work on the engine.
+
 ---
+
 
 ## Why
 
@@ -24,7 +37,7 @@ have them stay consistent with each other:
 2. **Did I make a profit?** — the profit and loss statement (*winst- en verliesrekening*)
 3. **Where did my cash go?** — the cash flow statement (*kasstroomoverzicht*)
 
-LedgerSheets answers those from **one** double-entry ledger. The statements cannot drift apart
+SharpCoreLedgerSheets answers those from **one** double-entry ledger. The statements cannot drift apart
 because they are three views of the same journal entries, and the engine asserts that they
 reconcile (assets = liabilities + equity, and opening cash + movement = closing cash).
 
@@ -41,6 +54,8 @@ reconcile (assets = liabilities + equity, and opening cash + movement = closing 
   for spreadsheets.
 - **Localized** in Dutch (default), English, German, French, Spanish, Italian, Portuguese and
   Polish — report labels come from `IReportLabels`, so templates stay language-neutral.
+- **Rule messages in the user's language** — every user-triggerable rule carries a `MessageCode`, so a
+  rejected entry is explained in the language of the interface, not only in Dutch.
 - **Bank statements come in as they are** — CAMT.053 (XML) or CSV, with a matching assistant that
   proposes a counterparty account per movement and learns from the bookings you confirm.
 - **Architecture tests** guard the layering, and the build is warning-free under the Microsoft and
@@ -48,22 +63,19 @@ reconcile (assets = liabilities + equity, and opening cash + movement = closing 
 
 ## Architecture
 
-```
-LedgerSheets.Web            ASP.NET Core (Razor Pages) + localization
-      |
-      +-- LedgerSheets.Reports         Razor report templates, registry, CSV export
-      |
-      +-- LedgerSheets.Infrastructure  SharpCoreDB repositories + CAMT.053/CSV statement readers
-      |
-      +-- LedgerSheets.Application     use cases: account/entry services, reporting service
-                 |
-                 +-- LedgerSheets.Domain    ledger, statements, ratios - no dependencies at all
+```text
+SharpCoreLedgerSheets.Web                 ASP.NET Core (Razor Pages) + localization
+  +-- SharpCoreLedgerSheets.Reports        Razor report templates, registry, CSV export
+  +-- SharpCoreLedgerSheets.Infrastructure SharpCoreDB repositories + CAMT.053/CSV readers
+  +-- SharpCoreLedgerSheets.Application    use cases: account/entry/reporting/bank-import services
+        +-- SharpCoreLedgerSheets.Domain   ledger, statements, ratios - no dependencies at all
 ```
 
-Dependencies point inwards only. `LedgerSheets.Domain` has **zero** package references: the
+Dependencies point inwards only. `SharpCoreLedgerSheets.Domain` has **zero** package references: the
 bookkeeping rules, the three statements and the ratios are pure, deterministic and fully unit
 tested. `Application` defines the storage ports, `Infrastructure` implements them with SharpCoreDB
 and reads the bank statement formats, `Reports` renders, and `Web` composes.
+
 
 ### Domain model
 
@@ -85,21 +97,60 @@ Cash flow classification is derived, not configured: an entry touching a cash ac
 *operating* when its counterpart is revenue or an expense, *investing* when the counterpart is a
 non-cash asset, and *financing* when the counterpart is a liability or equity.
 
+### Storage schema
+
+The schema is **English**, so the data model reads the same for every contributor and for anyone who
+opens the file with a SharpCoreDB tool. Table, column and index names are short on purpose:
+SharpCoreDB derives metadata block names from them and caps a block name at 31 characters.
+
+| Table | Purpose | Columns |
+| --- | --- | --- |
+| `accounts` | Chart of accounts | `id`, `number`, `name`, `type`, `is_active`, `is_current`, `is_cash_equivalent`, `is_inventory` |
+| `entries` | Journal entries | `id`, `date`, `description`, `reference` |
+| `entry_lines` | Entry lines | `id`, `entry_id`, `sequence`, `account_id`, `debit`, `credit`, `description` |
+| `banktxns` | Imported bank transactions | `id`, `bank_account`, `date`, `amount`, `currency`, `reference`, `counterparty`, `iban`, `description`, `status`, `entry_id` |
+| `matchrules` | Learned matching rules | `keyword`, `counter_account`, `confirmations` |
+
+Amounts are `DECIMAL`, dates are ISO-8601 `yyyy-MM-dd` text so they sort chronologically, and schema
+creation is idempotent (`IF NOT EXISTS`), so it runs safely on every start-up.
+
+### Starter chart of accounts
+
+A new administration can start from a complete chart instead of an empty page: open **Accounts**, pick
+**Nederlands MKB (RGS)** or **International (English)** and load it. Both charts carry the same 26 accounts
+with the same numbering - 1xxx liquid assets, 2xxx current liabilities, 3xxx long-term debt, 4xxx equity,
+7xxx costs, 8xxx revenue - so only the names change with the market:
+
+| Number | Dutch MKB | International | Type |
+| --- | --- | --- | --- |
+| 1000 | Kas *(current, cash)* | Cash *(current, cash)* | Assets |
+| 1100 | Bank *(current, cash)* | Bank *(current, cash)* | Assets |
+| 1400 | Voorraad *(inventory)* | Inventory *(inventory)* | Assets |
+| 2000 | Crediteuren | Trade payables | Liabilities |
+| 2100 | Te betalen btw | VAT payable | Liabilities |
+| 4000 | Eigen vermogen | Equity | Equity |
+| 8000 | Omzet | Revenue | Revenue |
+| 7000 | Inkoopwaarde van de omzet | Cost of goods sold | Costs |
+
+Loading is additive and idempotent: numbers that already exist are never renamed or deactivated, so the
+button is safe on a half-filled administration (`IAccountService.ApplyStarterChartAsync`).
+
+
 ## Quick start
 
 ```bash
-git clone https://github.com/MPCoreDeveloper/LedgerSheets.git
-cd LedgerSheets
-dotnet build LedgerSheets.slnx
-dotnet test  LedgerSheets.slnx
+git clone https://github.com/MPCoreDeveloper/SharpCoreLedgerSheets.git
+cd SharpCoreLedgerSheets
+dotnet build SharpCoreLedgerSheets.slnx
+dotnet test  SharpCoreLedgerSheets.slnx
 ```
 
 Run the web app (the database is encrypted, so it needs a master password):
 
 ```bash
-cd src/LedgerSheets.Web
+cd src/SharpCoreLedgerSheets.Web
 dotnet user-secrets init
-dotnet user-secrets set "LedgerSheets:Storage:MasterPassword" "choose-a-strong-password"
+dotnet user-secrets set "SharpCoreLedgerSheets:Storage:MasterPassword" "choose-a-strong-password"
 dotnet run
 ```
 
@@ -107,14 +158,14 @@ Then open the dashboard, add accounts under **Accounts**, post entries under **J
 a bank statement under **Bank import** and view the statements under **Report**.
 
 > The master password can also be supplied through the environment variable
-> `LedgerSheets__Storage__MasterPassword`. **Losing it means losing the data** — LedgerSheets never
+> `SharpCoreLedgerSheets__Storage__MasterPassword`. **Losing it means losing the data** — SharpCoreLedgerSheets never
 > stores it anywhere.
 
 ### Using the engine as a library
 
 ```csharp
-using LedgerSheets.Domain.Accounting;
-using LedgerSheets.Domain.Services;
+using SharpCoreLedgerSheets.Domain.Accounting;
+using SharpCoreLedgerSheets.Domain.Services;
 
 var ledger = new Ledger();
 
@@ -145,15 +196,16 @@ Console.WriteLine($"Current ratio: {ratio.CurrentRatio:N2}");
 Reports are resolved through `ReportRegistry`, rendered by `IReportRenderer` and exported with
 `IReportExporter` (RFC 4180 CSV, invariant numbers, ready for any spreadsheet).
 
-The rendered HTML is deliberately **self-contained**: styling is embedded, there is no JavaScript
-and no CDN. Print it (or use the *Print* link in the web app) to get a PDF from the browser — which
-avoids shipping a headless browser inside a small package. Register a custom `IReportRenderer` if
-you need server-side PDF generation.
+The rendered HTML is deliberately **self-contained**: styling is embedded, there is **no JavaScript** and no
+CDN, and the brand mark travels inside the document as a `data:` URI - so a report prints to PDF as a single
+file, offline, with the logo in place. Print it (or use the *Print* link in the web app) to get a PDF from
+the browser — which avoids shipping a headless browser inside a small package. Register a custom
+`IReportRenderer` if you need server-side PDF generation.
 
 ## Bank import
 
 Import a bank statement under **Bank import**: choose the ledger account it belongs to, upload a
-CAMT.053 (XML) or CSV file, and LedgerSheets reads it. The reader follows the format rather than the
+CAMT.053 (XML) or CSV file, and SharpCoreLedgerSheets reads it. The reader follows the format rather than the
 bank: XML elements are matched on their local name (so every CAMT.053 version and namespace works)
 and CSV columns are recognised by their header names, with the delimiter and the number notation
 detected. Only **booked** movements are read — a pending movement can still change.
@@ -167,42 +219,72 @@ ledger and the learned rules are read once per page, however many movements the 
 
 Importing is **idempotent**: a movement is identified by the bank account plus the bank's own
 reference, so re-importing the same statement adds nothing. When a bank supplies no reference at all,
-LedgerSheets derives one from the content of the movement (`SYN-…`); two movements that share their
+SharpCoreLedgerSheets derives one from the content of the movement (`SYN-…`); two movements that share their
 date, amount, currency and text then count as one.
 
 ## Localization
 
-Dutch is the default and the neutral fallback. Translations ship for English, German, French,
-Spanish, Italian, Portuguese and Polish in
-`src/LedgerSheets.Web/Resources/SharedResource.*.resx`. Switch language in the web app (top right)
-or with `?culture=de`; the choice is remembered in a cookie.
+**Dutch is the default** — the target market is the Dutch MKB, so a Dutch entrepreneur gets a Dutch
+application, Dutch number and date formatting (`1.234,56`, `31-12-2026`) and Dutch report labels
+without configuring anything. English is the neutral fallback: `SharedResource.resx` holds the English
+text and covers any key a translation is missing, so an international user is never stranded.
+Translations ship for `nl`, `en`, `de`, `fr`, `es`, `it`, `pt` and `pl` in
+`src/SharpCoreLedgerSheets.Web/Resources/SharedResource.*.resx`.
+
+Switch language in the web app (top right) or with `?culture=de`; the choice is remembered in a
+cookie, and a browser that asks for another language gets it. A host that serves a different market
+moves the default without touching code:
+
+```json
+{ "SharpCoreLedgerSheets": { "Localization": { "DefaultCulture": "en" } } }
+```
 
 Adding a language means adding one `.resx` file and one entry in `Languages.Supported` — the
 localization tests then verify that every key is present.
 
+> **Message catalogue.** Interface labels and rule messages are both translated. A rule raises a
+> `MessageCode`; the web layer resolves `Msg_<code>` for the request culture and falls back to the Dutch
+> message the engine carries when a culture has no translation. Dutch and English are complete - German,
+> French, Spanish, Italian, Portuguese and Polish show English *messages* until they are translated, while
+> their interface is already translated.
+
+
 ## Testing
 
 ```bash
-dotnet test LedgerSheets.slnx
+dotnet test SharpCoreLedgerSheets.slnx
 ```
 
 | Suite | Focus |
 | --- | --- |
-| `LedgerSheets.Domain.Tests` | Value objects, ledger invariants, statement maths, ratios, bank movements and matching |
-| `LedgerSheets.Application.Tests` | Use cases against in-memory repositories |
-| `LedgerSheets.Infrastructure.Tests` | Real encrypted SharpCoreDB round-trips, reopen durability and the CAMT.053/CSV readers |
-| `LedgerSheets.Reports.Tests` | Report registry, CSV export and full Razor rendering |
-| `LedgerSheets.ArchitectureTests` | Layer dependencies, naming and localization completeness |
+| `SharpCoreLedgerSheets.Domain.Tests` | Value objects, ledger invariants, statement maths, ratios, bank movements and matching |
+| `SharpCoreLedgerSheets.Application.Tests` | Use cases against in-memory repositories |
+| `SharpCoreLedgerSheets.Infrastructure.Tests` | Real encrypted SharpCoreDB round-trips, reopen durability and the CAMT.053/CSV readers |
+| `SharpCoreLedgerSheets.Reports.Tests` | Report registry, CSV export and full Razor rendering |
+| `SharpCoreLedgerSheets.ArchitectureTests` | Layer dependencies, naming and localization completeness |
 
 ## Requirements
 
-- .NET SDK **11.0** (the solution targets `net11.0` / C# 15)
+- .NET SDK **11.0** (pinned in `global.json`; the solution targets `net11.0` / C# 15)
 - No database server, no Node.js, no design-time tooling
+
+## Upgrading from LedgerSheets 1.0
+
+2.0 is the rebrand of **LedgerSheets** to **SharpCoreLedgerSheets**, and it renames the database schema
+from Dutch to English (`rekeningen` → `accounts`, `posten` → `entries`, `postregels` → `entry_lines`,
+`bankmutaties` → `banktxns`, `matchregels` → `matchrules`, together with every column and index). There
+is no in-place migration: start a new file and re-import, or stay on the 1.0 package for the existing
+data. Also renamed: the configuration section (`LedgerSheets:Storage` →
+`SharpCoreLedgerSheets:Storage`), the environment-variable prefix
+(`SharpCoreLedgerSheets__Storage__MasterPassword`), the assemblies and the NuGet package IDs. The
+default UI culture is now Dutch instead of English.
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). The decisions behind the code are documented as BMAD
-artifacts in [`docs/`](docs/): brief, PRD, architecture and epics.
+See [CONTRIBUTING.md](CONTRIBUTING.md). The decisions behind the code are recorded with
+[Spec Kit](https://github.com/github/spec-kit): the principles live in
+[`.specify/memory/constitution.md`](.specify/memory/constitution.md), and the specification, technical
+plan, tasks and research for this release live in [`specs/001-sharpcoreledgersheets/`](specs/001-sharpcoreledgersheets/).
 
 ## License
 

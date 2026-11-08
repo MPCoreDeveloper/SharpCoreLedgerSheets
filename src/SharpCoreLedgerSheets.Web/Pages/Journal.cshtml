@@ -1,0 +1,93 @@
+@page
+@model SharpCoreLedgerSheets.Web.Pages.JournalModel
+@inject IStringLocalizer<SharedResource> L
+@{
+    ViewData["Title"] = L["MenuJournal"];
+}
+<h1>@L["MenuJournal"]</h1>
+
+<form method="get" class="toolbar">
+    <label for="year">@L["Year"]</label>
+    <input id="year" name="year" type="number" min="1900" max="2999" value="@Model.Year" />
+    <button type="submit">@L["MenuJournal"]</button>
+</form>
+
+@if (Model.ErrorMessage is not null)
+{
+    <div class="melding">@Model.ErrorMessage</div>
+}
+
+@if (Model.AllAccounts.Count == 0)
+{
+    <div class="melding">@L["NoData"]</div>
+}
+else
+{
+    <h3>@L["New"]</h3>
+    <form method="post" asp-route-year="@Model.Year">
+        <div class="velden">
+            <div class="veld">
+                <label for="datum">@L["Date"]</label>
+                <input id="datum" name="Date" type="date" value="@Model.Date.ToString("yyyy-MM-dd")" required />
+            </div>
+            <div class="veld">
+                <label for="omschrijving">@L["Description"]</label>
+                <input id="omschrijving" name="Description" value="@Model.Description" required maxlength="200" />
+            </div>
+            <div class="veld">
+                <label for="referentie">@L["Reference"]</label>
+                <input id="referentie" name="Reference" value="@Model.Reference" maxlength="60" />
+            </div>
+            <div class="veld">
+                <label for="debet">@L["Debit"] (@L["Account"])</label>
+                <select id="debet" name="DebitAccount" required>
+                    @foreach (var account in Model.AllAccounts)
+                    {
+                        <option value="@account.Number">@account.Number — @account.Name</option>
+                    }
+                </select>
+            </div>
+            <div class="veld">
+                <label for="credit">@L["Credit"] (@L["Account"])</label>
+                <select id="credit" name="CreditAccount" required>
+                    @foreach (var account in Model.AllAccounts)
+                    {
+                        <option value="@account.Number">@account.Number — @account.Name</option>
+                    }
+                </select>
+            </div>
+            <div class="veld">
+                <label for="bedrag">@L["Amount"]</label>
+                <input id="bedrag" name="Amount" type="number" step="0.01" min="0.01" value="@Model.Amount" required />
+            </div>
+        </div>
+        <button type="submit">@L["Post"]</button>
+    </form>
+}
+
+<h3>@L["MenuJournal"] @Model.Year</h3>
+<table>
+    <thead>
+    <tr>
+        <th>@L["Date"]</th>
+        <th>@L["Description"]</th>
+        <th>@L["Reference"]</th>
+        <th>@L["Amount"]</th>
+    </tr>
+    </thead>
+    <tbody>
+    @if (Model.Entries.Count == 0)
+    {
+        <tr><td colspan="4" class="muted">@L["NoData"]</td></tr>
+    }
+    @foreach (var post in Model.Entries)
+    {
+        <tr>
+            <td>@post.Date.ToString("d")</td>
+            <td>@post.Description</td>
+            <td>@post.Reference</td>
+            <td class="amount">@(post.TotalDebit.ToString("N2"))</td>
+        </tr>
+    }
+    </tbody>
+</table>

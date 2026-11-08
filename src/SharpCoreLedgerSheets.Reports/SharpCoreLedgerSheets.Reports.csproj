@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net11.0</TargetFramework>
+    <RootNamespace>SharpCoreLedgerSheets.Reports</RootNamespace>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+    <!-- Compile .cshtml views into the assembly so IRazorViewEngine can find them in the class library. -->
+    <RazorCompileOnBuild>true</RazorCompileOnBuild>
+    <RazorCompileOnPublish>true</RazorCompileOnPublish>
+    <!-- Sonar suggestions in cshtml templates (no bugs): nested ternary, sync render. -->
+    <NoWarn>$(NoWarn);S3358;S6966</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SharpCoreLedgerSheets.Domain\SharpCoreLedgerSheets.Domain.csproj" />
+    <ProjectReference Include="..\SharpCoreLedgerSheets.Application\SharpCoreLedgerSheets.Application.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Required for Razor views + MVC view rendering in a class library. -->
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The brand mark travels inside the assembly as an embedded resource, so a rendered report stays
+         one self-contained HTML file: embedded styling, a data-URI logo, no network access. -->
+    <EmbeddedResource Include="Branding\sharpcoreledgersheets.png" />
+  </ItemGroup>
+
+</Project>
