@@ -134,4 +134,34 @@
   <data name="Msg_CsvMissingColumn" xml:space="preserve"><value>Het CSV-bestand heeft geen herkenbare kopregel: de kolom '{0}' ontbreekt.</value></data>
   <data name="Msg_CsvHasNoMovements" xml:space="preserve"><value>Het CSV-bestand bevat geen bankmutaties.</value></data>
   <data name="Msg_CsvUnreadableAmount" xml:space="preserve"><value>Regel {0} van het CSV-bestand heeft geen leesbaar bedrag ('{1}').</value></data>
+  <data name="Msg_CompanyNameRequired" xml:space="preserve"><value>Een administratie moet een naam hebben.</value></data>
+  <data name="Msg_FiscalYearMonthInvalid" xml:space="preserve"><value>De startmaand van het boekjaar moet tussen 1 en 12 liggen.</value></data>
+  <data name="Msg_VatRateDuplicate" xml:space="preserve"><value>De btw-tarieven bevatten een dubbel tarief.</value></data>
+  <data name="Msg_VatRateUnknown" xml:space="preserve"><value>Het btw-tarief '{0}' bestaat niet. Beschikbaar: {1}.</value></data>
+  <data name="Msg_VatSchemeEmpty" xml:space="preserve"><value>Er zijn geen btw-tarieven ingesteld voor deze administratie.</value></data>
+  <data name="Msg_VatAccountsMissing" xml:space="preserve"><value>Het btw-tarief '{0}' heeft geen grootboekrekening voor de btw.</value></data>
+  <data name="Msg_OpeningBalanceNotBalanced" xml:space="preserve"><value>De beginsaldi zijn niet in balans: debet {0} versus credit {1}.</value></data>
+  <data name="Msg_AmountMustBePositive" xml:space="preserve"><value>Een bedrag mag niet negatief zijn.</value></data>
+  <data name="MenuSettings" xml:space="preserve"><value>Instellingen</value></data>
+  <data name="MenuVat" xml:space="preserve"><value>Btw</value></data>
+  <data name="Administration" xml:space="preserve"><value>Administratie</value></data>
+  <data name="CompanyName" xml:space="preserve"><value>Bedrijfsnaam</value></data>
+  <data name="FiscalYearStart" xml:space="preserve"><value>Start boekjaar</value></data>
+  <data name="Save" xml:space="preserve"><value>Opslaan</value></data>
+  <data name="Saved" xml:space="preserve"><value>Opgeslagen.</value></data>
+  <data name="OpeningBalances" xml:space="preserve"><value>Beginsaldi</value></data>
+  <data name="OpeningBalancesHint" xml:space="preserve"><value>Vul per rekening het saldo in waarmee het boekjaar begint. De totale debet- en creditbedragen moeten gelijk zijn.</value></data>
+  <data name="BookYear" xml:space="preserve"><value>Boekjaar</value></data>
+  <data name="Quarter" xml:space="preserve"><value>Kwartaal</value></data>
+  <data name="EntireYear" xml:space="preserve"><value>Heel boekjaar</value></data>
+  <data name="Show" xml:space="preserve"><value>Tonen</value></data>
+  <data name="Rate" xml:space="preserve"><value>Tarief</value></data>
+  <data name="OutputVat" xml:space="preserve"><value>Af te dragen btw</value></data>
+  <data name="InputVat" xml:space="preserve"><value>Voorbelasting</value></data>
+  <data name="Payable" xml:space="preserve"><value>Te betalen</value></data>
+  <data name="Reclaimable" xml:space="preserve"><value>Te ontvangen</value></data>
+  <data name="VatSalePurchase" xml:space="preserve"><value>Verkoop of inkoop met btw</value></data>
+  <data name="Sale" xml:space="preserve"><value>Verkoop</value></data>
+  <data name="Purchase" xml:space="preserve"><value>Inkoop</value></data>
+  <data name="NetAmount" xml:space="preserve"><value>Netto bedrag</value></data>
 </root>

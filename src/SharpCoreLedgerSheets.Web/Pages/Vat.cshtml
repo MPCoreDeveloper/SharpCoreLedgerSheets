@@ -1,0 +1,80 @@
+@page
+@model SharpCoreLedgerSheets.Web.Pages.VatModel
+@inject IStringLocalizer<SharedResource> L
+@{
+    ViewData["Title"] = L["MenuVat"];
+    var vat = Model.Return;
+}
+<h1>@L["MenuVat"]</h1>
+
+@if (Model.ErrorMessage is not null)
+{
+    <div class="melding">@Model.ErrorMessage</div>
+}
+
+<form method="get">
+    <div class="velden">
+        <div class="veld">
+            <label for="jaar">@L["BookYear"]</label>
+            <input id="jaar" name="year" type="number" min="1900" max="2200" value="@Model.Year" />
+        </div>
+        <div class="veld">
+            <label for="kwartaal">@L["Quarter"]</label>
+            <select id="kwartaal" name="quarter">
+                <option value="0" selected="@(Model.Quarter == 0)">@L["EntireYear"]</option>
+                <option value="1" selected="@(Model.Quarter == 1)">1</option>
+                <option value="2" selected="@(Model.Quarter == 2)">2</option>
+                <option value="3" selected="@(Model.Quarter == 3)">3</option>
+                <option value="4" selected="@(Model.Quarter == 4)">4</option>
+            </select>
+        </div>
+    </div>
+    <button type="submit">@L["Show"]</button>
+</form>
+
+@if (vat is null)
+{
+    <p class="muted">@L["NoData"]</p>
+}
+else
+{
+    <h3>@L["Period"]: @vat.Period.Start.ToString("d") – @vat.Period.Closing.ToString("d")</h3>
+    <table>
+        <thead>
+        <tr>
+            <th>@L["Rate"]</th>
+            <th class="amount">@L["OutputVat"]</th>
+            <th class="amount">@L["InputVat"]</th>
+            <th class="amount">@L["Total"]</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var line in vat.Lines)
+        {
+            <tr>
+                <td>@line.Description</td>
+                <td class="amount">@line.OutputVat.ToString("N2")</td>
+                <td class="amount">@line.InputVat.ToString("N2")</td>
+                <td class="amount">@line.Balance.ToString("N2")</td>
+            </tr>
+        }
+        </tbody>
+        <tfoot>
+        <tr class="total">
+            <td>@L["Total"]</td>
+            <td class="amount">@vat.TotalOutputVat.ToString("N2")</td>
+            <td class="amount">@vat.TotalInputVat.ToString("N2")</td>
+            <td class="amount">@vat.Balance.ToString("N2")</td>
+        </tr>
+        </tfoot>
+    </table>
+
+    @if (vat.IsPayable)
+    {
+        <p><span class="badge warn">@L["Payable"]</span> @vat.Payable.ToString("N2")</p>
+    }
+    else
+    {
+        <p><span class="badge ok">@L["Reclaimable"]</span> @vat.Reclaimable.ToString("N2")</p>
+    }
+}

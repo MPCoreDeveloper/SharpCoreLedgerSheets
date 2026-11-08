@@ -63,6 +63,62 @@ else
         </div>
         <button type="submit">@L["Post"]</button>
     </form>
+
+    @if (Model.VatScheme.Rates.Count > 0)
+    {
+        <h3>@L["VatSalePurchase"]</h3>
+        <form method="post" asp-page-handler="Vat" asp-route-year="@Model.Year">
+            <div class="velden">
+                <div class="veld">
+                    <label for="vatdatum">@L["Date"]</label>
+                    <input id="vatdatum" name="Date" type="date" value="@Model.Date.ToString("yyyy-MM-dd")" required />
+                </div>
+                <div class="veld">
+                    <label for="vatsoort">@L["Type"]</label>
+                    <select id="vatsoort" name="IsSale">
+                        <option value="true" selected="@Model.IsSale">@L["Sale"]</option>
+                        <option value="false" selected="@(!Model.IsSale)">@L["Purchase"]</option>
+                    </select>
+                </div>
+                <div class="veld">
+                    <label for="vatomschrijving">@L["Description"]</label>
+                    <input id="vatomschrijving" name="Description" value="@Model.Description" required maxlength="200" />
+                </div>
+                <div class="veld">
+                    <label for="vatnetto">@L["NetAmount"]</label>
+                    <input id="vatnetto" name="VatNetAmount" type="number" step="0.01" min="0.01" value="@Model.VatNetAmount" required />
+                </div>
+                <div class="veld">
+                    <label for="vattarief">@L["Rate"]</label>
+                    <select id="vattarief" name="VatRate">
+                        @foreach (var rate in Model.VatScheme.Rates)
+                        {
+                            <option value="@rate.Code" selected="@(Model.VatRate == rate.Code)">@rate.Description</option>
+                        }
+                    </select>
+                </div>
+                <div class="veld">
+                    <label for="vatrekening">@L["Account"]</label>
+                    <select id="vatrekening" name="VatNetAccount" required>
+                        @foreach (var account in Model.AllAccounts)
+                        {
+                            <option value="@account.Number">@account.Number — @account.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="veld">
+                    <label for="vattegenrekening">@L["CounterAccount"]</label>
+                    <select id="vattegenrekening" name="VatCounterAccount" required>
+                        @foreach (var account in Model.CounterAccounts)
+                        {
+                            <option value="@account.Number">@account.Number — @account.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <button type="submit">@L["Post"]</button>
+        </form>
+    }
 }
 
 <h3>@L["MenuJournal"] @Model.Year</h3>

@@ -25,6 +25,7 @@ public static class SharpCoreLedgerSheetsApplicationExtensions
         services.AddSingleton<ICashFlowBuilder, CashFlowBuilder>();
         services.AddSingleton<IRatioCalculator, RatioCalculator>();
         services.AddSingleton<IMatchingAssistant, MatchingAssistant>();
+        services.AddSingleton<IVatReturnBuilder, VatReturnBuilder>();
 
         // Application use cases.
         services.AddScoped<ILedgerLoader, LedgerLoader>();
@@ -32,6 +33,8 @@ public static class SharpCoreLedgerSheetsApplicationExtensions
         services.AddScoped<IJournalEntryService, JournalEntryService>();
         services.AddScoped<IReportingService, ReportingService>();
         services.AddScoped<IBankStatementService, BankStatementService>();
+        services.AddScoped<IAdministrationService, AdministrationService>();
+        services.AddScoped<IVatService, VatService>();
 
         return services;
     }

@@ -15,6 +15,7 @@ namespace SharpCoreLedgerSheets.Web.Pages;
 /// </summary>
 public sealed class ReportModel(
     IReportingService reporting,
+    IAdministrationService administration,
     IReportRenderer renderer,
     IReportExporter exporter,
     IReportLabels labels,
@@ -65,7 +66,8 @@ public sealed class ReportModel(
         CancellationToken ct)
     {
         var definition = FindDefinition(report);
-        var period = Period.ForYear(year);
+        var settings = await administration.GetSettingsAsync(ct).ConfigureAwait(false);
+        var period = settings.PeriodFor(year);
         var overview = await reporting.BuildOverviewAsync(period, ct).ConfigureAwait(false);
 
         var model = new FinancialOverviewModel(overview)
@@ -74,6 +76,7 @@ public sealed class ReportModel(
             {
                 Title = labels[definition.TitleKey],
                 Description = labels[definition.DescriptionKey],
+                Administration = settings.CompanyName,
                 Period = $"{period.Start:d} – {period.Closing:d}",
                 GeneratedOn = DateTime.UtcNow,
             },

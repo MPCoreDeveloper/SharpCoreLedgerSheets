@@ -60,6 +60,16 @@ public static class MessageCode
     public const string ProposalCertaintyRange = nameof(ProposalCertaintyRange);
     public const string ProposalReasonRequired = nameof(ProposalReasonRequired);
 
+    // Administration, VAT and opening balances.
+    public const string CompanyNameRequired = nameof(CompanyNameRequired);
+    public const string FiscalYearMonthInvalid = nameof(FiscalYearMonthInvalid);
+    public const string VatRateDuplicate = nameof(VatRateDuplicate);
+    public const string VatRateUnknown = nameof(VatRateUnknown);
+    public const string VatSchemeEmpty = nameof(VatSchemeEmpty);
+    public const string VatAccountsMissing = nameof(VatAccountsMissing);
+    public const string OpeningBalanceNotBalanced = nameof(OpeningBalanceNotBalanced);
+    public const string AmountMustBePositive = nameof(AmountMustBePositive);
+
     // Importing statements.
     public const string StatementFileRequired = nameof(StatementFileRequired);
     public const string NoImporterForFormat = nameof(NoImporterForFormat);

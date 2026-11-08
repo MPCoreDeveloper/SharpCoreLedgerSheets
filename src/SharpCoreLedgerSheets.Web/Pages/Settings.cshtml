@@ -1,0 +1,85 @@
+@page
+@model SharpCoreLedgerSheets.Web.Pages.SettingsModel
+@inject IStringLocalizer<SharedResource> L
+@{
+    ViewData["Title"] = L["MenuSettings"];
+}
+<h1>@L["MenuSettings"]</h1>
+
+@if (Model.ErrorMessage is not null)
+{
+    <div class="melding">@Model.ErrorMessage</div>
+}
+
+@if (Model.Saved)
+{
+    <div class="melding ok">@L["Saved"]</div>
+}
+
+<h3>@L["Administration"]</h3>
+<form method="post" asp-page-handler="Settings">
+    <div class="velden">
+        <div class="veld">
+            <label for="company">@L["CompanyName"]</label>
+            <input id="company" name="CompanyName" value="@Model.CompanyName" required maxlength="120" />
+        </div>
+        <div class="veld">
+            <label for="fiscal">@L["FiscalYearStart"]</label>
+            <select id="fiscal" name="FiscalYearStartMonth">
+                @for (var month = 1; month <= 12; month++)
+                {
+                    <option value="@month" selected="@(Model.FiscalYearStartMonth == month)">
+                        @System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month)
+                    </option>
+                }
+            </select>
+        </div>
+    </div>
+    <button type="submit">@L["Save"]</button>
+</form>
+
+<h3>@L["OpeningBalances"]</h3>
+<form method="post" asp-page-handler="Opening">
+    <p class="hint">@L["OpeningBalancesHint"]</p>
+    <div class="velden">
+        <div class="veld">
+            <label for="year">@L["BookYear"]</label>
+            <input id="year" name="Year" type="number" min="1900" max="2200" value="@Model.Year" />
+        </div>
+    </div>
+
+    <table>
+        <thead>
+        <tr>
+            <th>@L["Number"]</th>
+            <th>@L["Name"]</th>
+            <th class="amount">@L["Debit"]</th>
+            <th class="amount">@L["Credit"]</th>
+        </tr>
+        </thead>
+        <tbody>
+        @if (Model.OpeningRows.Count == 0)
+        {
+            <tr><td colspan="4" class="muted">@L["NoData"]</td></tr>
+        }
+        @for (var index = 0; index < Model.OpeningRows.Count; index++)
+        {
+            <tr>
+                <td>
+                    @Model.OpeningRows[index].AccountNumber
+                    <input type="hidden" name="OpeningRows[@index].AccountNumber" value="@Model.OpeningRows[index].AccountNumber" />
+                    <input type="hidden" name="OpeningRows[@index].AccountName" value="@Model.OpeningRows[index].AccountName" />
+                </td>
+                <td>@Model.OpeningRows[index].AccountName</td>
+                <td class="amount">
+                    <input name="OpeningRows[@index].Debit" type="number" step="0.01" min="0" value="@Model.OpeningRows[index].Debit" />
+                </td>
+                <td class="amount">
+                    <input name="OpeningRows[@index].Credit" type="number" step="0.01" min="0" value="@Model.OpeningRows[index].Credit" />
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    <button type="submit">@L["Save"]</button>
+</form>

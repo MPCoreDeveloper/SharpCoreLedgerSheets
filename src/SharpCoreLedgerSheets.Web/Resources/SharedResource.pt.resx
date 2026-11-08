@@ -81,4 +81,26 @@
   <data name="StarterChartCreated" xml:space="preserve"><value>{0} contas criadas.</value></data>
   <data name="StarterChartDutch" xml:space="preserve"><value>PME neerlandesa (RGS)</value></data>
   <data name="StarterChartInternational" xml:space="preserve"><value>Internacional (inglês)</value></data>
+  <data name="MenuSettings" xml:space="preserve"><value>Configurações</value></data>
+  <data name="MenuVat" xml:space="preserve"><value>IVA</value></data>
+  <data name="Administration" xml:space="preserve"><value>Administração</value></data>
+  <data name="CompanyName" xml:space="preserve"><value>Nome da empresa</value></data>
+  <data name="FiscalYearStart" xml:space="preserve"><value>Início do exercício</value></data>
+  <data name="Save" xml:space="preserve"><value>Guardar</value></data>
+  <data name="Saved" xml:space="preserve"><value>Guardado.</value></data>
+  <data name="OpeningBalances" xml:space="preserve"><value>Saldos de abertura</value></data>
+  <data name="OpeningBalancesHint" xml:space="preserve"><value>Indique o saldo com que cada conta começa o exercício. O total a débito e a crédito devem ser iguais.</value></data>
+  <data name="BookYear" xml:space="preserve"><value>Exercício</value></data>
+  <data name="Quarter" xml:space="preserve"><value>Trimestre</value></data>
+  <data name="EntireYear" xml:space="preserve"><value>Exercício completo</value></data>
+  <data name="Show" xml:space="preserve"><value>Mostrar</value></data>
+  <data name="Rate" xml:space="preserve"><value>Taxa</value></data>
+  <data name="OutputVat" xml:space="preserve"><value>IVA a pagar</value></data>
+  <data name="InputVat" xml:space="preserve"><value>IVA a recuperar</value></data>
+  <data name="Payable" xml:space="preserve"><value>A pagar</value></data>
+  <data name="Reclaimable" xml:space="preserve"><value>A receber</value></data>
+  <data name="VatSalePurchase" xml:space="preserve"><value>Venda ou compra com IVA</value></data>
+  <data name="Sale" xml:space="preserve"><value>Venda</value></data>
+  <data name="Purchase" xml:space="preserve"><value>Compra</value></data>
+  <data name="NetAmount" xml:space="preserve"><value>Valor líquido</value></data>
 </root>

@@ -7,6 +7,7 @@
 }
 <h1>@L["MenuDashboard"]</h1>
 <p class="lead">@L["OverviewDescription"]</p>
+<p class="lead">@Model.Settings.CompanyName — @L["BookYear"] @Model.Year (@Model.BookYear.Start.ToString("d") – @Model.BookYear.Closing.ToString("d"))</p>
 
 <form method="get" class="toolbar">
     <label for="year">@L["Year"]</label>
@@ -134,5 +135,6 @@
 
     <p class="toolbar">
         <a href="@Url.Page("/Report", new { year = Model.Year })">@L["MenuReport"]</a>
+        <a href="@Url.Page("/Vat", new { year = Model.Year })">@L["MenuVat"]</a>
     </p>
 }

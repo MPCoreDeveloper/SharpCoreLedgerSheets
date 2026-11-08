@@ -39,6 +39,9 @@ internal sealed class SharpCoreDbTestContext : IAsyncDisposable
 
     public ICounterAccountRuleRepository MatchRules => _provider.GetRequiredService<ICounterAccountRuleRepository>();
 
+    /// <summary>The administration settings of the database.</summary>
+    public ISettingsRepository Settings => _provider.GetRequiredService<ISettingsRepository>();
+
     /// <summary>The statement readers, in the order the application asks them.</summary>
     public IReadOnlyList<IBankStatementImporter> Importers => [.. _provider.GetServices<IBankStatementImporter>()];
 

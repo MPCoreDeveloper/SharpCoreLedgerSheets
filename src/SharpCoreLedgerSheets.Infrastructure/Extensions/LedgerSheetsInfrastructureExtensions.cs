@@ -40,6 +40,7 @@ public static class SharpCoreLedgerSheetsInfrastructureExtensions
         services.AddSingleton<IJournalEntryRepository, SharpCoreDbJournalEntryRepository>();
         services.AddSingleton<IBankStatementRepository, SharpCoreDbBankStatementRepository>();
         services.AddSingleton<ICounterAccountRuleRepository, SharpCoreDbCounterAccountRuleRepository>();
+        services.AddSingleton<ISettingsRepository, SharpCoreDbSettingsRepository>();
 
         // The statement readers: the bank import picks the first one that recognises the file, so the
         // XML reader is asked before the CSV reader (a CAMT file is never valid CSV).

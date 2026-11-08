@@ -40,6 +40,10 @@ public sealed class LocalizationTests
         // Starter chart of accounts.
         "StarterChart", "StarterChartHint", "StarterChartLoad", "StarterChartCreated",
         "StarterChartDutch", "StarterChartInternational",
+        // Administration, opening balances and VAT.
+        "MenuSettings", "MenuVat", "Administration", "CompanyName", "FiscalYearStart", "Save", "Saved",
+        "OpeningBalances", "OpeningBalancesHint", "BookYear", "Quarter", "EntireYear", "Show", "Rate",
+        "OutputVat", "InputVat", "Payable", "Reclaimable", "VatSalePurchase", "Sale", "Purchase", "NetAmount",
         // Bank import.
         "MenuBankImport", "StatementImport", "OpenMovements", "BankAccount", "File",
         "Format", "Automatic", "Camt053", "Csv", "Import",

@@ -52,8 +52,8 @@ Still open:
 
 1. **Translate the message catalogue** for `de`, `fr`, `es`, `it`, `pt` and `pl` - those cultures show
    English messages today, while their interface is fully translated.
-2. **VAT (btw) support** - rates per line, a VAT return summary and VAT payable/receivable accounts; the
-   Dutch starter chart already reserves `2100 Te betalen btw`.
+2. ~~**VAT (btw) support**~~ - shipped in 2.2 (`specs/005-correct-books/`): per-rate VAT accounts, VAT booking
+   for sales and purchases, and a quarterly return.
 3. **Full RGS alignment** - offer the complete Referentie GrootboekSchema behind a third starter chart.
 4. **In-place upgrade tool** - only if 1.0 data turns out to matter in practice: read the Dutch tables and
    write the English ones once, then drop the old tables.

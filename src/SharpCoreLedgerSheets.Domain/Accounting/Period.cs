@@ -38,6 +38,33 @@ public readonly record struct Period
     /// <summary>Creates a full calendar-year period.</summary>
     public static Period ForYear(int year) => new(new DateOnly(year, 1, 1), new DateOnly(year, 12, 31));
 
+    /// <summary>
+    /// Creates the book year that starts in the given month and runs for twelve months.
+    /// </summary>
+    /// <param name="year">The year the book year starts in (and is labelled by).</param>
+    /// <param name="startMonth">The month it starts in, 1 (January) to 12 (December).</param>
+    /// <remarks>
+    /// A broken book year is common in the Dutch MKB: February 2026 to January 2027 is book year 2026.
+    /// </remarks>
+    /// <exception cref="DomainException">Thrown when the month is not 1..12.</exception>
+    public static Period ForFiscalYear(int year, int startMonth)
+    {
+        if (startMonth is < 1 or > 12)
+        {
+            throw new DomainException(
+                MessageCode.FiscalYearMonthInvalid,
+                "De startmaand van het boekjaar moet tussen 1 en 12 liggen.");
+        }
+
+        if (startMonth == 1)
+        {
+            return ForYear(year);
+        }
+
+        var start = new DateOnly(year, startMonth, 1);
+        return new Period(start, start.AddYears(1).AddDays(-1));
+    }
+
     /// <summary>Creates a single-day period.</summary>
     public static Period ForDay(DateOnly date) => new(date, date);
 

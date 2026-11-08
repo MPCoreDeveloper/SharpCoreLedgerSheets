@@ -56,6 +56,9 @@ reconcile (assets = liabilities + equity, and opening cash + movement = closing 
   Polish — report labels come from `IReportLabels`, so templates stay language-neutral.
 - **Rule messages in the user's language** — every user-triggerable rule carries a `MessageCode`, so a
   rejected entry is explained in the language of the interface, not only in Dutch.
+- **Correct books for the Dutch MKB** — a book year that starts in any month, opening balances entered once
+  and posted as a real journal entry, and VAT (21% / 9% / 0%) booked to per-rate accounts with a quarterly
+  return.
 - **Bank statements come in as they are** — CAMT.053 (XML) or CSV, with a matching assistant that
   proposes a counterparty account per movement and learns from the bookings you confirm.
 - **Architecture tests** guard the layering, and the build is warning-free under the Microsoft and
@@ -117,7 +120,7 @@ creation is idempotent (`IF NOT EXISTS`), so it runs safely on every start-up.
 ### Starter chart of accounts
 
 A new administration can start from a complete chart instead of an empty page: open **Accounts**, pick
-**Nederlands MKB (RGS)** or **International (English)** and load it. Both charts carry the same 26 accounts
+**Nederlands MKB (RGS)** or **International (English)** and load it. Both charts carry the same 29 accounts
 with the same numbering - 1xxx liquid assets, 2xxx current liabilities, 3xxx long-term debt, 4xxx equity,
 7xxx costs, 8xxx revenue - so only the names change with the market:
 
@@ -127,13 +130,59 @@ with the same numbering - 1xxx liquid assets, 2xxx current liabilities, 3xxx lon
 | 1100 | Bank *(current, cash)* | Bank *(current, cash)* | Assets |
 | 1400 | Voorraad *(inventory)* | Inventory *(inventory)* | Assets |
 | 2000 | Crediteuren | Trade payables | Liabilities |
-| 2100 | Te betalen btw | VAT payable | Liabilities |
+| 2100 | Te betalen btw 21% | VAT payable 21% | Liabilities |
+| 2101 | Te betalen btw 9% | VAT payable 9% | Liabilities |
+| 1110 | Te vorderen btw 21% | VAT receivable 21% | Assets |
+| 1111 | Te vorderen btw 9% | VAT receivable 9% | Assets |
 | 4000 | Eigen vermogen | Equity | Equity |
 | 8000 | Omzet | Revenue | Revenue |
 | 7000 | Inkoopwaarde van de omzet | Cost of goods sold | Costs |
 
 Loading is additive and idempotent: numbers that already exist are never renamed or deactivated, so the
 button is safe on a half-filled administration (`IAccountService.ApplyStarterChartAsync`).
+
+### Book year and opening balances
+
+**Settings** (Instellingen) holds the administration itself: the company name - shown on reports - and the
+month the book year starts in. A book year that runs from 1 April is start month 4, and every statement
+follows it: the dashboard, the journal, the reports and the VAT return.
+
+**Opening balances** (Beginsaldi) are entered per account for a book year. LedgerSheets posts them as one
+balanced entry dated the day before the book year starts, with the reserved reference `OPENING-<year>`:
+
+| Date | Reference | Account | Debit | Credit |
+| --- | --- | --- | --- | --- |
+| 2025-12-31 | OPENING-2026 | 1000 Kas | 2 500,00 | |
+| 2025-12-31 | OPENING-2026 | 4000 Eigen vermogen | | 2 500,00 |
+
+Because the opening position is a real journal entry, the balance sheet balances from day one, the cash flow
+statement opens with the right cash, and the position is visible and auditable in the journal. Saving again
+replaces it, an empty set removes it, and lines that do not balance are refused with both totals in the message.
+
+### VAT (btw)
+
+**VAT** (Btw) shows the return of the administration per quarter or for the whole book year: per rate what is
+owed on sales (*af te dragen btw*), what is reclaimable on purchases (*voorbelasting*), and the amount to pay or
+to receive. The figures are read straight from the VAT accounts, so the return always agrees with the ledger.
+
+Booking is a form on **Journal**: choose sale or purchase, the net amount, the rate and the two accounts.
+LedgerSheets composes the balanced entry - net to the revenue or cost account, VAT to the rate's account, gross
+to the customer or supplier:
+
+```text
+Sale    100,00 net at 21%  ->  Debit 1300 Debiteuren  121,00
+                               Credit 8000 Omzet      100,00
+                               Credit 2100 Btw 21%     21,00
+
+Purchase 100,00 net at 9%  ->  Debit 7000 Inkoop      100,00
+                               Debit 1110 Btw 9%        9,00
+                               Credit 2000 Crediteuren 109,00
+```
+
+The 0% rate books no VAT line, and VAT is rounded per line to cents, half away from zero.
+
+> **Scope.** The return reports the VAT per rate - the amount a business pays. The turnover lines of the Dutch
+> form (1a / 1b / 1e) need invoice-level data and arrive with the invoice milestone.
 
 
 ## Quick start
@@ -318,8 +367,10 @@ default UI culture is now Dutch instead of English.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md). The decisions behind the code are recorded with
 [Spec Kit](https://github.com/github/spec-kit): the principles live in
-[`.specify/memory/constitution.md`](.specify/memory/constitution.md), and the specification, technical
-plan, tasks and research for this release live in [`specs/001-sharpcoreledgersheets/`](specs/001-sharpcoreledgersheets/).
+[`.specify/memory/constitution.md`](.specify/memory/constitution.md), and every change keeps its own
+specification, technical plan, tasks and research under [`specs/`](specs/) — the product itself (001), the
+rebrand (002), localized messages and the starter chart (003), mutation testing (004) and the book year,
+opening balances and VAT (005).
 
 ## License
 

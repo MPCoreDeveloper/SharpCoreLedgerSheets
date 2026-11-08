@@ -134,4 +134,34 @@
   <data name="Msg_CsvMissingColumn" xml:space="preserve"><value>The CSV file has no recognisable header: the column '{0}' is missing.</value></data>
   <data name="Msg_CsvHasNoMovements" xml:space="preserve"><value>The CSV file contains no bank transactions.</value></data>
   <data name="Msg_CsvUnreadableAmount" xml:space="preserve"><value>Line {0} of the CSV file has no readable amount ('{1}').</value></data>
+  <data name="Msg_CompanyNameRequired" xml:space="preserve"><value>An administration must have a name.</value></data>
+  <data name="Msg_FiscalYearMonthInvalid" xml:space="preserve"><value>The start month of the book year must be between 1 and 12.</value></data>
+  <data name="Msg_VatRateDuplicate" xml:space="preserve"><value>The VAT rates contain a duplicate rate.</value></data>
+  <data name="Msg_VatRateUnknown" xml:space="preserve"><value>VAT rate '{0}' does not exist. Available: {1}.</value></data>
+  <data name="Msg_VatSchemeEmpty" xml:space="preserve"><value>No VAT rates are configured for this administration.</value></data>
+  <data name="Msg_VatAccountsMissing" xml:space="preserve"><value>VAT rate '{0}' has no ledger account configured for its VAT.</value></data>
+  <data name="Msg_OpeningBalanceNotBalanced" xml:space="preserve"><value>The opening balances are not in balance: debit {0} versus credit {1}.</value></data>
+  <data name="Msg_AmountMustBePositive" xml:space="preserve"><value>An amount cannot be negative.</value></data>
+  <data name="MenuSettings" xml:space="preserve"><value>Settings</value></data>
+  <data name="MenuVat" xml:space="preserve"><value>VAT</value></data>
+  <data name="Administration" xml:space="preserve"><value>Administration</value></data>
+  <data name="CompanyName" xml:space="preserve"><value>Company name</value></data>
+  <data name="FiscalYearStart" xml:space="preserve"><value>Book year start</value></data>
+  <data name="Save" xml:space="preserve"><value>Save</value></data>
+  <data name="Saved" xml:space="preserve"><value>Saved.</value></data>
+  <data name="OpeningBalances" xml:space="preserve"><value>Opening balances</value></data>
+  <data name="OpeningBalancesHint" xml:space="preserve"><value>Enter the balance each account starts the book year with. Total debit and total credit must be equal.</value></data>
+  <data name="BookYear" xml:space="preserve"><value>Book year</value></data>
+  <data name="Quarter" xml:space="preserve"><value>Quarter</value></data>
+  <data name="EntireYear" xml:space="preserve"><value>Whole book year</value></data>
+  <data name="Show" xml:space="preserve"><value>Show</value></data>
+  <data name="Rate" xml:space="preserve"><value>Rate</value></data>
+  <data name="OutputVat" xml:space="preserve"><value>Output VAT</value></data>
+  <data name="InputVat" xml:space="preserve"><value>Input VAT</value></data>
+  <data name="Payable" xml:space="preserve"><value>To pay</value></data>
+  <data name="Reclaimable" xml:space="preserve"><value>To reclaim</value></data>
+  <data name="VatSalePurchase" xml:space="preserve"><value>Sale or purchase with VAT</value></data>
+  <data name="Sale" xml:space="preserve"><value>Sale</value></data>
+  <data name="Purchase" xml:space="preserve"><value>Purchase</value></data>
+  <data name="NetAmount" xml:space="preserve"><value>Net amount</value></data>
 </root>

@@ -81,4 +81,26 @@
   <data name="StarterChartCreated" xml:space="preserve"><value>{0} Konten angelegt.</value></data>
   <data name="StarterChartDutch" xml:space="preserve"><value>Niederländischer MKB (RGS)</value></data>
   <data name="StarterChartInternational" xml:space="preserve"><value>International (Englisch)</value></data>
+  <data name="MenuSettings" xml:space="preserve"><value>Einstellungen</value></data>
+  <data name="MenuVat" xml:space="preserve"><value>Umsatzsteuer</value></data>
+  <data name="Administration" xml:space="preserve"><value>Buchhaltung</value></data>
+  <data name="CompanyName" xml:space="preserve"><value>Firmenname</value></data>
+  <data name="FiscalYearStart" xml:space="preserve"><value>Beginn des Geschäftsjahrs</value></data>
+  <data name="Save" xml:space="preserve"><value>Speichern</value></data>
+  <data name="Saved" xml:space="preserve"><value>Gespeichert.</value></data>
+  <data name="OpeningBalances" xml:space="preserve"><value>Eröffnungssalden</value></data>
+  <data name="OpeningBalancesHint" xml:space="preserve"><value>Geben Sie je Konto den Saldo ein, mit dem das Geschäftsjahr beginnt. Soll und Haben müssen gleich sein.</value></data>
+  <data name="BookYear" xml:space="preserve"><value>Geschäftsjahr</value></data>
+  <data name="Quarter" xml:space="preserve"><value>Quartal</value></data>
+  <data name="EntireYear" xml:space="preserve"><value>Ganzes Geschäftsjahr</value></data>
+  <data name="Show" xml:space="preserve"><value>Anzeigen</value></data>
+  <data name="Rate" xml:space="preserve"><value>Satz</value></data>
+  <data name="OutputVat" xml:space="preserve"><value>Umsatzsteuer (Ausgang)</value></data>
+  <data name="InputVat" xml:space="preserve"><value>Vorsteuer</value></data>
+  <data name="Payable" xml:space="preserve"><value>Zu zahlen</value></data>
+  <data name="Reclaimable" xml:space="preserve"><value>Zu erhalten</value></data>
+  <data name="VatSalePurchase" xml:space="preserve"><value>Verkauf oder Einkauf mit Umsatzsteuer</value></data>
+  <data name="Sale" xml:space="preserve"><value>Verkauf</value></data>
+  <data name="Purchase" xml:space="preserve"><value>Einkauf</value></data>
+  <data name="NetAmount" xml:space="preserve"><value>Nettobetrag</value></data>
 </root>

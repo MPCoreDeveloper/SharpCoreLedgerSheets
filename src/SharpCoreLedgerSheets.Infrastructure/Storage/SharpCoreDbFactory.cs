@@ -35,6 +35,7 @@ internal sealed class SharpCoreDbFactory(
         var database = databaseFactory.Create(path, _options.MasterPassword);
         LedgerSchema.EnsureSchema(database);
         BankStatementSchema.EnsureSchema(database);
+        SettingsSchema.EnsureSchema(database);
         return database;
     }
 }
