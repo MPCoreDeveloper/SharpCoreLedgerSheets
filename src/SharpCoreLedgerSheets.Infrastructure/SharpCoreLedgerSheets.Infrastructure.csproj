@@ -13,7 +13,7 @@
   <ItemGroup>
     <!-- SharpCoreDB (MPCoreDeveloper) is the embedded, encrypted, file-based database for SharpCoreLedgerSheets.
          Always the newest stable release line. -->
-    <PackageReference Include="SharpCoreDB" Version="2.1.2" />
+    <PackageReference Include="SharpCoreDB" Version="2.1.4" />
   </ItemGroup>
 
 </Project>
