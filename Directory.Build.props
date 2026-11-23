@@ -39,7 +39,7 @@
          Deliberately accepted: that license only forbids building a product that competes with
          SonarQube, which does not apply here. The package uses PrivateAssets=all, so it is
          build-time only and is never shipped to customers. -->
-    <PackageReference Include="SonarAnalyzer.CSharp" Version="10.35.0.4138">
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="10.37.0.15768">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
